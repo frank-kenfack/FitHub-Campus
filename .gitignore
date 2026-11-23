@@ -1,0 +1,34 @@
+# Captures originales du cahier des charges (conservées localement)
+/2.PNG
+/3.PNG
+/4.PNG
+/5.PNG
+/6.PNG
+/7.PNG
+
+# Environnement & secrets
+.env
+.env.local
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+instance/
+backend/uploads/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db

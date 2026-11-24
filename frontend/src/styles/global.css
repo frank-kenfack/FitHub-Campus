@@ -963,6 +963,167 @@ body {
   font-size: 12.5px;
 }
 
+/* Défis & Classements (Étape 4) */
+.podium-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.podium-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.podium-card.rank-1 {
+  border-top: 4px solid #F59E0B;
+  background: #FFFBEB;
+}
+
+.podium-card.rank-2 {
+  border-top: 4px solid #94A3B8;
+}
+
+.podium-card.rank-3 {
+  border-top: 4px solid #D97706;
+}
+
+.podium-card.my-highlight {
+  box-shadow: 0 0 0 2px rgba(230, 26, 95, 0.35);
+}
+
+.podium-medal {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.podium-score {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--pink-dark);
+}
+
+.lb-panel {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  background: #F8FAFC;
+}
+
+.lb-panel h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--navy);
+}
+
+.lb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+}
+
+.lb-row:last-child {
+  margin-bottom: 0;
+}
+
+.lb-row.lb-me {
+  border-color: var(--pink);
+  background: #FFF1F2;
+}
+
+.lb-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lb-rank {
+  font-weight: 800;
+  color: var(--navy);
+  min-width: 44px;
+}
+
+.lb-left strong {
+  display: block;
+  color: var(--navy);
+}
+
+.lb-left em {
+  font-style: normal;
+  color: var(--pink-dark);
+}
+
+.lb-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.lb-val {
+  font-size: 13.5px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.challenge-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.selected-challenge {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 2px rgba(230, 26, 95, 0.18);
+}
+
+.ch-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 5px;
+}
+
+.ch-progress-track {
+  height: 9px;
+  background: #E2E8F0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ch-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--green));
+  border-radius: 999px;
+}
+
+.perf-drawer {
+  margin-top: 10px;
+  padding: 10px;
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .podium-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (min-width: 768px) {
   body {
     padding-bottom: 24px;

@@ -64,14 +64,14 @@ export default function AuthProfileView({
     setFeedback({ type: "", text: "" });
     try {
       const creds = customCredentials || loginForm;
-      const data = await apiRequest("/api/auth/login", {
+      const authPayload = await apiRequest("/api/auth/login", {
         method: "POST",
         body: creds
       });
-      setStoredToken(data.access_token);
-      onAuthChange(data.user);
+      setStoredToken(authPayload.access_token);
+      onAuthChange(authPayload.user);
       onDataRefresh();
-      setFeedback({ type: "ok", text: `Bienvenue ${data.user.username} !` });
+      setFeedback({ type: "ok", text: `Bienvenue ${authPayload.user.username} !` });
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     } finally {
@@ -84,15 +84,15 @@ export default function AuthProfileView({
     setBusy(true);
     setFeedback({ type: "", text: "" });
     try {
-      const data = await apiRequest("/api/auth/register", {
+      const registerPayload = await apiRequest("/api/auth/register", {
         method: "POST",
         body: {
           ...registerForm,
           campus_id: Number(registerForm.campus_id)
         }
       });
-      setStoredToken(data.access_token);
-      onAuthChange(data.user);
+      setStoredToken(registerPayload.access_token);
+      onAuthChange(registerPayload.user);
       onDataRefresh();
       setFeedback({ type: "ok", text: "Compte étudiant créé et connecté !" });
     } catch (err) {
@@ -107,14 +107,14 @@ export default function AuthProfileView({
     setBusy(true);
     setFeedback({ type: "", text: "" });
     try {
-      const data = await apiRequest("/api/users/me", {
+      const profilePayload = await apiRequest("/api/users/me", {
         method: "PUT",
         body: {
           ...profileForm,
           campus_id: Number(profileForm.campus_id)
         }
       });
-      onAuthChange(data.user);
+      onAuthChange(profilePayload.user);
       onDataRefresh();
       setFeedback({ type: "ok", text: "Profil sportif mis à jour avec succès." });
     } catch (err) {
@@ -132,12 +132,12 @@ export default function AuthProfileView({
     try {
       const formData = new FormData();
       formData.append("avatar", file);
-      const data = await apiRequest("/api/users/me/avatar", {
+      const avatarPayload = await apiRequest("/api/users/me/avatar", {
         method: "POST",
         body: formData,
         isFormData: true
       });
-      onAuthChange(data.user);
+      onAuthChange(avatarPayload.user);
       setFeedback({ type: "ok", text: "Photo de profil mise à jour avec succès !" });
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
@@ -294,9 +294,9 @@ export default function AuthProfileView({
         </section>
 
         <section className="card">
-          <h2>Accès Rapide — Profils Étudiants</h2>
+          <h2>ACCÈS RAPIDE AUX PROFILS ÉTUDIANTS</h2>
           <p className="muted-text">
-            Explorez immédiatement la plateforme avec l&apos;un des profils étudiants de démonstration :
+            Explorez immédiatement la plateforme avec l&apos;un des profils de démonstration :
           </p>
           <div className="demo-list">
             {DEMO_ACCOUNTS.map((acc) => (
@@ -392,7 +392,7 @@ export default function AuthProfileView({
             <div className="workout-chips" style={{ marginTop: "6px" }}>
               {user.badges.map((b) => (
                 <span key={b.id} className="metric-chip">
-                  🏅 {b.name} (+{b.xp_reward} XP)
+                  {b.name} (+{b.xp_reward} XP)
                 </span>
               ))}
             </div>
@@ -409,7 +409,7 @@ export default function AuthProfileView({
       </section>
 
       <section className="card">
-        <h2>Éditer mon Profil Sportif</h2>
+        <h2>ÉDITER MON PROFIL SPORTIF</h2>
         {feedback.text && (
           <div className={`alert ${feedback.type === "ok" ? "alert-ok" : "alert-err"}`}>
             {feedback.text}

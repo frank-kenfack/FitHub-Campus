@@ -14,10 +14,10 @@ const SPORTS = [
 const UNITS = ["km", "reps", "min", "séances"];
 
 function medalForRank(rank) {
-  if (rank === 1) return "🥇 1er";
-  if (rank === 2) return "🥈 2e";
-  if (rank === 3) return "🥉 3e";
-  return `#${rank}`;
+  if (rank === 1) return "1er";
+  if (rank === 2) return "2e";
+  if (rank === 3) return "3e";
+  return `${rank}e`;
 }
 
 export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) {
@@ -52,8 +52,8 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
       const params = new URLSearchParams();
       if (st) params.set("status", st);
       if (sp) params.set("sport", sp);
-      const data = await apiRequest(`/api/challenges?${params.toString()}`);
-      const list = data.challenges || [];
+      const challengesPayload = await apiRequest(`/api/challenges?${params.toString()}`);
+      const list = challengesPayload.challenges || [];
       setChallenges(list);
 
       if (list.length > 0) {
@@ -71,11 +71,11 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
   async function fetchLeaderboard(mode = boardMode, chId = selectedChallengeId) {
     try {
       if (mode === "global" || !chId) {
-        const data = await apiRequest("/api/challenges/leaderboard/global");
-        setLeaderboard({ mode: "global", ...data });
+        const leaderboardPayload = await apiRequest("/api/challenges/leaderboard/global");
+        setLeaderboard({ mode: "global", ...leaderboardPayload });
       } else {
-        const data = await apiRequest(`/api/challenges/${chId}/leaderboard`);
-        setLeaderboard({ mode: "challenge", ...data });
+        const leaderboardPayload = await apiRequest(`/api/challenges/${chId}/leaderboard`);
+        setLeaderboard({ mode: "challenge", ...leaderboardPayload });
       }
     } catch {
       // ignore transient fetch errors
@@ -95,7 +95,7 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
     setBusy(true);
     setFeedback({ type: "", text: "" });
     try {
-      const data = await apiRequest("/api/challenges", {
+      const createdPayload = await apiRequest("/api/challenges", {
         method: "POST",
         body: {
           title: createForm.title,
@@ -116,10 +116,13 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
         description: ""
       });
       setBoardMode("challenge");
-      setSelectedChallengeId(data.challenge.id);
-      setFeedback({ type: "ok", text: `Défi « ${data.challenge.title} » lancé (+15 XP) !` });
+      setSelectedChallengeId(createdPayload.challenge.id);
+      setFeedback({
+        type: "ok",
+        text: `Défi « ${createdPayload.challenge.title} » lancé (+15 XP).`
+      });
       await fetchChallenges();
-      await fetchLeaderboard("challenge", data.challenge.id);
+      await fetchLeaderboard("challenge", createdPayload.challenge.id);
       onScoreChanged();
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
@@ -137,7 +140,7 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
     setFeedback({ type: "", text: "" });
     try {
       await apiRequest(`/api/challenges/${chId}/join`, { method: "POST" });
-      setFeedback({ type: "ok", text: "Inscription validée pour votre campus (+10 XP) !" });
+      setFeedback({ type: "ok", text: "Inscription validée pour votre campus (+10 XP)." });
       await fetchChallenges();
       if (selectedChallengeId === chId || boardMode === "global") {
         await fetchLeaderboard(boardMode, chId);
@@ -156,18 +159,18 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
     setBusy(true);
     setFeedback({ type: "", text: "" });
     try {
-      let data;
+      let perfPayload;
       if (perfFile) {
         const fd = new FormData();
         fd.append("value", perfValue);
         fd.append("proof_image", perfFile);
-        data = await apiRequest(`/api/challenges/${challenge.id}/performances`, {
+        perfPayload = await apiRequest(`/api/challenges/${challenge.id}/performances`, {
           method: "POST",
           body: fd,
           isFormData: true
         });
       } else {
-        data = await apiRequest(`/api/challenges/${challenge.id}/performances`, {
+        perfPayload = await apiRequest(`/api/challenges/${challenge.id}/performances`, {
           method: "POST",
           body: { value: Number(perfValue) }
         });
@@ -177,7 +180,7 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
       setPerfFile(null);
       setBoardMode("challenge");
       setSelectedChallengeId(challenge.id);
-      setLeaderboard({ mode: "challenge", ...data });
+      setLeaderboard({ mode: "challenge", ...perfPayload });
       setFeedback({
         type: "ok",
         text: `Performance ajoutée au cumul de votre campus (+20 XP) !`
@@ -218,18 +221,18 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
           <div>
             <h2 style={{ margin: 0 }}>
               {leaderboard?.mode === "global"
-                ? "Podium Général Inter-Campus (XP Cumulés)"
-                : `Podium du Défi : ${leaderboard?.challenge?.title || "Sélectionnez un défi"}`}
+                ? "PODIUM GÉNÉRAL INTERCAMPUS (XP CUMULÉS)"
+                : `PODIUM DU DÉFI : ${(leaderboard?.challenge?.title || "SÉLECTIONNEZ UN DÉFI").toUpperCase()}`}
             </h2>
             {user && leaderboard && (
               <p className="muted-text" style={{ margin: "3px 0 0" }}>
-                Mon Campus :{" "}
+                Mon campus :{" "}
                 <strong>
-                  {leaderboard.my_campus_rank ? `#${leaderboard.my_campus_rank}` : "—"}
-                </strong>{" "}
-                • Mon Rang Personnel :{" "}
+                  {leaderboard.my_campus_rank ? `${leaderboard.my_campus_rank}e` : "aucun"}
+                </strong>
+                , mon rang personnel :{" "}
                 <strong>
-                  {leaderboard.my_rank ? `#${leaderboard.my_rank}` : "Non inscrit"}
+                  {leaderboard.my_rank ? `${leaderboard.my_rank}e` : "non inscrit"}
                 </strong>
               </p>
             )}
@@ -511,7 +514,7 @@ export default function ChallengesView({ user, onRequireAuth, onScoreChanged }) 
                     </div>
                     {ch.top_campus_name && (
                       <span className="muted-text" style={{ fontSize: "12px" }}>
-                        🥇 {ch.top_campus_name}
+                        En tête : {ch.top_campus_name}
                       </span>
                     )}
                   </div>

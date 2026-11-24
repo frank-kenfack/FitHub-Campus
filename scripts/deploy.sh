@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# FitHub Campus — Script de deploiement automatise et idempotent (Docker Compose)
+# Script de deploiement idempotent FitHub Campus (Docker Compose)
 # Usage : ./scripts/deploy.sh [env_file]
 # =============================================================================
 set -euo pipefail

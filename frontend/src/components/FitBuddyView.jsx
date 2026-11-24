@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { apiRequest, getStoredToken } from "../api.js";
 
-const QUICK_BOOSTS = [
-  "🔥 Go training !",
-  "👏 GG pour ta séance !",
-  "💪 On garde notre streak !",
-  "🏃 Dispo footing à 18h ?"
+const QUICK_ENCOURAGEMENTS = [
+  "Bon entraînement !",
+  "Bravo pour ta séance !",
+  "On garde la série active !",
+  "Disponible pour courir à 18h ?"
 ];
 
 const SPORTS = [
@@ -49,11 +49,11 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
   async function loadBuddies() {
     if (!user) return;
     try {
-      const data = await apiRequest("/api/buddies");
-      const acc = data.accepted || [];
+      const buddiesPayload = await apiRequest("/api/buddies");
+      const acc = buddiesPayload.accepted || [];
       setAccepted(acc);
-      setIncoming(data.incoming_pending || []);
-      setOutgoing(data.outgoing_pending || []);
+      setIncoming(buddiesPayload.incoming_pending || []);
+      setOutgoing(buddiesPayload.outgoing_pending || []);
 
       if (acc.length > 0) {
         const current = selectedPartnerRef.current;
@@ -81,8 +81,8 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
       if (activeFilters.level) params.set("level", activeFilters.level);
       if (activeFilters.q.trim()) params.set("q", activeFilters.q.trim());
       const qs = params.toString();
-      const data = await apiRequest(`/api/buddies/discover${qs ? `?${qs}` : ""}`);
-      setCandidates(data.candidates || []);
+      const discoverPayload = await apiRequest(`/api/buddies/discover${qs ? `?${qs}` : ""}`);
+      setCandidates(discoverPayload.candidates || []);
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     }
@@ -91,10 +91,10 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
   async function loadConversation(partnerId) {
     if (!user || !partnerId) return;
     try {
-      const data = await apiRequest(`/api/buddies/${partnerId}/encouragements`);
-      setMessages(data.encouragements || []);
-      if (typeof data.streak_days === "number") {
-        setActiveStreak(data.streak_days);
+      const messagesPayload = await apiRequest(`/api/buddies/${partnerId}/encouragements`);
+      setMessages(messagesPayload.encouragements || []);
+      if (typeof messagesPayload.streak_days === "number") {
+        setActiveStreak(messagesPayload.streak_days);
       }
     } catch {
       setMessages([]);
@@ -151,18 +151,18 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
         }
       }
       if (msg.sender_id !== user.id) {
-        setLiveToast(`⚡ Encouragement reçu en direct de ${msg.sender_username} : « ${msg.message} »`);
+        setLiveToast(`Encouragement reçu de ${msg.sender_username} : « ${msg.message} »`);
       }
     });
 
     sock.on("buddy_request", () => {
-      setLiveToast("⚡ Nouvelle demande de Fit-Buddy reçue en direct !");
+      setLiveToast("Nouvelle demande de partenaire reçue.");
       loadBuddies();
       loadDiscover();
     });
 
     sock.on("buddy_updated", () => {
-      setLiveToast("⚡ Votre demande Fit-Buddy a été mise à jour !");
+      setLiveToast("Votre demande de partenaire a été mise à jour.");
       loadBuddies();
       loadDiscover();
       onActivityChanged();
@@ -174,7 +174,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
     };
   }, [user?.id]);
 
-  async function sendBoostMessage(textToSend) {
+  async function sendEncouragementMessage(textToSend) {
     if (!selectedPartner || !textToSend.trim()) return;
     const cleanText = textToSend.trim();
     setBusy(true);
@@ -268,12 +268,12 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
   if (!user) {
     return (
       <section className="card">
-        <h2>Partenaire Fit-Buddy &amp; Motivation</h2>
+        <h2>PARTENAIRE SPORTIF ET MOTIVATION</h2>
         <p className="muted-text">
           Connectez-vous pour trouver un partenaire d&apos;entraînement sur votre campus et vous motiver au quotidien.
         </p>
         <button type="button" className="primary-btn" onClick={onRequireAuth}>
-          Se connecter pour accéder à Fit-Buddy
+          Se connecter pour accéder aux partenaires
         </button>
       </section>
     );
@@ -281,18 +281,17 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
 
   return (
     <div>
-      {/* BANDEAU STATUT WEBSOCKET & NOTIFICATIONS LIVE */}
       <section className="card" style={{ marginBottom: "14px" }}>
         <div className="topbar-row">
           <div>
-            <h2 style={{ margin: 0 }}>Espace Fit-Buddy &amp; Motivation Temps Réel</h2>
+            <h2 style={{ margin: 0 }}>ESPACE PARTENAIRES ET MOTIVATION EN DIRECT</h2>
             <p className="muted-text" style={{ margin: "2px 0 0" }}>
-              Binômes actifs : <strong>{accepted.length}</strong> • Demandes reçues :{" "}
+              Binômes actifs : <strong>{accepted.length}</strong>, demandes reçues :{" "}
               <strong>{incoming.length}</strong>
             </p>
           </div>
           <span className={`badge ${wsConnected ? "badge-ok" : "badge-err"}`}>
-            {wsConnected ? "🟢 Messagerie en direct active" : "🟠 Connexion en cours..."}
+            {wsConnected ? "Messagerie en direct active" : "Connexion en cours..."}
           </span>
         </div>
 
@@ -314,7 +313,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
       {/* PANNEAU PRINCIPAL : BINÔMES + MESSAGERIE D'ENCOURAGEMENTS */}
       <div className="grid-cards">
         <section className="card">
-          <h2>Mes Fit-Buddies &amp; Demandes</h2>
+          <h2>MES PARTENAIRES ET DEMANDES</h2>
 
           {incoming.length > 0 && (
             <div className="pending-box">
@@ -387,7 +386,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
                         </span>
                       </div>
                     </div>
-                    <span className="streak-pill">🔥 Série : {rel.streak_days} j</span>
+                    <span className="streak-pill">Série : {rel.streak_days} j</span>
                   </button>
                 );
               })}
@@ -410,23 +409,23 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
               <div className="topbar-row" style={{ marginBottom: "10px" }}>
                 <div>
                   <h2 style={{ margin: 0 }}>
-                    Encouragements avec {selectedPartner.username}
+                    ENCOURAGEMENTS AVEC {selectedPartner.username.toUpperCase()}
                   </h2>
                   <span className="muted-text">{selectedPartner.campus_name}</span>
                 </div>
-                <span className="streak-pill">🔥 Série : {activeStreak} jours</span>
+                <span className="streak-pill">Série : {activeStreak} jours</span>
               </div>
 
-              <div className="quick-boost-bar">
-                {QUICK_BOOSTS.map((boost) => (
+              <div className="quick-encouragement-bar">
+                {QUICK_ENCOURAGEMENTS.map((msgText) => (
                   <button
-                    key={boost}
+                    key={msgText}
                     type="button"
-                    className="boost-chip"
+                    className="encouragement-chip"
                     disabled={busy}
-                    onClick={() => sendBoostMessage(boost)}
+                    onClick={() => sendEncouragementMessage(msgText)}
                   >
-                    {boost}
+                    {msgText}
                   </button>
                 ))}
               </div>
@@ -434,7 +433,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
               <div className="chat-stream">
                 {messages.length === 0 ? (
                   <p className="muted-text" style={{ margin: 0 }}>
-                    Envoyez le premier encouragement temps réel à {selectedPartner.username} !
+                    Envoyez le premier encouragement à {selectedPartner.username}.
                   </p>
                 ) : (
                   messages.map((m) => {
@@ -458,7 +457,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
                 className="comment-form"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  sendBoostMessage(draft);
+                  sendEncouragementMessage(draft);
                 }}
               >
                 <input
@@ -469,7 +468,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
                   onChange={(e) => setDraft(e.target.value)}
                 />
                 <button type="submit" className="primary-btn" disabled={busy}>
-                  Envoyer ⚡
+                  Envoyer
                 </button>
               </form>
             </>
@@ -484,7 +483,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
       {/* RECHERCHE & MATCHING DE NOUVEAUX FIT-BUDDIES */}
       <section className="card">
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>Trouver un Fit-Buddy Compatible ({candidates.length})</h2>
+          <h2 style={{ margin: 0 }}>TROUVER UN PARTENAIRE COMPATIBLE ({candidates.length})</h2>
         </div>
 
         <div className="filters-bar" style={{ marginBottom: "12px" }}>

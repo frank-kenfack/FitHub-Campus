@@ -1,4 +1,4 @@
-"""Serialiseurs JSON pour les utilisateurs, groupes et publications sociales."""
+"""Serialisation JSON des entites utilisateurs, groupes et publications."""
 
 from datetime import datetime, timedelta, timezone
 
@@ -18,7 +18,6 @@ from app.models import (
 
 
 def serialize_user(user: User, include_stats: bool = False) -> dict:
-    """Convertit un objet User en dictionnaire JSON sans exposer password_hash."""
     payload = {
         "id": user.id,
         "email": user.email,
@@ -69,7 +68,6 @@ def serialize_group(
     current_user_id: int | None = None,
     include_members: bool = False,
 ) -> dict:
-    """Convertit un SportGroup en dictionnaire JSON enrichi."""
     memberships = (
         GroupMember.query.filter_by(group_id=group.id)
         .order_by(GroupMember.joined_at.asc())
@@ -79,7 +77,7 @@ def serialize_group(
     creator = db.session.get(User, group.created_by)
     campus = db.session.get(Campus, group.campus_id)
 
-    data = {
+    group_payload = {
         "id": group.id,
         "name": group.name,
         "sport": group.sport,
@@ -110,12 +108,11 @@ def serialize_group(
                         "joined_at": m.joined_at.isoformat() if m.joined_at else None,
                     }
                 )
-        data["members"] = members_payload
-    return data
+        group_payload["members"] = members_payload
+    return group_payload
 
 
 def serialize_comment(comment: StoryComment) -> dict:
-    """Convertit un commentaire social en dictionnaire JSON."""
     author = db.session.get(User, comment.user_id)
     campus = db.session.get(Campus, author.campus_id) if author else None
     return {
@@ -131,7 +128,6 @@ def serialize_comment(comment: StoryComment) -> dict:
 
 
 def serialize_story(story: Story, current_user_id: int | None = None) -> dict:
-    """Convertit une publication (story workout ou avant/apres) en JSON complet."""
     author = db.session.get(User, story.user_id)
     campus = db.session.get(Campus, author.campus_id) if author else None
     workout = db.session.get(Workout, story.workout_id) if story.workout_id else None

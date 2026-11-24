@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# FitHub Campus — Execution automatisee de la chaine qualite (Lint + Pytest + Smoke)
+# Execution de la chaine qualite FitHub Campus (Ruff, Pytest, Smoke)
 # Usage : ./scripts/run_tests.sh
 # =============================================================================
 set -euo pipefail

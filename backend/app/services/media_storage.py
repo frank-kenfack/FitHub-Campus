@@ -1,4 +1,4 @@
-"""Utilitaires de validation et sauvegarde des medias uploades."""
+"""Validation par Pillow et stockage sur volume des images envoyees."""
 
 import os
 import uuid
@@ -15,7 +15,6 @@ def save_validated_image(
     subfolder: str,
     max_size: tuple[int, int] = (800, 800),
 ) -> str:
-    """Valide une image via Pillow, la redimensionne et retourne son URL relative."""
     if file_storage is None or not file_storage.filename:
         raise ValueError("Aucun fichier image fourni.")
 
@@ -34,6 +33,7 @@ def save_validated_image(
             target_dir = os.path.join(base_upload_folder, subfolder)
             os.makedirs(target_dir, exist_ok=True)
 
+            # Un nom aleatoire et un re-encodage Pillow neutralisent les noms malveillants et metadonnees.
             filename = f"{uuid.uuid4().hex}.{ext}"
             dest_path = os.path.join(target_dir, filename)
 
@@ -50,13 +50,13 @@ def save_validated_image(
 
 
 def remove_uploaded_file(relative_url: str, base_upload_folder: str) -> None:
-    """Supprime proprement un ancien media local s'il existe dans uploads."""
     prefix = "/uploads/"
     if not relative_url or not relative_url.startswith(prefix):
         return
     rel_path = relative_url[len(prefix) :].replace("/", os.sep)
     abs_base = os.path.abspath(base_upload_folder)
     candidate = os.path.abspath(os.path.join(abs_base, rel_path))
+    # Verification de confinement pour empecher toute traversee de repertoire hors d'uploads.
     if candidate.startswith(abs_base + os.sep) and os.path.isfile(candidate):
         try:
             os.remove(candidate)

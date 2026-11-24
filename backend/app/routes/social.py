@@ -15,9 +15,9 @@ from app.models import (
     User,
     Workout,
 )
-from app.utils.gamification import evaluate_and_award_badges
-from app.utils.media import remove_uploaded_file, save_validated_image
-from app.utils.serializers import serialize_comment, serialize_story
+from app.services.badge_progression import evaluate_and_award_badges
+from app.services.domain_serializers import serialize_comment, serialize_story
+from app.services.media_storage import remove_uploaded_file, save_validated_image
 
 social_bp = Blueprint("social", __name__, url_prefix="/api/social")
 
@@ -364,8 +364,8 @@ def add_post_comment(post_id: int):
     if not _can_view_story(story, uid, _user_group_ids(uid)):
         return jsonify({"error": "Acces non autorise a cette publication."}), 403
 
-    data = request.get_json(silent=True) or {}
-    content = (data.get("content") or "").strip()
+    comment_payload = request.get_json(silent=True) or {}
+    content = (comment_payload.get("content") or "").strip()
     if not content or len(content) > 500:
         return jsonify({"error": "Le commentaire doit contenir entre 1 et 500 caracteres."}), 400
 

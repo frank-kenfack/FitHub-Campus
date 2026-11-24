@@ -1,293 +1,180 @@
-# FitHub Campus — Album des Captures d'Écran par Étape
+# FITHUB CAMPUS : ALBUM DES CAPTURES D'ÉCRAN PAR ÉTAPE
 
-Ce document conserve, **étape par étape**, les captures d'écran réelles validant chaque incrément du projet **FitHub Campus** avant le passage à l'étape suivante.
+Ce document rassemble les captures d'écran de validation pour chacune des huit étapes du projet FitHub Campus.
 
-- **Dépôt GitHub** : https://github.com/frank-kenfack/FitHub-Campus
-- **Journal d'avancement** : [AVANCEMENT.md](./AVANCEMENT.md)
-- **Tableau de bord interactif** : [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html)
-- **Règle de mise à jour** : à chaque nouvelle branche `step-XX/...`, les captures de l'étape sont enregistrées dans `docs/screenshots/step-XX/` et ajoutées dans ce fichier avant validation.
+Dépôt GitHub : https://github.com/frank-kenfack/FitHub-Campus
 
----
+Journal d'avancement : [AVANCEMENT.md](./AVANCEMENT.md)
 
-## Sommaire des Étapes
+Tableau de bord interactif : [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html)
 
-1. [Étape 1 — `step-01/socle-docker` (Socle Git, PostgreSQL, Stack Docker 4 conteneurs & UI Mobile-First)](#étape-1--step-01socle-docker) ✅
-2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ✅
-3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ✅
-4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ✅
-5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ✅
-6. [Étape 6 — `step-06/geoloc-gamification` (Carte Leaflet/OSM, Événements & Badges)](#étape-6--step-06geoloc-gamification) ⏳
-7. [Étape 7 — `step-07/cicd-qualite-docs` (Pipelines CI/CD GitLab/GitHub, Scripts & Recette)](#étape-7--step-07cicd-qualite-docs) ⏳
-8. [Étape 8 — `step-08/kubernetes-bonus` (Orchestration Kubernetes +20 % & Démo Jury)](#étape-8--step-08kubernetes-bonus) ⏳
+## SOMMAIRE DES ÉTAPES
 
----
+1. Étape 1 : `step-01/socle-docker` (Socle Git, PostgreSQL, pile Docker 4 conteneurs et interface initiale)
+2. Étape 2 : `step-02/auth-profils-groupes` (Authentification JWT, profils et clubs sportifs)
+3. Étape 3 : `step-03/social-fitness` (Stories de séances, photos avant et après et interactions)
+4. Étape 4 : `step-04/defis-classements` (Défis intercampus et classements)
+5. Étape 5 : `step-05/fitbuddy-realtime` (Matching partenaire et messagerie temps réel)
+6. Étape 6 : `step-06/geoloc-gamification` (Carte Leaflet, événements et badges)
+7. Étape 7 : `step-07/cicd-qualite-docs` (Pipelines CI/CD GitLab et GitHub, scripts et recette)
+8. Étape 8 : `step-08/kubernetes-bonus` (Orchestration Kubernetes, refonte finale et soutenance)
 
-## Étape 1 — `step-01/socle-docker`
+## ÉTAPE 1 : `step-01/socle-docker`
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` 5/5 • 4 conteneurs `healthy` • persistance PostgreSQL vérifiée)
-- **Branche GitHub** : [`step-01/socle-docker`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker)
-- **Services actifs** : `fithub-frontend` (`:8080`), `fithub-backend` (`:5000`), `fithub-db` (PostgreSQL 16), `fithub-redis` (Redis 7)
+Statut : fusionnée dans `develop` et `main` (`pytest` 5/5, 4 conteneurs actifs).
 
-### 1.1 Vue Desktop de l'application (`http://localhost:8080/`)
-Affichage en direct de l'état de santé des conteneurs (`Opérationnel`, `PostgreSQL Connecté`, `Redis Connecté`), des compteurs seedés (`4 campus • 5 badges • 4 lieux`) et de la liste des campus étudiants chargés depuis PostgreSQL.
+### 1.1 Vue ordinateur initiale
 
-![Étape 1 - Vue Desktop](./docs/screenshots/step-01/01-app-desktop.png)
+![Étape 1 : Vue ordinateur](./docs/screenshots/step-01/01-app-desktop.png)
 
----
+### 1.2 Vue mobile initiale
 
-### 1.2 Vue Responsive Mobile-First (Navigation basse à 5 onglets)
-Adaptation mobile avec empilement vertical des cartes et barre de navigation fixe en bas d'écran (`Accueil`, `Social`, `Défis`, `Fit-Buddy`, `Carte`).
+![Étape 1 : Vue mobile](./docs/screenshots/step-01/02-app-mobile.png)
 
-![Étape 1 - Vue Mobile-First](./docs/screenshots/step-01/02-app-mobile.png)
+### 1.3 Point de contrôle `/api/health`
 
----
+![Étape 1 : Point de contrôle santé API](./docs/screenshots/step-01/03-api-health.png)
 
-### 1.3 Endpoint de santé `/api/health` servi via le reverse proxy Nginx
-Vérification JSON directe prouvant la connectivité entre Nginx (`frontend`), Gunicorn/Flask (`backend`), PostgreSQL (`db`) et Redis (`redis`).
+### 1.4 Tableau de bord initial
 
-![Étape 1 - Endpoint API Health](./docs/screenshots/step-01/03-api-health.png)
+![Étape 1 : Tableau de bord](./docs/screenshots/step-01/04-suivi-dashboard.png)
 
----
+## ÉTAPE 2 : `step-02/auth-profils-groupes`
 
-### 1.4 Tableau de bord d'avancement & Journal des tests (`docs/SUIVI_ETAPES.html`)
-Synthèse visuelle de l'architecture à 4 conteneurs, des livrables et des résultats d'exécution de `docker compose ps`, `ruff` et `pytest`.
+Statut : fusionnée dans `develop` et `main` (`pytest` 14/14).
 
-![Étape 1 - Tableau de bord et tests](./docs/screenshots/step-01/04-suivi-dashboard.png)
+### 2.1 Connexion et inscription
 
----
+![Étape 2 : Connexion](./docs/screenshots/step-02/01-auth-connexion-desktop.png)
 
-## Étape 2 — `step-02/auth-profils-groupes`
+### 2.2 Profil sportif et avatar persistant
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **14/14** sans warning • upload & persistance d'avatar sur `uploads_data` vérifiés après redémarrage conteneur)
-- **Branche GitHub** : [`step-02/auth-profils-groupes`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-02/auth-profils-groupes)
-- **Fonctionnalités couvertes** : Inscription/Connexion JWT (`bcrypt`), édition de profil + statistiques personnelles, upload d'avatar redimensionné via Pillow et servi par Nginx, CRUD groupes sportifs + filtres + adhésion/désinscription + liste des membres.
+![Étape 2 : Profil connecté](./docs/screenshots/step-02/02-profil-avatar-connecte.png)
 
-### 2.1 Écran Connexion / Inscription JWT & Comptes de démonstration
-Formulaire d'authentification étudiante (bascule Connexion / Inscription) accompagné des 3 comptes étudiants pré-seedés pour tester immédiatement les parcours.
+### 2.3 Clubs sportifs et membres
 
-![Étape 2 - Connexion JWT et Comptes Démo](./docs/screenshots/step-02/01-auth-connexion-desktop.png)
+![Étape 2 : Clubs sportifs](./docs/screenshots/step-02/03-groupes-sportifs-membres.png)
 
----
+### 2.4 Tableau de bord mis à jour
 
-### 2.2 Profil Sportif connecté (`InaFit_Lyon`) & Avatar persistant
-Vue connectée affichant l'avatar stocké sur le volume persistant `/uploads/avatars/...`, les compteurs personnels (`220 Points XP`, `2 Groupes`, `Séances`, `Badges`) et le formulaire d'édition du profil.
+![Étape 2 : Tableau de bord](./docs/screenshots/step-02/04-suivi-dashboard-step02.png)
 
-![Étape 2 - Profil connecté et Avatar persistant](./docs/screenshots/step-02/02-profil-avatar-connecte.png)
+## ÉTAPE 3 : `step-03/social-fitness`
 
----
+Statut : fusionnée dans `develop` et `main` (`pytest` 22/22).
 
-### 2.3 Groupes Sportifs Inter-Campus, Filtres & Liste des Membres
-Exploration des groupes par campus/discipline/mot-clé, boutons d'adhésion (`Rejoindre` / `Quitter`), contrôle créateur (`Suppr.`) et tiroir des membres déplié sur *Lyon Running Rhone*.
+### 3.1 Carrousel et comparatif avant et après
 
-![Étape 2 - Groupes Sportifs et Membres](./docs/screenshots/step-02/03-groupes-sportifs-membres.png)
+![Étape 3 : Carrousel et comparatif](./docs/screenshots/step-03/01-social-stories-avant-apres.png)
 
----
+### 3.2 Filtre des séances récentes
 
-### 2.4 Tableau de bord d'avancement mis à jour (25 % — 14/14 Pytest)
-Synthèse visuelle de l'Étape 2 validée et trace d'exécution des 14 tests automatisés (non-régression Étape 1 incluse).
+![Étape 3 : Séances récentes](./docs/screenshots/step-03/02-social-workout-stories-24h.png)
 
-![Étape 2 - Tableau de bord et tests](./docs/screenshots/step-02/04-suivi-dashboard-step02.png)
+### 3.3 Formulaire de publication de séance
 
----
+![Étape 3 : Publication de séance](./docs/screenshots/step-03/03-social-publication-workout.png)
 
-## Étape 3 — `step-03/social-fitness`
+### 3.4 Tableau de bord mis à jour
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **22/22** sans warning • médias `/uploads/stories/` persistés et servis en `200 OK` via Nginx)
-- **Branche GitHub** : [`step-03/social-fitness`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-03/social-fitness)
-- **Fonctionnalités couvertes** : Stories de workouts (`< 24h` + métriques séance + `+25 XP`), comparatifs Avant/Après à double upload avec slider interactif et vue côte à côte (`+35 XP`), visibilité privée par groupe, likes idempotents, commentaires en direct et suppression réservée à l'auteur avec nettoyage disque.
+![Étape 3 : Tableau de bord](./docs/screenshots/step-03/04-suivi-dashboard-step03.png)
 
-### 3.1 Carrousel Stories &lt; 24h &amp; Comparateur interactif Avant / Après
-Vue principale de l'onglet **Social** affichant les anneaux des stories récentes et le curseur glissant Avant/Après (`10 semaines`) avec applaudissements et commentaires.
+## ÉTAPE 4 : `step-04/defis-classements`
 
-![Étape 3 - Carrousel Stories et Slider Avant/Après](./docs/screenshots/step-03/01-social-stories-avant-apres.png)
+Statut : fusionnée dans `develop` et `main` (`pytest` 30/30).
 
----
+### 4.1 Podium du défi course intercampus
 
-### 3.2 Filtre « Stories &lt; 24h », Métriques de séance &amp; Contrôle auteur
-Affichage filtré des séances des dernières 24h avec puces métriques (`Calisthenics`, `60 min`, `460 kcal`), compteur d'applaudissements et bouton `Suppr.` réservé à l'auteur.
+![Étape 4 : Podium défi](./docs/screenshots/step-04/01-defis-podium-campus.png)
 
-![Étape 3 - Stories Workouts 24h](./docs/screenshots/step-03/02-social-workout-stories-24h.png)
+### 4.2 Classement général et saisie de performance
 
----
+![Étape 4 : Classement général](./docs/screenshots/step-04/02-classement-general-et-saisie.png)
 
-### 3.3 Formulaire de publication d'une Story de Workout
-Saisie complète d'une séance sportive (discipline, durée, distance, calories, visibilité publique ou groupe, upload photo validé par Pillow).
+### 4.3 Création de défi et défis terminés
 
-![Étape 3 - Formulaire Publication Story](./docs/screenshots/step-03/03-social-publication-workout.png)
+![Étape 4 : Création de défi](./docs/screenshots/step-04/03-creation-defi-et-termines.png)
 
----
+### 4.4 Tableau de bord mis à jour
 
-### 3.4 Tableau de bord d'avancement mis à jour (37,5 % — 22/22 Pytest)
-Synthèse visuelle de l'Étape 3 validée et trace d'exécution des 22 tests automatisés (non-régression Étapes 1 et 2 incluse).
+![Étape 4 : Tableau de bord](./docs/screenshots/step-04/04-suivi-dashboard-step04.png)
 
-![Étape 3 - Tableau de bord et tests](./docs/screenshots/step-03/04-suivi-dashboard-step03.png)
+## ÉTAPE 5 : `step-05/fitbuddy-realtime`
 
----
+Statut : fusionnée dans `develop` et `main` (`pytest` 37/37).
 
-## Étape 4 — `step-04/defis-classements`
+### 5.1 Espace partenaire et score d'affinité
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **30/30** sans warning • podiums des 4 campus et filtres actifs/terminés opérationnels)
-- **Branche GitHub** : [`step-04/defis-classements`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-04/defis-classements)
-- **Fonctionnalités couvertes** : Création et inscription aux défis inter-campus avec anti-doublon (`409`), soumission transactionnelle de performances (avec validation stricte et preuve photo optionnelle), classements par défi et classement général (Top 3 podium des campus + rang personnel).
+![Étape 5 : Espace partenaire](./docs/screenshots/step-05/01-fitbuddy-vue-principale.png)
 
-### 4.1 Podium du Défi Running Inter-Campus &amp; Jauges de progression
-Affichage du Top 3 inter-campus (`🥇 Lyon`, `🥈 Lille`, `🥉 Bordeaux`), du classement complet des 4 écoles, du classement individuel (`Mon Campus : #1 • Mon Rang Personnel : #1`) et des cartes défis actifs.
+### 5.2 Session B : envoi d'un encouragement en direct
 
-![Étape 4 - Podium Défi Inter-Campus](./docs/screenshots/step-04/01-defis-podium-campus.png)
+![Étape 5 : Session B envoi WebSocket](./docs/screenshots/step-05/02-session-sarah-envoi-websocket.png)
 
----
+### 5.3 Session A : réception instantanée sans rechargement
 
-### 4.2 Classement Général (XP Cumulés) &amp; Tiroir de soumission de performance
-Bascule sur le **Podium Général Inter-Campus** en XP et ouverture du formulaire intégré **« + Performance »** (saisie chiffrée + preuve photo optionnelle).
+![Étape 5 : Session A réception live](./docs/screenshots/step-05/03-session-ina-reception-live.png)
 
-![Étape 4 - Classement Général et Saisie Performance](./docs/screenshots/step-04/02-classement-general-et-saisie.png)
+### 5.4 Tableau de bord mis à jour
 
----
+![Étape 5 : Tableau de bord](./docs/screenshots/step-05/04-suivi-dashboard-step05.png)
 
-### 4.3 Création d'un Défi Inter-Campus &amp; Filtre « Défis terminés »
-Formulaire de création d'une nouvelle compétition inter-écoles et consultation de l'historique des défis clôturés (*Sprint Rentrée B3*).
+## ÉTAPE 6 : `step-06/geoloc-gamification`
 
-![Étape 4 - Création Défi et Défis Terminés](./docs/screenshots/step-04/03-creation-defi-et-termines.png)
+Statut : fusionnée dans `develop` et `main` (`pytest` 45/45).
 
----
+### 6.1 Carte interactive Leaflet et rayon de 5 km autour de Lyon
 
-### 4.4 Tableau de bord d'avancement mis à jour (50 % — 30/30 Pytest)
-Synthèse visuelle du passage de mi-parcours (4 / 8 étapes validées) et trace d'exécution des 30 tests automatisés.
+![Étape 6 : Carte interactive Leaflet](./docs/screenshots/step-06/01-carte-leaflet-haversine-lyon.png)
 
-![Étape 4 - Tableau de bord et tests](./docs/screenshots/step-04/04-suivi-dashboard-step04.png)
+### 6.2 Création d'événement géolocalisé et inscriptions
 
----
+![Étape 6 : Création événement et inscriptions](./docs/screenshots/step-06/02-creation-evenement-et-rsvp.png)
 
-## Étape 5 — `step-05/fitbuddy-realtime`
+### 6.3 Récompenses, paliers XP et import Google Fit ou GPX
 
-- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **37/37** sans warning • livraison WebSocket temps réel prouvée entre 2 sessions Chrome indépendantes via Nginx + Redis)
-- **Branche GitHub** : [`step-05/fitbuddy-realtime`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime)
-- **Fonctionnalités couvertes** : Recherche et matching Fit-Buddy avec score d'affinité (`%`), workflow `pending` → `accepted` / `declined`, encouragements mutuels en temps réel via Flask-SocketIO + Redis + conservation en PostgreSQL, et compteur de régularité partagé (`🔥 streak`).
+![Étape 6 : Badges et import Google Fit](./docs/screenshots/step-06/03-badges-paliers-xp-google-fit.png)
 
-### 5.1 Espace Fit-Buddy, Demandes en attente, Streak &amp; Matching par affinité
-Vue principale connectée (`🟢 Live WebSocket Connecté`) affichant la demande entrante de `LucasBarz_Paris`, le binôme actif `SarahRun_Bdx` (`🔥 4 j streak`) et les candidats triés par score d'affinité.
+### 6.4 Tableau de bord mis à jour
 
-![Étape 5 - Espace Fit-Buddy et Matching](./docs/screenshots/step-05/01-fitbuddy-vue-principale.png)
+![Étape 6 : Tableau de bord](./docs/screenshots/step-06/04-suivi-dashboard-step06.png)
 
----
+## ÉTAPE 7 : `step-07/cicd-qualite-docs`
 
-### 5.2 Session Navigateur B (`SarahRun_Bdx`) — Envoi d'un encouragement en 1 clic via WebSocket
-Depuis une seconde session Chrome isolée, `SarahRun_Bdx` envoie l'encouragement rapide `🔥 Go training !` sur le canal Socket.IO.
+Statut : fusionnée dans `develop` et `main` (`pytest` 51/51, latence de 4 à 31 ms).
 
-![Étape 5 - Session B Envoi WebSocket](./docs/screenshots/step-05/02-session-sarah-envoi-websocket.png)
+### 7.1 Accueil de la plateforme
 
----
+![Étape 7 : Accueil plateforme](./docs/screenshots/step-07/01-accueil-stack-step07.png)
 
-### 5.3 Session Navigateur A (`InaFit_Lyon`) — Réception instantanée sans rechargement
-La première session Chrome d'`InaFit_Lyon` (restée ouverte sans aucun `reload`) affiche immédiatement la notification verte temps réel `⚡ Encouragement reçu en direct de SarahRun_Bdx` et la nouvelle bulle dans la discussion.
+### 7.2 Profil étudiant avec badges débloqués
 
-![Étape 5 - Session A Réception Temps Réel](./docs/screenshots/step-05/03-session-ina-reception-live.png)
+![Étape 7 : Profil étudiant et badges](./docs/screenshots/step-07/02-profil-etudiant-badges-actifs.png)
 
----
+### 7.3 Rapport de recette, pipelines et latence
 
-### 5.4 Tableau de bord d'avancement mis à jour (62,5 % — 37/37 Pytest)
-Synthèse visuelle de l'Étape 5 validée et trace d'exécution des 37 tests automatisés.
+![Étape 7 : Rapport qualité et latence](./docs/screenshots/step-07/03-rapport-qualite-latence-cicd.png)
 
-![Étape 5 - Tableau de bord et tests](./docs/screenshots/step-05/04-suivi-dashboard-step05.png)
+### 7.4 Tableau de bord mis à jour
 
----
+![Étape 7 : Tableau de bord](./docs/screenshots/step-07/04-suivi-dashboard-step07.png)
 
-## Étape 6 — `step-06/geoloc-gamification`
+## ÉTAPE 8 : `step-08/kubernetes-bonus`
 
-- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **45/45** sans warning • Carte Leaflet/OpenStreetMap, rayon Haversine, capacité RSVP et connecteur Google Fit / GPX vérifiés)
-- **Branche GitHub** : [`step-06/geoloc-gamification`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification)
-- **Fonctionnalités couvertes** : Carte interactive **Leaflet + OpenStreetMap** des salles partenaires, spots street-workout et événements étudiants, filtrage par rayon kilométrique exact (Haversine) avec repli GPS campus, création d'événements géolocalisés et gestion de capacité RSVP, déblocage automatique des 5 badges, paliers de récompenses XP et import d'activités externes (**Google Fit JSON** & traces **GPX**).
+Statut : fusionnée dans `develop` et `main`, version `v1.0.0` (`pytest` 58/58, `kubectl kustomize k8s/` valide).
 
-### 6.1 Carte Interactive Leaflet / OpenStreetMap, Cercle Haversine (5 km) &amp; Popup Événement
-Vue centrée sur le campus de Lyon Gerland avec le rayon de recherche Haversine (`5 km`), les marqueurs personnalisés (`GYM`, `EVENT`, `GPS`), la popup interactive d'un événement local et les cartes de proximité triées par distance.
+### 8.1 Accueil final refondu en Times New Roman
 
-![Étape 6 - Carte Interactive Leaflet et Haversine](./docs/screenshots/step-06/01-carte-leaflet-haversine-lyon.png)
+![Étape 8 : Accueil final refondu](./docs/screenshots/step-08/01-accueil-final-step08.png)
 
----
+### 8.2 Topologie des 14 ressources Kubernetes et scénario jury
 
-### 6.2 Création d'un Événement Sportif Géolocalisé &amp; Inscriptions RSVP
-Ouverture du formulaire d'organisation d'événement géolocalisé (sélectionnable directement par clic sur la carte Leaflet) et affichage des compteurs de places disponibles (`1 / 12` inscrit).
+![Étape 8 : Topologie Kubernetes et jury](./docs/screenshots/step-08/02-topologie-kubernetes-et-jury.png)
 
-![Étape 6 - Création Événement et RSVP](./docs/screenshots/step-06/02-creation-evenement-et-rsvp.png)
+### 8.3 Vue mobile responsive
 
----
+![Étape 8 : Vue mobile responsive](./docs/screenshots/step-08/03-vue-mobile-first-responsive.png)
 
-### 6.3 Paliers de Récompenses XP, Synchronisation Google Fit / GPX &amp; Vitrine des 5 Badges
-Synchronisation en 1 clic d'une course **Google Fit** (`8,6 km` crédités automatiquement sur le défi inter-campus actif + `+30 XP`), progression sur l'échelle des récompenses (*Athlète Or*) et vitrine des badges d'accomplissement débloqués.
+### 8.4 Tableau de bord final (100 %)
 
-![Étape 6 - Badges XP et Import Google Fit](./docs/screenshots/step-06/03-badges-paliers-xp-google-fit.png)
-
----
-
-### 6.4 Tableau de bord d'avancement mis à jour (75 % — 45/45 Pytest)
-Synthèse visuelle de l'achèvement fonctionnel du MVP (6 / 8 étapes validées) et journal complet des 45 tests automatisés.
-
-![Étape 6 - Tableau de bord et tests](./docs/screenshots/step-06/04-suivi-dashboard-step06.png)
-
----
-
-## Étape 7 — `step-07/cicd-qualite-docs`
-
-- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **51/51** sans warning • Smoke test Nginx **4 ms à 31 ms** `< 300 ms` • GitHub Actions CI/CD actif)
-- **Branche GitHub** : [`step-07/cicd-qualite-docs`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs)
-- **Fonctionnalités couvertes** : Pipelines CI/CD automatisés (`.gitlab-ci.yml` 4 stages & `.github/workflows/ci.yml` 3 jobs), scripts DevOps (`deploy.sh`, `run_tests.sh`, `smoke_test.sh`), playbook Ansible (`infra/ansible/deploy.yml`), suite de recette E2E complète & benchmark de latence `< 300 ms`, et documentation technique finale (`README.md`, `docs/ARCHITECTURE_TECHNIQUE.md`).
-
-### 7.1 Accueil de la Stack Docker (Étape 7 Active — CI/CD &amp; SLA `&lt; 300 ms`)
-Vue d'accueil connectée sur `http://localhost:8080` confirmant l'état opérationnel des 4 conteneurs et l'activation du socle CI/CD &amp; Qualité (`step-07/cicd-qualite-docs`).
-
-![Étape 7 - Accueil Stack et Statut CI/CD](./docs/screenshots/step-07/01-accueil-stack-step07.png)
-
----
-
-### 7.2 Profil Étudiant Enrichi (Badges Débloqués, XP &amp; Passerelle Connecteurs)
-Vue de l'onglet **Profil** d'`InaFit_Lyon` affichant les statistiques consolidées, les pastilles des badges débloqués et l'accès direct aux paliers XP et connecteurs Google Fit / GPX.
-
-![Étape 7 - Profil Étudiant et Badges](./docs/screenshots/step-07/02-profil-etudiant-badges-actifs.png)
-
----
-
-### 7.3 Rapport de Recette E2E, Architecture CI/CD &amp; Benchmark de Latence (`&lt; 300 ms`)
-Rapport visuel généré à partir des tirs réels sur le reverse proxy Nginx (`http://localhost:8080`) attestant des temps de réponse compris entre **4 ms et 31 ms** sur l'ensemble des routes critiques.
-
-![Étape 7 - Rapport Qualité, CI/CD et Latence](./docs/screenshots/step-07/03-rapport-qualite-latence-cicd.png)
-
----
-
-### 7.4 Tableau de bord d'avancement mis à jour (87,5 % — 51/51 Pytest)
-Synthèse visuelle de l'Étape 7 validée (7 / 8 étapes complétées) avant l'étape finale bonus Kubernetes (+20 %).
-
-![Étape 7 - Tableau de bord et tests](./docs/screenshots/step-07/04-suivi-dashboard-step07.png)
-
----
-
-## Étape 8 — `step-08/kubernetes-bonus`
-
-- **Statut** : ✅ Fusionnée dans `develop` & `main` — Release `v1.0.0` (`ruff` OK • `pytest` **58/58** sans warning • Compilation `kubectl kustomize k8s/` validée sur 14 ressources Kubernetes • Bonus +20 % complet)
-- **Branche GitHub** : [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus)
-- **Fonctionnalités couvertes** : Orchestration Kubernetes complète dans `k8s/` (Namespace `fithub-campus`, ConfigMap, Secret RFC 7518, 2 PersistentVolumeClaims, 4 Deployments avec probes `liveness`/`readiness` et limites CPU/RAM, haute disponibilité `>= 2` réplicas + `HorizontalPodAutoscaler` `2→5` pods, 4 Services `ClusterIP`, Ingress NGINX avec support WebSocket `/socket.io`, `kustomization.yaml`) et guide de soutenance jury 15 minutes (`docs/DEMO_JURY.md`).
-
-### 8.1 Application Finale FitHub Campus (Étape 8 Active — 100 % des Modules &amp; Bonus K8s)
-Vue d'accueil de l'application sur `http://localhost:8080` affichant la branche `step-08/kubernetes-bonus` et l'activation complète de l'orchestration Kubernetes (+20 % Bonus) et du dispositif de démo jury.
-
-![Étape 8 - Accueil Final Step 08](./docs/screenshots/step-08/01-accueil-final-step08.png)
-
----
-
-### 8.2 Topologie des 14 Ressources Kubernetes (+20 % Bonus) &amp; Scénario Jury 15 min
-Tableau de bord technique récapitulant la validation Kustomize (`463 lignes YAML`), les 9 manifests (`00-namespace.yaml` à `08-ingress.yaml`), l'auto-scaling HPA (`2 → 5` pods) et le minutage de la soutenance jury.
-
-![Étape 8 - Topologie Kubernetes et Guide Jury](./docs/screenshots/step-08/02-topologie-kubernetes-et-jury.png)
-
----
-
-### 8.3 Vue Mobile-First Responsive (390 px — Parcours Étudiant Mobile)
-Vérification du rendu *mobile-first* avec barre de navigation inférieure fixe (`z-index` isolé au-dessus de la carte Leaflet) sur écran smartphone (`390 × 844`).
-
-![Étape 8 - Vue Mobile First Responsive](./docs/screenshots/step-08/03-vue-mobile-first-responsive.png)
-
----
-
-### 8.4 Tableau de bord d'avancement final (100 % — 8/8 Étapes — 58/58 Pytest)
-Synthèse finale attestant la validation des 8 étapes et des 58 tests automatisés de non-régression.
-
-![Étape 8 - Tableau de bord final 100%](./docs/screenshots/step-08/04-suivi-dashboard-final-100pct.png)
+![Étape 8 : Tableau de bord final](./docs/screenshots/step-08/04-suivi-dashboard-final-100pct.png)

@@ -73,12 +73,11 @@ def test_seed_is_idempotent(app):
 
 
 def test_campuses_endpoint_returns_seeded_data(client):
-    """GET /api/campuses retourne bien les 4 campus avec coordonnees GPS."""
     response = client.get("/api/campuses")
     assert response.status_code == 200
-    data = response.get_json()
-    assert len(data["campuses"]) == 4
-    first = data["campuses"][0]
+    campuses_payload = response.get_json()
+    assert len(campuses_payload["campuses"]) == 4
+    first = campuses_payload["campuses"][0]
     assert {"id", "name", "city", "latitude", "longitude"} <= set(first.keys())
 
 

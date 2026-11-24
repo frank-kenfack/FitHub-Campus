@@ -16,8 +16,8 @@ from app.models import (
     User,
     Workout,
 )
-from app.utils.gamification import evaluate_and_award_badges
-from app.utils.media import remove_uploaded_file, save_validated_image
+from app.services.badge_progression import evaluate_and_award_badges
+from app.services.media_storage import remove_uploaded_file, save_validated_image
 
 challenges_bp = Blueprint("challenges", __name__, url_prefix="/api/challenges")
 
@@ -308,15 +308,15 @@ def create_challenge():
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
 
-    data = request.get_json(silent=True) or {}
-    title = (data.get("title") or "").strip()
-    description = (data.get("description") or "").strip()
-    sport = (data.get("sport") or "").strip()
-    unit = (data.get("unit") or "").strip()
-    group_id = data.get("group_id")
+    request_body = request.get_json(silent=True) or {}
+    title = (request_body.get("title") or "").strip()
+    description = (request_body.get("description") or "").strip()
+    sport = (request_body.get("sport") or "").strip()
+    unit = (request_body.get("unit") or "").strip()
+    group_id = request_body.get("group_id")
 
     try:
-        target_value = float(data.get("target_value", 0))
+        target_value = float(request_body.get("target_value", 0))
     except (TypeError, ValueError):
         return jsonify({"error": "Objectif chiffre invalide."}), 400
 
@@ -331,15 +331,17 @@ def create_challenge():
 
     now_utc = datetime.now(timezone.utc)
     starts_at = now_utc
-    if data.get("ends_at"):
+    if request_body.get("ends_at"):
         try:
-            parsed_end = datetime.fromisoformat(str(data["ends_at"]).replace("Z", "+00:00"))
+            parsed_end = datetime.fromisoformat(
+                str(request_body["ends_at"]).replace("Z", "+00:00")
+            )
             ends_at = _as_utc(parsed_end)
         except ValueError:
             return jsonify({"error": "Date de fin ISO invalide."}), 400
     else:
         try:
-            duration_days = int(data.get("duration_days", 7))
+            duration_days = int(request_body.get("duration_days", 7))
         except (TypeError, ValueError):
             return jsonify({"error": "Duree en jours invalide."}), 400
         if duration_days < 1 or duration_days > 365:

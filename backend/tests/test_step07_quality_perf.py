@@ -25,7 +25,7 @@ from app.models import (
     Workout,
 )
 from app.seed import seed_database
-from app.utils.media import remove_uploaded_file
+from app.services.media_storage import remove_uploaded_file
 
 
 def _make_png(rgb: tuple[int, int, int] = (230, 26, 95)) -> io.BytesIO:
@@ -126,8 +126,8 @@ def _register(app, client, campus_id: int, suffix: str) -> tuple[dict, str]:
         },
     )
     assert res.status_code == 201
-    data = res.get_json()
-    return data["user"], data["access_token"]
+    registration_payload = res.get_json()
+    return registration_payload["user"], registration_payload["access_token"]
 
 
 def test_complete_student_journey_end_to_end(app, client):

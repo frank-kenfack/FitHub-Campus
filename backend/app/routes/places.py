@@ -8,7 +8,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
 from app.models import Campus, EventRsvp, PlaceEvent, User
-from app.utils.gamification import evaluate_and_award_badges, haversine_km
+from app.services.badge_progression import evaluate_and_award_badges, haversine_km
 
 places_bp = Blueprint("places", __name__, url_prefix="/api/places")
 
@@ -206,12 +206,12 @@ def create_geolocated_event():
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
 
-    data = request.get_json(silent=True) or {}
-    title = (data.get("title") or "").strip()
-    sport = (data.get("sport") or "").strip()
-    description = (data.get("description") or "").strip()
-    address = (data.get("address") or "").strip()
-    campus_id = data.get("campus_id") or user.campus_id
+    request_body = request.get_json(silent=True) or {}
+    title = (request_body.get("title") or "").strip()
+    sport = (request_body.get("sport") or "").strip()
+    description = (request_body.get("description") or "").strip()
+    address = (request_body.get("address") or "").strip()
+    campus_id = request_body.get("campus_id") or user.campus_id
 
     try:
         campus_id_int = int(campus_id)
@@ -227,8 +227,8 @@ def create_geolocated_event():
     if len(sport) < 2 or len(sport) > 60:
         return jsonify({"error": "La discipline sportive est requise."}), 400
 
-    raw_lat = data.get("latitude", campus.latitude)
-    raw_lon = data.get("longitude", campus.longitude)
+    raw_lat = request_body.get("latitude", campus.latitude)
+    raw_lon = request_body.get("longitude", campus.longitude)
     try:
         latitude = float(raw_lat)
         longitude = float(raw_lon)
@@ -243,7 +243,7 @@ def create_geolocated_event():
     ):
         return jsonify({"error": "Coordonnees GPS hors limites geographiques."}), 400
 
-    raw_max = data.get("max_participants", 15)
+    raw_max = request_body.get("max_participants", 15)
     try:
         max_participants = int(raw_max)
     except (TypeError, ValueError):
@@ -254,7 +254,7 @@ def create_geolocated_event():
             400,
         )
 
-    raw_starts = data.get("starts_at")
+    raw_starts = request_body.get("starts_at")
     if not raw_starts:
         return jsonify({"error": "La date et l'heure de l'evenement (starts_at) sont requises."}), 400
     try:

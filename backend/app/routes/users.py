@@ -1,12 +1,12 @@
-"""Routes de gestion du profil etudiant et de l'avatar persistant."""
+"""Routes de gestion du profil etudiant et de l'avatar."""
 
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
 from app.models import Campus, User
-from app.utils.media import remove_uploaded_file, save_validated_image
-from app.utils.serializers import serialize_user
+from app.services.domain_serializers import serialize_user
+from app.services.media_storage import remove_uploaded_file, save_validated_image
 
 users_bp = Blueprint("users", __name__, url_prefix="/api/users")
 
@@ -14,7 +14,6 @@ users_bp = Blueprint("users", __name__, url_prefix="/api/users")
 @users_bp.get("/me")
 @jwt_required()
 def get_my_profile():
-    """Consulte son propre profil sportif et ses statistiques."""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
@@ -24,15 +23,14 @@ def get_my_profile():
 @users_bp.put("/me")
 @jwt_required()
 def update_my_profile():
-    """Met a jour les informations du profil sportif."""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
 
-    data = request.get_json(silent=True) or {}
+    request_body = request.get_json(silent=True) or {}
 
-    if "username" in data:
-        new_username = (data.get("username") or "").strip()
+    if "username" in request_body:
+        new_username = (request_body.get("username") or "").strip()
         if len(new_username) < 2 or len(new_username) > 60:
             return jsonify({"error": "Le pseudo doit contenir entre 2 et 60 caracteres."}), 400
         existing = User.query.filter(
@@ -43,22 +41,22 @@ def update_my_profile():
             return jsonify({"error": "Ce pseudo est deja pris."}), 409
         user.username = new_username
 
-    if "campus_id" in data:
-        campus_id = data.get("campus_id")
+    if "campus_id" in request_body:
+        campus_id = request_body.get("campus_id")
         if not isinstance(campus_id, int) or db.session.get(Campus, campus_id) is None:
             return jsonify({"error": "Campus selectionne introuvable."}), 400
         user.campus_id = campus_id
 
-    if "bio" in data:
-        user.bio = (data.get("bio") or "").strip()[:500]
+    if "bio" in request_body:
+        user.bio = (request_body.get("bio") or "").strip()[:500]
 
-    if "favorite_sports" in data:
-        sports = (data.get("favorite_sports") or "").strip()
+    if "favorite_sports" in request_body:
+        sports = (request_body.get("favorite_sports") or "").strip()
         if sports:
             user.favorite_sports = sports[:255]
 
-    if "level" in data:
-        level = (data.get("level") or "").strip()
+    if "level" in request_body:
+        level = (request_body.get("level") or "").strip()
         if level:
             user.level = level[:40]
 
@@ -69,7 +67,6 @@ def update_my_profile():
 @users_bp.post("/me/avatar")
 @jwt_required()
 def upload_my_avatar():
-    """Televerse et redimensionne un avatar stocke sur le volume persistant."""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
@@ -98,7 +95,6 @@ def upload_my_avatar():
 @users_bp.get("/<int:user_id>")
 @jwt_required()
 def get_public_profile(user_id: int):
-    """Consulte le profil public d'un autre etudiant."""
     user = db.session.get(User, user_id)
     if user is None:
         return jsonify({"error": "Etudiant introuvable."}), 404

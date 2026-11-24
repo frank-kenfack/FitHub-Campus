@@ -5,7 +5,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
 from app.models import User, Workout
-from app.utils.gamification import (
+from app.services.badge_progression import (
     build_gamification_summary,
     credit_challenge_from_workout,
     evaluate_and_award_badges,
@@ -81,7 +81,7 @@ def import_external_activity():
             created_workouts.append(w)
             updates = credit_challenge_from_workout(
                 user=user,
-                workout_data=act,
+                workout_entry=act,
                 explicit_challenge_id=explicit_challenge_id,
             )
             challenge_updates.extend(updates)

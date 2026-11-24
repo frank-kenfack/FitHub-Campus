@@ -10,34 +10,34 @@ import SocialFeedView from "./components/SocialFeedView.jsx";
 
 const TABS = [
   { id: "home", label: "Accueil" },
-  { id: "social", label: "Fil Social" },
+  { id: "social", label: "Fil social" },
   { id: "challenges", label: "Défis" },
-  { id: "buddy", label: "Fit-Buddy" },
-  { id: "map", label: "Carte & Spots" },
+  { id: "buddy", label: "Partenaires" },
+  { id: "map", label: "Carte et lieux" },
   { id: "groups", label: "Clubs" },
   { id: "badges", label: "Récompenses" },
-  { id: "profile", label: "Mon Espace" }
+  { id: "profile", label: "Mon espace" }
 ];
 
 const QUICK_DEMO_USERS = [
-  { label: "Ina • Lyon", email: "ina.lyon@fithub.fr", password: "Password123!" },
-  { label: "Lucas • Paris", email: "lucas.paris@fithub.fr", password: "Password123!" },
-  { label: "Sarah • Bordeaux", email: "sarah.bordeaux@fithub.fr", password: "Password123!" },
-  { label: "Mehdi • Lille", email: "mehdi.lille@fithub.fr", password: "Password123!" }
+  { label: "Ina (Lyon)", email: "ina.lyon@fithub.fr", password: "Password123!" },
+  { label: "Lucas (Paris)", email: "lucas.paris@fithub.fr", password: "Password123!" },
+  { label: "Sarah (Bordeaux)", email: "sarah.bordeaux@fithub.fr", password: "Password123!" },
+  { label: "Mehdi (Lille)", email: "mehdi.lille@fithub.fr", password: "Password123!" }
 ];
 
-function medalIcon(rank) {
-  if (rank === 1) return "🥇";
-  if (rank === 2) return "🥈";
-  if (rank === 3) return "🥉";
-  return `#${rank}`;
+function rankLabel(rank) {
+  if (rank === 1) return "1er";
+  if (rank === 2) return "2e";
+  if (rank === 3) return "3e";
+  return `${rank}e`;
 }
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
   const [campuses, setCampuses] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  const [homeData, setHomeData] = useState({
+  const [dashboardFeed, setDashboardFeed] = useState({
     campusLeaderboard: [],
     activeChallenges: [],
     recentPosts: [],
@@ -49,26 +49,27 @@ export default function App() {
   async function loadHomeAndSession() {
     setLoading(true);
     try {
-      const [campusesData, lbData, chData, postsData, placesData] = await Promise.all([
-        apiRequest("/api/campuses"),
-        apiRequest("/api/challenges/leaderboard/global").catch(() => ({})),
-        apiRequest("/api/challenges?status=active").catch(() => ({})),
-        apiRequest("/api/social/posts").catch(() => ({})),
-        apiRequest("/api/places").catch(() => ({}))
-      ]);
+      const [campusesPayload, leaderboardPayload, challengesPayload, postsPayload, placesPayload] =
+        await Promise.all([
+          apiRequest("/api/campuses"),
+          apiRequest("/api/challenges/leaderboard/global").catch(() => ({})),
+          apiRequest("/api/challenges?status=active").catch(() => ({})),
+          apiRequest("/api/social/posts").catch(() => ({})),
+          apiRequest("/api/places").catch(() => ({}))
+        ]);
 
-      setCampuses(campusesData.campuses || []);
-      setHomeData({
-        campusLeaderboard: lbData.campus_leaderboard || [],
-        activeChallenges: (chData.challenges || []).slice(0, 2),
-        recentPosts: (postsData.posts || []).slice(0, 2),
-        featuredPlaces: (placesData.places || []).slice(0, 3)
+      setCampuses(campusesPayload.campuses || []);
+      setDashboardFeed({
+        campusLeaderboard: leaderboardPayload.campus_leaderboard || [],
+        activeChallenges: (challengesPayload.challenges || []).slice(0, 2),
+        recentPosts: (postsPayload.posts || []).slice(0, 2),
+        featuredPlaces: (placesPayload.places || []).slice(0, 3)
       });
 
       if (getStoredToken()) {
         try {
-          const meData = await apiRequest("/api/users/me");
-          setCurrentUser(meData.user);
+          const profilePayload = await apiRequest("/api/users/me");
+          setCurrentUser(profilePayload.user);
         } catch {
           setStoredToken("");
           setCurrentUser(null);
@@ -80,37 +81,38 @@ export default function App() {
   }
 
   async function refreshSessionAndStats() {
-    try {
-      const [lbData, chData, postsData, placesData] = await Promise.all([
+    const [leaderboardPayload, challengesPayload, postsPayload, placesPayload] =
+      await Promise.all([
         apiRequest("/api/challenges/leaderboard/global").catch(() => ({})),
         apiRequest("/api/challenges?status=active").catch(() => ({})),
         apiRequest("/api/social/posts").catch(() => ({})),
         apiRequest("/api/places").catch(() => ({}))
       ]);
-      setHomeData({
-        campusLeaderboard: lbData.campus_leaderboard || [],
-        activeChallenges: (chData.challenges || []).slice(0, 2),
-        recentPosts: (postsData.posts || []).slice(0, 2),
-        featuredPlaces: (placesData.places || []).slice(0, 3)
-      });
-      if (getStoredToken()) {
-        const meData = await apiRequest("/api/users/me");
-        setCurrentUser(meData.user);
+    setDashboardFeed({
+      campusLeaderboard: leaderboardPayload.campus_leaderboard || [],
+      activeChallenges: (challengesPayload.challenges || []).slice(0, 2),
+      recentPosts: (postsPayload.posts || []).slice(0, 2),
+      featuredPlaces: (placesPayload.places || []).slice(0, 3)
+    });
+    if (getStoredToken()) {
+      try {
+        const profilePayload = await apiRequest("/api/users/me");
+        setCurrentUser(profilePayload.user);
+      } catch {
+        setCurrentUser(null);
       }
-    } catch {
-      // ignore transient refresh issue
     }
   }
 
   async function handleQuickDemoLogin(acc) {
     setQuickAuthBusy(true);
     try {
-      const data = await apiRequest("/api/auth/login", {
+      const sessionPayload = await apiRequest("/api/auth/login", {
         method: "POST",
         body: { email: acc.email, password: acc.password }
       });
-      setStoredToken(data.access_token);
-      setCurrentUser(data.user);
+      setStoredToken(sessionPayload.access_token);
+      setCurrentUser(sessionPayload.user);
       await refreshSessionAndStats();
     } finally {
       setQuickAuthBusy(false);
@@ -141,9 +143,9 @@ export default function App() {
           >
             <span className="brand-logo">FH</span>
             <div>
-              <h1 className="brand">FitHub Campus</h1>
+              <h1 className="brand">FITHUB CAMPUS</h1>
               <p className="topbar-sub">
-                Le réseau social sportif des étudiants &amp; compétitions inter-campus
+                Le réseau social sportif des étudiants et des défis intercampus
               </p>
             </div>
           </div>
@@ -152,7 +154,7 @@ export default function App() {
             {currentUser ? (
               <>
                 <span className="campus-header-pill">
-                  📍 {currentUser.campus_city || currentUser.campus_name}
+                  {currentUser.campus_city || currentUser.campus_name}
                 </span>
                 <button
                   type="button"
@@ -160,7 +162,7 @@ export default function App() {
                   onClick={() => setActiveTab("badges")}
                   title="Voir mes récompenses et badges"
                 >
-                  ⚡ {userStats.total_xp ?? currentUser.xp_points} XP
+                  {userStats.total_xp ?? currentUser.xp_points} XP
                 </button>
                 <button
                   type="button"
@@ -187,7 +189,7 @@ export default function App() {
                 className="user-pill-btn"
                 onClick={() => setActiveTab("profile")}
               >
-                <span>Connexion / Inscription</span>
+                <span>Connexion ou inscription</span>
               </button>
             )}
           </div>
@@ -209,19 +211,16 @@ export default function App() {
 
       {activeTab === "home" && (
         <div className="home-stack">
-          {/* BANNIÈRE D'ACCUEIL PERSONNALISÉE */}
           <section className="hero-banner-card">
             <div className="hero-banner-content">
               {currentUser ? (
                 <>
                   <span className="hero-kicker">
-                    {currentUser.campus_name} • Niveau {currentUser.level}
+                    {currentUser.campus_name} : niveau {currentUser.level}
                   </span>
-                  <h2>
-                    Bonjour {currentUser.username} 👋 Prêt(e) pour ta séance du jour ?
-                  </h2>
+                  <h2>BONJOUR {currentUser.username}</h2>
                   <p>
-                    Partage tes entraînements, cumule des points pour ton école et retrouve tes partenaires sur le campus.
+                    Partagez vos séances, gagnez des points pour votre école et retrouvez vos partenaires sur le campus.
                   </p>
                   <div className="quick-actions" style={{ marginTop: "14px" }}>
                     <button
@@ -229,7 +228,7 @@ export default function App() {
                       className="primary-btn"
                       onClick={() => setActiveTab("social")}
                     >
-                      + Publier une séance
+                      Publier une séance
                     </button>
                     <button
                       type="button"
@@ -243,23 +242,23 @@ export default function App() {
                       className="outline-btn"
                       onClick={() => setActiveTab("map")}
                     >
-                      Carte des spots &amp; RDV
+                      Carte et rendez-vous
                     </button>
                     <button
                       type="button"
                       className="outline-btn"
                       onClick={() => setActiveTab("buddy")}
                     >
-                      Mon Fit-Buddy
+                      Mes partenaires
                     </button>
                   </div>
                 </>
               ) : (
                 <>
-                  <span className="hero-kicker">Communauté Sportive Étudiante</span>
-                  <h2>Bougez entre étudiants. Faites gagner votre campus.</h2>
+                  <span className="hero-kicker">Communauté sportive étudiante</span>
+                  <h2>BOUGEZ ENTRE ÉTUDIANTS ET FAITES GAGNER VOTRE CAMPUS</h2>
                   <p>
-                    Rejoignez les clubs sportifs de votre école, trouvez un binôme Fit-Buddy compatible et participez aux défis inter-campus à Lyon, Paris, Bordeaux et Lille.
+                    Rejoignez les clubs sportifs de votre école, trouvez un binôme compatible et participez aux défis intercampus à Lyon, Paris, Bordeaux et Lille.
                   </p>
                   <div className="quick-actions" style={{ marginTop: "14px" }}>
                     <button
@@ -267,25 +266,25 @@ export default function App() {
                       className="primary-btn"
                       onClick={() => setActiveTab("profile")}
                     >
-                      Créer mon compte / Me connecter
+                      Créer mon compte ou me connecter
                     </button>
                     <button
                       type="button"
                       className="outline-btn"
                       onClick={() => setActiveTab("challenges")}
                     >
-                      Voir les défis inter-campus
+                      Voir les défis
                     </button>
                     <button
                       type="button"
                       className="outline-btn"
                       onClick={() => setActiveTab("map")}
                     >
-                      Explorer la carte des spots
+                      Explorer la carte
                     </button>
                   </div>
                   <div className="demo-quick-strip">
-                    <span>Connexion rapide démo :</span>
+                    <span>Connexion rapide de démonstration :</span>
                     {QUICK_DEMO_USERS.map((acc) => (
                       <button
                         key={acc.email}
@@ -324,14 +323,13 @@ export default function App() {
             )}
           </section>
 
-          {/* PODIUM INTER-CAMPUS & DÉFIS DE LA SEMAINE */}
           <div className="grid-cards">
             <section className="card">
               <div className="topbar-row" style={{ marginBottom: "10px" }}>
                 <div>
-                  <h2 style={{ margin: 0 }}>Classement Inter-Campus en Direct</h2>
+                  <h2 style={{ margin: 0 }}>CLASSEMENT INTERCAMPUS EN DIRECT</h2>
                   <p className="muted-text" style={{ margin: "2px 0 0" }}>
-                    Chaque séance et chaque défi rapportent des points à votre campus
+                    Chaque séance et chaque défi rapportent des points à votre campus.
                   </p>
                 </div>
                 <button
@@ -339,7 +337,7 @@ export default function App() {
                   className="outline-btn"
                   onClick={() => setActiveTab("challenges")}
                 >
-                  Podiums complets →
+                  Podiums complets
                 </button>
               </div>
 
@@ -347,7 +345,7 @@ export default function App() {
                 <p className="muted-text">Chargement du classement...</p>
               ) : (
                 <div className="home-list-stack">
-                  {homeData.campusLeaderboard.map((c) => (
+                  {dashboardFeed.campusLeaderboard.map((c) => (
                     <div
                       key={c.campus_id}
                       className={`lb-row ${
@@ -355,7 +353,7 @@ export default function App() {
                       }`}
                     >
                       <div className="lb-left">
-                        <span className="lb-rank">{medalIcon(c.rank)}</span>
+                        <span className="lb-rank">{rankLabel(c.rank)}</span>
                         <div>
                           <strong>
                             {c.campus_name}{" "}
@@ -364,9 +362,9 @@ export default function App() {
                             )}
                           </strong>
                           <span className="lb-sub">
-                            {c.city} • {c.students_count} étudiant
+                            {c.city} ({c.students_count} étudiant
                             {c.students_count > 1 ? "s" : ""} actif
-                            {c.students_count > 1 ? "s" : ""}
+                            {c.students_count > 1 ? "s" : ""})
                           </span>
                         </div>
                       </div>
@@ -380,9 +378,9 @@ export default function App() {
             <section className="card">
               <div className="topbar-row" style={{ marginBottom: "10px" }}>
                 <div>
-                  <h2 style={{ margin: 0 }}>Défis Sportifs à la Une</h2>
+                  <h2 style={{ margin: 0 }}>DÉFIS SPORTIFS À LA UNE</h2>
                   <p className="muted-text" style={{ margin: "2px 0 0" }}>
-                    Mobilisez votre promotion autour d&apos;un objectif commun
+                    Mobilisez votre promotion autour d&apos;un objectif commun.
                   </p>
                 </div>
                 <button
@@ -390,25 +388,27 @@ export default function App() {
                   className="outline-btn"
                   onClick={() => setActiveTab("challenges")}
                 >
-                  Tous les défis →
+                  Tous les défis
                 </button>
               </div>
 
-              {homeData.activeChallenges.length === 0 ? (
+              {dashboardFeed.activeChallenges.length === 0 ? (
                 <p className="muted-text">Aucun défi en cours actuellement.</p>
               ) : (
                 <div className="home-list-stack">
-                  {homeData.activeChallenges.map((ch) => (
+                  {dashboardFeed.activeChallenges.map((ch) => (
                     <div key={ch.id} className="home-challenge-item">
                       <div className="topbar-row" style={{ marginBottom: "4px" }}>
                         <span className="badge badge-soon">{ch.sport}</span>
                         {ch.top_campus_name && (
                           <span className="muted-text" style={{ fontSize: "12px" }}>
-                            🥇 En tête : <strong>{ch.top_campus_name}</strong>
+                            En tête : <strong>{ch.top_campus_name}</strong>
                           </span>
                         )}
                       </div>
-                      <strong className="home-item-title">{ch.title}</strong>
+                      <strong className="home-item-title">
+                        {ch.title}
+                      </strong>
                       <div className="ch-progress-meta" style={{ marginTop: "6px" }}>
                         <span>
                           {ch.total_score} / {ch.target_value} {ch.unit}
@@ -428,14 +428,13 @@ export default function App() {
             </section>
           </div>
 
-          {/* DERNIÈRES PUBLICATIONS & SPOTS AUTOUR DES CAMPUS */}
           <div className="grid-cards">
             <section className="card">
               <div className="topbar-row" style={{ marginBottom: "10px" }}>
                 <div>
-                  <h2 style={{ margin: 0 }}>En Direct de la Communauté</h2>
+                  <h2 style={{ margin: 0 }}>EN DIRECT DE LA COMMUNAUTÉ</h2>
                   <p className="muted-text" style={{ margin: "2px 0 0" }}>
-                    Les dernières séances et progressions partagées par les étudiants
+                    Dernières séances et progressions partagées par les étudiants.
                   </p>
                 </div>
                 <button
@@ -443,12 +442,12 @@ export default function App() {
                   className="outline-btn"
                   onClick={() => setActiveTab("social")}
                 >
-                  Ouvrir le fil →
+                  Ouvrir le fil
                 </button>
               </div>
 
               <div className="home-list-stack">
-                {homeData.recentPosts.map((post) => (
+                {dashboardFeed.recentPosts.map((post) => (
                   <div
                     key={post.id}
                     className="home-post-preview"
@@ -468,14 +467,14 @@ export default function App() {
                         <strong>{post.username}</strong>
                         <span className="badge badge-soon">
                           {post.kind === "before_after"
-                            ? "Avant / Après"
+                            ? "Avant et après"
                             : post.workout?.sport || "Séance"}
                         </span>
                       </div>
                       <span className="home-item-title">{post.title}</span>
                       <span className="muted-text" style={{ fontSize: "12px" }}>
-                        {post.campus_name} • 👏 {post.likes_count} • 💬{" "}
-                        {post.comments_count}
+                        {post.campus_name}, {post.likes_count} mentions j&apos;aime,{" "}
+                        {post.comments_count} commentaires
                       </span>
                     </div>
                   </div>
@@ -486,9 +485,9 @@ export default function App() {
             <section className="card">
               <div className="topbar-row" style={{ marginBottom: "10px" }}>
                 <div>
-                  <h2 style={{ margin: 0 }}>Salles &amp; Spots Partenaires</h2>
+                  <h2 style={{ margin: 0 }}>SALLES ET PARCS PARTENAIRES</h2>
                   <p className="muted-text" style={{ margin: "2px 0 0" }}>
-                    Lieux d&apos;entraînement vérifiés autour de vos campus
+                    Lieux d&apos;entraînement vérifiés autour de vos campus.
                   </p>
                 </div>
                 <button
@@ -496,12 +495,12 @@ export default function App() {
                   className="outline-btn"
                   onClick={() => setActiveTab("map")}
                 >
-                  Voir la carte →
+                  Voir la carte
                 </button>
               </div>
 
               <div className="home-list-stack">
-                {homeData.featuredPlaces.map((pl) => (
+                {dashboardFeed.featuredPlaces.map((pl) => (
                   <div
                     key={pl.id}
                     className="lb-row"
@@ -511,7 +510,7 @@ export default function App() {
                     <div>
                       <strong>{pl.title}</strong>
                       <span className="lb-sub">
-                        {pl.sport} • {pl.address}
+                        {pl.sport} : {pl.address}
                       </span>
                     </div>
                     <span className="badge badge-soon">{pl.campus_city}</span>

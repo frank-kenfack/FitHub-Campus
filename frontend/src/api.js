@@ -28,11 +28,11 @@ export async function apiRequest(path, { method = "GET", body = null, isFormData
     body: body ? (isFormData ? body : JSON.stringify(body)) : undefined
   });
 
-  const data = await response.json().catch(() => ({}));
+  const responsePayload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const error = new Error(data.error || `Erreur HTTP ${response.status}`);
+    const error = new Error(responsePayload.error || `Erreur HTTP ${response.status}`);
     error.status = response.status;
     throw error;
   }
-  return data;
+  return responsePayload;
 }

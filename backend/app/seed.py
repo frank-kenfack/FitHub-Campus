@@ -25,7 +25,7 @@ from app.models import (
     User,
     Workout,
 )
-from app.utils.gamification import evaluate_and_award_badges
+from app.services.badge_progression import evaluate_and_award_badges
 
 DEFAULT_CAMPUSES = [
     {
@@ -483,7 +483,7 @@ def seed_database() -> dict:
 
     demo_challenges_spec = [
         {
-            "title": "Grand Defi Running Inter-Campus — 150 km",
+            "title": "Grand Defi Running Inter-Campus : 150 km",
             "description": "Cumulez un maximum de kilometres de course pour hisser votre campus sur la plus haute marche du podium !",
             "sport": "Running",
             "target_value": 150.0,
@@ -516,7 +516,7 @@ def seed_database() -> dict:
             ],
         },
         {
-            "title": "Sprint Rentree B3 — 500 min Cardio",
+            "title": "Sprint Rentree B3 : 500 min Cardio",
             "description": "Premier defi de la saison cloture la semaine derniere.",
             "sport": "Fitness",
             "target_value": 500.0,

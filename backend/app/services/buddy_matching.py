@@ -1,14 +1,13 @@
-"""Logique metier partagee (REST + Socket.IO) pour Fit-Buddy, Streak et Encouragements."""
+"""Logique metier partagee (REST et Socket.IO) pour Fit-Buddy, serie et encouragements."""
 
 from datetime import date, datetime, timedelta, timezone
 
 from app.extensions import db, socketio
 from app.models import Campus, Encouragement, FitBuddy, Story, User, Workout
-from app.utils.gamification import evaluate_and_award_badges
+from app.services.badge_progression import evaluate_and_award_badges
 
 
 def find_buddy_relation(user_a_id: int, user_b_id: int) -> FitBuddy | None:
-    """Recherche une relation FitBuddy existante entre deux etudiants (dans les 2 sens)."""
     return FitBuddy.query.filter(
         db.or_(
             db.and_(
@@ -24,7 +23,6 @@ def find_buddy_relation(user_a_id: int, user_b_id: int) -> FitBuddy | None:
 
 
 def compute_pair_streak_days(relation: FitBuddy) -> int:
-    """Calcule le nombre de jours consecutifs d'activite du binome (US-5.3)."""
     uids = [relation.requester_id, relation.addressee_id]
     active_dates: set[date] = set()
 
@@ -64,6 +62,7 @@ def compute_pair_streak_days(relation: FitBuddy) -> int:
             active_dates.add(dt.astimezone(timezone.utc).date() if dt.tzinfo else dt.date())
 
     today = datetime.now(timezone.utc).date()
+    # Autoriser la veille permet de conserver la serie si la seance du jour n'est pas encore faite.
     cursor = today if today in active_dates else (today - timedelta(days=1))
     consecutive = 0
     while cursor in active_dates:
@@ -80,7 +79,6 @@ def compute_pair_streak_days(relation: FitBuddy) -> int:
 
 
 def serialize_encouragement(enc: Encouragement) -> dict:
-    """Serialise un message d'encouragement temps reel."""
     sender = db.session.get(User, enc.sender_id)
     receiver = db.session.get(User, enc.receiver_id)
     return {
@@ -96,7 +94,6 @@ def serialize_encouragement(enc: Encouragement) -> dict:
 
 
 def serialize_buddy_relation(relation: FitBuddy, current_user_id: int) -> dict:
-    """Serialise une relation FitBuddy du point de vue de current_user_id."""
     partner_id = (
         relation.addressee_id
         if relation.requester_id == current_user_id
@@ -130,7 +127,6 @@ def create_and_emit_encouragement(
     receiver_id: int,
     raw_message: str,
 ) -> tuple[dict | None, str | None, int]:
-    """Persiste un encouragement entre buddies actifs et le diffuse via Socket.IO."""
     message = (raw_message or "").strip()
     if not message or len(message) > 280:
         return None, "Le message doit contenir entre 1 et 280 caracteres.", 400

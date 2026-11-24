@@ -107,12 +107,12 @@ def test_haversine_radius_filtering_and_campus_fallback(app, client):
         f"/api/places?lat={lyon.latitude}&lon={lyon.longitude}&radius_km=2"
     )
     assert near_res.status_code == 200
-    near_data = near_res.get_json()
-    assert near_data["reference_point"]["source"] == "gps"
-    titles = [p["title"] for p in near_data["places"]]
+    nearby_payload = near_res.get_json()
+    assert nearby_payload["reference_point"]["source"] == "gps"
+    titles = [p["title"] for p in nearby_payload["places"]]
     assert "Halle Sportive Tony Garnier Fit" in titles
     assert "Parc Street-Workout Vincennes" not in titles
-    assert all(p["distance_km"] <= 2.0 for p in near_data["places"])
+    assert all(p["distance_km"] <= 2.0 for p in nearby_payload["places"])
 
     # Fallback automatique sur les coordonnees du campus si lat/lon absents
     fallback_res = client.get(f"/api/places?campus_id={lyon.id}&radius_km=2")

@@ -12,7 +12,7 @@ from app.config import TestingConfig
 from app.extensions import db
 from app.models import Campus, SportGroup, Story, User, Workout
 from app.seed import seed_database
-from app.utils.media import remove_uploaded_file
+from app.services.media_storage import remove_uploaded_file
 
 
 def _make_png_bytes(color: tuple[int, int, int] = (230, 26, 95)) -> io.BytesIO:
@@ -83,8 +83,8 @@ def _register_user(app, client, suffix: str = "") -> tuple[dict, str]:
         },
     )
     assert res.status_code == 201
-    data = res.get_json()
-    return data["user"], data["access_token"]
+    response_payload = res.get_json()
+    return response_payload["user"], response_payload["access_token"]
 
 
 def test_create_workout_story_and_24h_feed(app, client):

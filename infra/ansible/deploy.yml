@@ -1,6 +1,6 @@
 ---
 # =============================================================================
-# FitHub Campus — Playbook Ansible de Deploiement Continu (Staging / Production)
+# Playbook Ansible de deploiement FitHub Campus (Staging / Production)
 # Execution : ansible-playbook -i infra/ansible/inventory.ini infra/ansible/deploy.yml
 # =============================================================================
 - name: Deploy FitHub Campus 4-Container Stack

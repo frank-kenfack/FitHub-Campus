@@ -2,12 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>FitHub Campus — Orchestration Kubernetes (+20 % Bonus) &amp; Soutenance Jury</title>
+  <title>FitHub Campus : orchestration Kubernetes et soutenance jury</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
       background: #F8FAFC;
       color: #0F172A;
       padding: 24px;
@@ -20,8 +21,13 @@
       border-radius: 14px;
       margin-bottom: 18px;
     }
-    .hero h1 { margin: 0 0 6px; font-size: 24px; }
-    .hero p { margin: 0; font-size: 13.5px; opacity: 0.94; }
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .hero p { margin: 0; font-size: 14px; opacity: 0.94; }
     .kpis {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -35,8 +41,8 @@
       border-radius: 10px;
       padding: 13px 15px;
     }
-    .kpi span { font-size: 11.5px; font-weight: 700; color: #64748B; text-transform: uppercase; }
-    .kpi strong { display: block; font-size: 21px; color: #1E2E5C; margin: 4px 0 2px; }
+    .kpi span { font-size: 12px; font-weight: 700; color: #64748B; text-transform: uppercase; }
+    .kpi strong { display: block; font-size: 16px; color: #1E2E5C; margin: 4px 0 2px; }
     .kpi small { font-size: 12px; color: #475569; }
     .card {
       background: #FFF;
@@ -47,20 +53,22 @@
     }
     .card h2 {
       margin: 0 0 12px;
-      font-size: 16.5px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
       color: #1E2E5C;
       border-bottom: 2px solid #F1F5F9;
       padding-bottom: 8px;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #F1F5F9; }
-    th { color: #475569; font-size: 11.5px; text-transform: uppercase; background: #F8FAFC; }
+    th { color: #475569; font-size: 12px; text-transform: uppercase; background: #F8FAFC; }
     .pill-ok {
       background: #DCFCE7;
       color: #166534;
       border-radius: 999px;
       padding: 2px 9px;
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
     }
     .pill-ha {
@@ -68,7 +76,7 @@
       color: #BE123C;
       border-radius: 999px;
       padding: 2px 9px;
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
     }
     .timeline {
@@ -82,51 +90,51 @@
       border-left: 4px solid #E61A5F;
       border-radius: 8px;
       padding: 12px 14px;
-      font-size: 12.5px;
+      font-size: 14px;
     }
-    .time-box strong { display: block; color: #1E2E5C; font-size: 13.5px; margin-bottom: 5px; }
+    .time-box strong { display: block; color: #1E2E5C; font-size: 14px; margin-bottom: 5px; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>FitHub Campus — Orchestration Kubernetes (+20 % Bonus) &amp; Guide Jury</h1>
-      <p>Étape 8 Finale (step-08/kubernetes-bonus) • Validation Kustomize v5.8.1 (kubectl v1.36.1) • 14 ressources Kubernetes dans le namespace fithub-campus</p>
+      <h1>FITHUB CAMPUS : ORCHESTRATION KUBERNETES ET SOUTENANCE JURY</h1>
+      <p>Étape 8 (step-08/kubernetes-bonus) : validation Kustomize v5.8.1 (kubectl v1.36.1) pour 14 ressources Kubernetes dans l'espace fithub-campus.</p>
     </div>
 
     <div class="kpis">
       <div class="kpi">
         <span>Validation Kustomize</span>
         <strong>463 lignes YAML</strong>
-        <small>kubectl kustomize k8s/ : OK</small>
+        <small>kubectl kustomize k8s/ valide</small>
       </div>
       <div class="kpi">
-        <span>Haute Disponibilité</span>
-        <strong>2 → 5 Réplicas</strong>
-        <small>RollingUpdate (0 coupure) + HPA</small>
+        <span>Haute disponibilité</span>
+        <strong>2 à 5 réplicas</strong>
+        <small>Mise à jour sans coupure et HPA</small>
       </div>
       <div class="kpi">
-        <span>Stockage Persistant</span>
+        <span>Stockage persistant</span>
         <strong>2 PVC (7 Gi)</strong>
-        <small>PostgreSQL (5Gi) + Uploads (2Gi)</small>
+        <small>PostgreSQL (5 Gi) et médias (2 Gi)</small>
       </div>
       <div class="kpi">
-        <span>Suite Totale Pytest</span>
-        <strong>58 / 58 VERT</strong>
-        <small>Étapes 1 à 8 • 100 % validé</small>
+        <span>Suite totale Pytest</span>
+        <strong>58 / 58 validés</strong>
+        <small>Étapes 1 à 8 (100 %)</small>
       </div>
     </div>
 
     <div class="card">
-      <h2>Topologie des 14 Ressources Kubernetes (k8s/00-namespace.yaml → 08-ingress.yaml)</h2>
+      <h2>TOPOLOGIE DES 14 RESSOURCES KUBERNETES (DE 00-NAMESPACE.YAML À 08-INGRESS.YAML)</h2>
       <table>
         <thead>
           <tr>
             <th>Manifest</th>
-            <th>Kind Kubernetes</th>
-            <th>Nom Ressource</th>
-            <th>Réplicas / Capacité</th>
-            <th>Probes &amp; Sécurité</th>
+            <th>Type Kubernetes</th>
+            <th>Nom ressource</th>
+            <th>Réplicas et capacité</th>
+            <th>Sondes et sécurité</th>
             <th>Statut</th>
           </tr>
         </thead>
@@ -136,91 +144,91 @@
             <td>Namespace</td>
             <td><code>fithub-campus</code></td>
             <td>Isolation cluster</td>
-            <td>Labels standards K8s</td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>Étiquettes standards Kubernetes</td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>01-configmap.yaml</code></td>
             <td>ConfigMap</td>
             <td><code>fithub-config</code></td>
-            <td>5 clés d'env</td>
+            <td>5 variables</td>
             <td>REDIS_URL, UPLOAD_FOLDER</td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>02-secret.yaml</code></td>
             <td>Secret (Opaque)</td>
             <td><code>fithub-secrets</code></td>
             <td>4 secrets</td>
-            <td>Clés HMAC JWT RFC 7518 (&ge; 36B)</td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>Clés HMAC JWT RFC 7518 (36 octets ou plus)</td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>03-pvc.yaml</code></td>
             <td>PersistentVolumeClaim (x2)</td>
             <td><code>postgres-data-pvc</code>, <code>uploads-data-pvc</code></td>
-            <td>5Gi + 2Gi (RWO)</td>
-            <td>Survie aux redémarrages pods</td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>5 Gi et 2 Gi (RWO)</td>
+            <td>Persistance lors des redémarrages</td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>04-postgres.yaml</code></td>
-            <td>Deployment + Service</td>
+            <td>Deployment et Service</td>
             <td><code>fithub-postgres</code> (<code>:5432</code>)</td>
-            <td>1 pod Stateful</td>
-            <td>readiness/liveness <code>pg_isready</code></td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>1 pod base</td>
+            <td>Sondes <code>pg_isready</code></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>05-redis.yaml</code></td>
-            <td>Deployment + Service</td>
+            <td>Deployment et Service</td>
             <td><code>fithub-redis</code> (<code>:6379</code>)</td>
-            <td>1 pod Broker</td>
-            <td>readiness/liveness <code>redis-cli ping</code></td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>1 pod broker</td>
+            <td>Sondes <code>redis-cli ping</code></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>06-backend.yaml</code></td>
-            <td>Deployment + Service + HPA</td>
+            <td>Deployment, Service et HPA</td>
             <td><code>fithub-backend</code> (<code>:5000</code>)</td>
-            <td><span class="pill-ha">2 à 5 pods (HPA 75%)</span></td>
-            <td><code>runAsNonRoot: true</code> • <code>GET /api/health</code></td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td><span class="pill-ha">2 à 5 pods (HPA 75 %)</span></td>
+            <td><code>runAsNonRoot: true</code>, <code>GET /api/health</code></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>07-frontend.yaml</code></td>
-            <td>Deployment + Service</td>
-            <td><code>fithub-frontend</code> (<code>:80 → :8080</code>)</td>
+            <td>Deployment et Service</td>
+            <td><code>fithub-frontend</code> (<code>:80 vers :8080</code>)</td>
             <td><span class="pill-ha">2 pods HA</span></td>
-            <td><code>runAsUser: 101</code> • <code>GET /nginx-health</code></td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td><code>runAsUser: 101</code>, <code>GET /nginx-health</code></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
           <tr>
             <td><code>08-ingress.yaml</code></td>
             <td>Ingress (nginx)</td>
             <td><code>fithub-ingress</code></td>
-            <td>4 routes L7</td>
-            <td><code>/</code>, <code>/api</code>, <code>/uploads</code>, WS <code>/socket.io</code></td>
-            <td><span class="pill-ok">Validé ✓</span></td>
+            <td>4 routes HTTP et WS</td>
+            <td><code>/</code>, <code>/api</code>, <code>/uploads</code>, <code>/socket.io</code></td>
+            <td><span class="pill-ok">Valide</span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <h2>Scénario Chronométré de Soutenance Jury (15 Minutes — docs/DEMO_JURY.md)</h2>
+      <h2>SCÉNARIO CHRONOMÉTRÉ DE SOUTENANCE JURY (15 MINUTES)</h2>
       <div class="timeline">
         <div class="time-box">
-          <strong>00:00 – 05:00 • Architecture &amp; DevOps</strong>
-          Présentation du backlog Agile (9 Epics, 30 US), stack Docker 4 conteneurs non-root, pipelines CI/CD GitLab &amp; GitHub Actions, playbook Ansible et manifests Kubernetes (+20 % bonus).
+          <strong>00:00 à 05:00 : architecture et automatisation</strong>
+          Présentation du backlog, de la pile Docker à quatre conteneurs, des pipelines GitLab et GitHub Actions, du playbook Ansible et des manifests Kubernetes.
         </div>
         <div class="time-box">
-          <strong>05:00 – 12:00 • Démonstration Live</strong>
-          Connexion 1-clic <code>InaFit_Lyon</code>, stories 24h &amp; slider Avant/Après, podiums défis inter-campus, encouragement WebSocket instantané entre 2 navigateurs, carte Leaflet Haversine + RSVP et sync Google Fit / GPX.
+          <strong>05:00 à 12:00 : démonstration en direct</strong>
+          Connexion rapide, stories et comparatif avant et après, classements intercampus, encouragements WebSocket entre deux fenêtres, carte Leaflet et synchronisation Google Fit ou GPX.
         </div>
         <div class="time-box">
-          <strong>12:00 – 15:00 • Questions Techniques Jury</strong>
-          Synchronisation WebSocket multi-pods via Redis Pub/Sub, verrouillage transactionnel <code>SELECT FOR UPDATE</code> sur les capacités RSVP, sécurité Pillow / anti-XXE GPX et latence E2E &lt; 30 ms.
+          <strong>12:00 à 15:00 : questions techniques</strong>
+          Propagation WebSocket par Redis, verrouillage <code>SELECT FOR UPDATE</code> sur les inscriptions, filtrage Pillow et anti-XXE sur les fichiers et respect de la latence sous 300 ms.
         </div>
       </div>
     </div>

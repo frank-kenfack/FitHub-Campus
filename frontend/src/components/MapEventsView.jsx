@@ -4,9 +4,9 @@ import "leaflet/dist/leaflet.css";
 import { apiRequest } from "../api.js";
 
 const KIND_META = {
-  gym: { label: "Salle partenaire", short: "GYM", color: "#E61A5F", bg: "#FFF1F2" },
-  spot: { label: "Spot Street-Workout", short: "SPOT", color: "#1B8A3D", bg: "#DCFCE7" },
-  event: { label: "Événement étudiant", short: "EVENT", color: "#1E2E5C", bg: "#EEF2FF" }
+  gym: { label: "Salle partenaire", short: "SALLE", color: "#E61A5F", bg: "#FFF1F2" },
+  spot: { label: "Aire extérieure", short: "PARC", color: "#1B8A3D", bg: "#DCFCE7" },
+  event: { label: "Séance étudiante", short: "RDV", color: "#1E2E5C", bg: "#EEF2FF" }
 };
 
 function defaultTomorrowIsoLocal() {
@@ -183,9 +183,9 @@ export default function MapEventsView({
       }
 
       const qs = params.toString();
-      const data = await apiRequest(`/api/places${qs ? `?${qs}` : ""}`);
-      setPlaces(data.places || []);
-      setReferencePoint(data.reference_point || null);
+      const placesPayload = await apiRequest(`/api/places${qs ? `?${qs}` : ""}`);
+      setPlaces(placesPayload.places || []);
+      setReferencePoint(placesPayload.reference_point || null);
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     } finally {
@@ -256,7 +256,7 @@ export default function MapEventsView({
           </div>
           <strong style="font-size:13.5px;color:#1E2E5C;">${escapeHtml(p.title)}</strong>
           <div style="font-size:12px;color:#475569;margin-top:2px;">
-            ${escapeHtml(p.sport)} — ${escapeHtml(p.address || p.campus_name)}
+            ${escapeHtml(p.sport)} : ${escapeHtml(p.address || p.campus_name)}
           </div>
           ${capHtml}
         </div>`
@@ -459,10 +459,10 @@ export default function MapEventsView({
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
           <div>
             <h2 style={{ margin: 0 }}>
-              Carte des Salles, Spots &amp; Séances Collectives
+              CARTE DES SALLES, PARCS ET SÉANCES COLLECTIVES
             </h2>
             <p className="muted-text" style={{ margin: "3px 0 0" }}>
-              Découvrez les salles partenaires, aires de street-workout et entraînements étudiants autour de votre campus.
+              Découvrez les salles partenaires, aires extérieures et entraînements étudiants autour de votre campus.
             </p>
           </div>
           <div className="quick-actions">
@@ -738,7 +738,7 @@ export default function MapEventsView({
 
       <section className="card">
         <h2>
-          Lieux &amp; Événements à Proximité ({places.length})
+          LIEUX ET ÉVÉNEMENTS À PROXIMITÉ ({places.length})
         </h2>
         {loading ? (
           <p className="muted-text">Chargement des coordonnées géographiques...</p>
@@ -841,7 +841,7 @@ export default function MapEventsView({
                         onClick={() => handleRsvp(p)}
                       >
                         {p.is_going
-                          ? "Inscrit ✓ (Annuler)"
+                          ? "Inscrit (annuler)"
                           : p.is_full
                           ? "Complet"
                           : isEvent

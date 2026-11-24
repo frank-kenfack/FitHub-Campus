@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { apiRequest } from "../api.js";
 
-const BADGE_ICONS = {
-  first_workout: "⚡",
-  five_workouts: "🔥",
-  fit_buddy_solidarity: "🤝",
-  top_campus: "🏆",
-  event_participant: "📍"
+const BADGE_LABELS = {
+  first_workout: "1er",
+  five_workouts: "5x",
+  fit_buddy_solidarity: "Duo",
+  top_campus: "Top",
+  event_participant: "RDV"
 };
 
 const BADGE_HINTS = {
-  first_workout: "Publiez 1 story workout ou importez 1 activité.",
-  five_workouts: "Cumulez 5 séances validées (stories, défis ou imports).",
-  fit_buddy_solidarity: "Envoyez un encouragement en direct à votre Fit-Buddy.",
-  top_campus: "Contribuez au score d'un défi où votre campus est sur le podium.",
-  event_participant: "Participez à un événement sportif depuis la Carte & Spots."
+  first_workout: "Publiez une séance ou importez une activité.",
+  five_workouts: "Cumulez cinq séances validées sur votre profil.",
+  fit_buddy_solidarity: "Envoyez un encouragement en direct à votre partenaire.",
+  top_campus: "Participez à un défi où votre campus atteint le podium.",
+  event_participant: "Confirmez votre présence à une séance depuis la carte."
 };
 
 const SOURCE_LABELS = {
-  story: "Story Workout",
-  challenge: "Défi Campus",
+  story: "Séance publiée",
+  challenge: "Défi campus",
   google_fit: "Google Fit",
   gpx: "Trace GPS (.gpx)",
   json_import: "Import JSON",
@@ -29,7 +29,7 @@ const SOURCE_LABELS = {
 const GOOGLE_FIT_PRESETS = [
   {
     id: "gfit_run",
-    label: "Google Fit — Course Quais du Rhône (8.6 km • 44 min • 530 kcal)",
+    label: "Google Fit : Course Quais du Rhône (8,6 km, 44 min, 530 kcal)",
     activityType: 8,
     sport: "Running",
     durationMinutes: 44,
@@ -38,7 +38,7 @@ const GOOGLE_FIT_PRESETS = [
   },
   {
     id: "gfit_hiit",
-    label: "Google Fit — Cross-Training & Gainage (50 min • 470 kcal)",
+    label: "Google Fit : Entraînement croisé et gainage (50 min, 470 kcal)",
     activityType: 113,
     sport: "Cross-Training",
     durationMinutes: 50,
@@ -47,7 +47,7 @@ const GOOGLE_FIT_PRESETS = [
   },
   {
     id: "gfit_bike",
-    label: "Google Fit — Vélotaf Campus (14.2 km • 38 min • 390 kcal)",
+    label: "Google Fit : Vélo trajet campus (14,2 km, 38 min, 390 kcal)",
     activityType: 1,
     sport: "Cyclisme",
     durationMinutes: 38,
@@ -107,12 +107,12 @@ export default function GamificationView({
   if (!user) {
     return (
       <section className="card">
-        <h2>Badges, Récompenses XP &amp; Synchronisation Sportive</h2>
+        <h2>BADGES, RÉCOMPENSES ET SYNCHRONISATION SPORTIVE</h2>
         <p className="muted-text">
-          Connectez-vous à votre compte étudiant pour visualiser vos badges débloqués, votre palier XP et importer vos séances Google Fit ou GPX.
+          Connectez-vous à votre compte étudiant pour suivre vos badges, votre palier et importer vos séances Google Fit ou GPX.
         </p>
         <button type="button" className="primary-btn" onClick={onRequireAuth}>
-          Se connecter / Choisir un compte démo
+          Se connecter pour voir mes récompenses
         </button>
       </section>
     );
@@ -199,7 +199,7 @@ export default function GamificationView({
           : "";
       setFeedback({
         type: "ok",
-        text: `Fichier « ${file.name} » analysé : ${imported?.sport} (${imported?.distance_km} km, ${imported?.duration_minutes} min) — +${res.xp_gained} XP !${badgeNote}`
+        text: `Fichier « ${file.name} » analysé : ${imported?.sport} (${imported?.distance_km} km, ${imported?.duration_minutes} min), +${res.xp_gained} XP.${badgeNote}`
       });
       if (onActivityChanged) onActivityChanged();
     } catch (err) {
@@ -233,10 +233,10 @@ export default function GamificationView({
       <div className="grid-cards">
         <section className="card">
           <div className="topbar-row" style={{ marginBottom: "8px" }}>
-            <h2 style={{ margin: 0 }}>Progression XP &amp; Récompenses Campus</h2>
+            <h2 style={{ margin: 0 }}>PROGRESSION ET RÉCOMPENSES CAMPUS</h2>
             {prog?.current_tier && (
               <span className="tier-pill">
-                Niveau {prog.current_tier.level} • {prog.current_tier.name}
+                Niveau {prog.current_tier.level} : {prog.current_tier.name}
               </span>
             )}
           </div>
@@ -296,7 +296,6 @@ export default function GamificationView({
                       >
                         <div>
                           <strong>
-                            {t.unlocked ? "✓ " : "🔒 "}
                             {t.name} ({t.min_xp}+ XP)
                           </strong>
                           <span>{t.reward}</span>
@@ -318,7 +317,7 @@ export default function GamificationView({
         </section>
 
         <section className="card">
-          <h2>Synchroniser une Montre GPS ou Google Fit</h2>
+          <h2>SYNCHRONISER UNE MONTRE GPS OU GOOGLE FIT</h2>
           <p className="muted-text" style={{ marginTop: 0 }}>
             Importez une séance extérieure pour créditer automatiquement votre profil, vos badges et vos défis inter-campus en cours.
           </p>
@@ -412,11 +411,10 @@ export default function GamificationView({
         <section className="card">
           <div className="topbar-row" style={{ marginBottom: "10px" }}>
             <h2 style={{ margin: 0 }}>
-              Vitrine des Badges d&apos;Accomplissement ({summary.unlocked_count} /{" "}
-              {summary.total_badges})
+              VITRINE DES BADGES ({summary.unlocked_count} / {summary.total_badges})
             </h2>
             <span className="muted-text">
-              Validez vos objectifs sportifs et collectifs pour débloquer vos trophées
+              Validez vos objectifs sportifs et collectifs pour débloquer vos trophées.
             </span>
           </div>
 
@@ -427,7 +425,9 @@ export default function GamificationView({
                 className={`badge-trophy-card ${b.unlocked ? "unlocked" : "locked"}`}
               >
                 <div className="badge-icon-circle">
-                  <span>{BADGE_ICONS[b.code] || "🏅"}</span>
+                  <span style={{ fontSize: "12px", fontWeight: 700 }}>
+                    {BADGE_LABELS[b.code] || "XP"}
+                  </span>
                 </div>
                 <div className="badge-trophy-body">
                   <div className="topbar-row">
@@ -439,7 +439,7 @@ export default function GamificationView({
                   <p>{b.description}</p>
                   <small>
                     {b.unlocked
-                      ? "✓ Badge débloqué sur votre profil étudiant"
+                      ? "Badge débloqué sur votre profil étudiant"
                       : `Objectif : ${BADGE_HINTS[b.code] || b.description}`}
                   </small>
                 </div>

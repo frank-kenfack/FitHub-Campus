@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# FitHub Campus — Validation Kustomize & Deploiement Kubernetes (+20 % Bonus)
+# Validation Kustomize et deploiement Kubernetes pour FitHub Campus
 # Usage : ./scripts/k8s_deploy.sh [--validate-only]
 # =============================================================================
 set -euo pipefail

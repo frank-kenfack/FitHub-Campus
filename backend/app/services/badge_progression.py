@@ -1,4 +1,4 @@
-"""Moteur de gamification FitHub Campus (Etape 6 : US-7.1, US-7.2, US-7.3)."""
+"""Moteur de gamification FitHub Campus (badges, paliers et import d'activites)."""
 
 import json
 import math
@@ -27,7 +27,7 @@ REWARD_TIERS = [
         "name": "Athlete Bronze",
         "min_xp": 0,
         "max_xp": 199,
-        "reward": "Badge Profil Etudiant Actif & Cadre Campus Bronze",
+        "reward": "Badge Profil Etudiant Actif et Cadre Campus Bronze",
     },
     {
         "level": 2,
@@ -35,7 +35,7 @@ REWARD_TIERS = [
         "name": "Athlete Argent",
         "min_xp": 200,
         "max_xp": 399,
-        "reward": "Pass Prioritaire Evenements BDE & Bandeau Argent",
+        "reward": "Pass Prioritaire Evenements BDE et Bandeau Argent",
     },
     {
         "level": 3,
@@ -43,7 +43,7 @@ REWARD_TIERS = [
         "name": "Athlete Or",
         "min_xp": 400,
         "max_xp": 649,
-        "reward": "Acces Seances Coaching Partenaires & Titre Ambassadeur",
+        "reward": "Acces Seances Coaching Partenaires et Titre Ambassadeur",
     },
     {
         "level": 4,
@@ -51,13 +51,12 @@ REWARD_TIERS = [
         "name": "Legende Campus",
         "min_xp": 650,
         "max_xp": None,
-        "reward": "Trophee Hall of Fame Inter-Campus & Kit Officiel FitHub",
+        "reward": "Trophee Tableau d'Honneur Inter-Campus et Kit Officiel FitHub",
     },
 ]
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Calcule la distance orthodromique exacte en km entre deux points GPS (Haversine)."""
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     d_phi = math.radians(lat2 - lat1)
@@ -72,7 +71,6 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def _is_user_on_challenge_campus_podium(user_id: int) -> bool:
-    """Verifie si l'etudiant a score > 0 dans un defi ou son campus est dans le Top 3."""
     user_entries = ChallengeEntry.query.filter(
         ChallengeEntry.user_id == user_id,
         ChallengeEntry.score > 0,
@@ -101,7 +99,6 @@ def _is_user_on_challenge_campus_podium(user_id: int) -> bool:
 
 
 def evaluate_and_award_badges(user_id: int) -> list[dict]:
-    """Evalue les criteres d'accomplissement et attribue les nouveaux badges sans doublon."""
     user = db.session.get(User, user_id)
     if user is None:
         return []
@@ -152,7 +149,6 @@ def evaluate_and_award_badges(user_id: int) -> list[dict]:
 
 
 def compute_reward_progression(total_xp: int) -> dict:
-    """Determine le palier actuel, le prochain palier et le catalogue de recompenses (US-7.2)."""
     xp = max(0, int(total_xp or 0))
     current_idx = 0
     for idx, tier in enumerate(REWARD_TIERS):
@@ -190,7 +186,6 @@ def compute_reward_progression(total_xp: int) -> dict:
 
 
 def build_gamification_summary(user: User) -> dict:
-    """Construit le tableau de bord complet badges + XP + paliers + seances recentes."""
     newly_unlocked = evaluate_and_award_badges(user.id)
 
     all_badges = Badge.query.order_by(Badge.id.asc()).all()
@@ -267,7 +262,7 @@ GOOGLE_FIT_ACTIVITY_MAP = {
 
 
 def parse_gpx_bytes(raw_bytes: bytes, fallback_sport: str = "Running") -> dict:
-    """Extrait distance (Haversine), duree et calories depuis une trace XML GPX."""
+    # Empeche toute attaque XXE avant l'analyse XML standard.
     text_preview = raw_bytes[:2048].decode("utf-8", errors="ignore").upper()
     if "<!DOCTYPE" in text_preview or "<!ENTITY" in text_preview:
         raise ValueError("Fichier GPX invalide (entites XML externes interdites).")
@@ -330,7 +325,6 @@ def parse_gpx_bytes(raw_bytes: bytes, fallback_sport: str = "Running") -> dict:
 
 
 def normalize_json_activities(payload: dict | list, default_source: str = "google_fit") -> list[dict]:
-    """Normalise un payload JSON (Google Fit sessions ou format standard FitHub)."""
     raw_items: list[dict]
     source = default_source
 
@@ -404,7 +398,6 @@ def normalize_json_activities(payload: dict | list, default_source: str = "googl
 
 
 def parse_uploaded_activity_file(filename: str, raw_bytes: bytes, fallback_sport: str = "Running") -> list[dict]:
-    """Analyse un fichier .gpx ou .json uploade par l'etudiant."""
     if not raw_bytes:
         raise ValueError("Le fichier d'activite est vide.")
     if len(raw_bytes) > 2 * 1024 * 1024:
@@ -425,10 +418,9 @@ def parse_uploaded_activity_file(filename: str, raw_bytes: bytes, fallback_sport
 
 def credit_challenge_from_workout(
     user: User,
-    workout_data: dict,
+    workout_entry: dict,
     explicit_challenge_id: int | None = None,
 ) -> list[dict]:
-    """Credite un defi actif (cible ou correspondant au sport) a partir d'une seance importee."""
     now_utc = datetime.now(timezone.utc)
     updates: list[dict] = []
 
@@ -448,23 +440,24 @@ def credit_challenge_from_workout(
             if ch is None:
                 continue
             ends_utc = ch.ends_at if ch.ends_at.tzinfo else ch.ends_at.replace(tzinfo=timezone.utc)
-            if ends_utc >= now_utc and ch.sport.lower() in workout_data["sport"].lower():
+            if ends_utc >= now_utc and ch.sport.lower() in workout_entry["sport"].lower():
                 target_challenges.append(ch)
 
     for ch in target_challenges:
         unit_lower = ch.unit.lower()
         if "km" in unit_lower:
-            delta = float(workout_data["distance_km"])
+            delta = float(workout_entry["distance_km"])
         elif "min" in unit_lower:
-            delta = float(workout_data["duration_minutes"])
+            delta = float(workout_entry["duration_minutes"])
         elif "cal" in unit_lower or "kcal" in unit_lower:
-            delta = float(workout_data["calories"])
+            delta = float(workout_entry["calories"])
         else:
-            delta = float(workout_data["duration_minutes"])
+            delta = float(workout_entry["duration_minutes"])
 
         if delta <= 0:
             continue
 
+        # Verrou pessimiste sur la ligne de participation pour eviter toute perte de score concurrente.
         entry = (
             ChallengeEntry.query.filter_by(challenge_id=ch.id, user_id=user.id)
             .with_for_update()

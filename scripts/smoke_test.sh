@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# FitHub Campus — Smoke Test E2E & Verification Latence (< 300 ms)
+# Controle E2E et mesure de latence (< 300 ms) sur FitHub Campus
 # Usage : ./scripts/smoke_test.sh [base_url]
 # =============================================================================
 set -euo pipefail

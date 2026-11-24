@@ -12,7 +12,7 @@ from app.config import TestingConfig
 from app.extensions import db
 from app.models import Campus, Challenge, ChallengeEntry, User, Workout
 from app.seed import seed_database
-from app.utils.media import remove_uploaded_file
+from app.services.media_storage import remove_uploaded_file
 
 
 def _make_png() -> io.BytesIO:

@@ -34,8 +34,8 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
       if (activeFilters.sport) params.set("sport", activeFilters.sport);
       if (activeFilters.q.trim()) params.set("q", activeFilters.q.trim());
       const qs = params.toString();
-      const data = await apiRequest(`/api/groups${qs ? `?${qs}` : ""}`);
-      setGroups(data.groups || []);
+      const groupsPayload = await apiRequest(`/api/groups${qs ? `?${qs}` : ""}`);
+      setGroups(groupsPayload.groups || []);
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     } finally {
@@ -59,7 +59,7 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
     e.preventDefault();
     setFeedback({ type: "", text: "" });
     try {
-      const data = await apiRequest("/api/groups", {
+      const createdPayload = await apiRequest("/api/groups", {
         method: "POST",
         body: {
           ...createForm,
@@ -73,8 +73,8 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
         description: ""
       });
       setShowCreate(false);
-      setExpandedGroup(data.group);
-      setFeedback({ type: "ok", text: `Groupe « ${data.group.name} » créé !` });
+      setExpandedGroup(createdPayload.group);
+      setFeedback({ type: "ok", text: `Club « ${createdPayload.group.name} » créé !` });
       await fetchGroups();
       onMembershipChanged();
     } catch (err) {
@@ -89,11 +89,11 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
     }
     try {
       const action = group.is_member ? "leave" : "join";
-      const data = await apiRequest(`/api/groups/${group.id}/${action}`, {
+      const membershipPayload = await apiRequest(`/api/groups/${group.id}/${action}`, {
         method: "POST"
       });
       if (expandedGroup?.id === group.id) {
-        setExpandedGroup(data.group);
+        setExpandedGroup(membershipPayload.group);
       }
       await fetchGroups();
       onMembershipChanged();
@@ -108,8 +108,8 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
       return;
     }
     try {
-      const data = await apiRequest(`/api/groups/${groupId}`);
-      setExpandedGroup(data.group);
+      const detailPayload = await apiRequest(`/api/groups/${groupId}`);
+      setExpandedGroup(detailPayload.group);
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     }
@@ -133,7 +133,7 @@ export default function GroupsView({ user, campuses, onRequireAuth, onMembership
     <div>
       <section className="card" style={{ marginBottom: "14px" }}>
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>Groupes Sportifs Inter-Campus ({groups.length})</h2>
+          <h2 style={{ margin: 0 }}>CLUBS SPORTIFS INTERCAMPUS ({groups.length})</h2>
           <button
             type="button"
             className="primary-btn"

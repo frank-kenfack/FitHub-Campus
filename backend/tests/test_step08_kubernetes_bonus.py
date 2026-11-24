@@ -65,16 +65,16 @@ def test_k8s_namespace_configmap_and_rfc7518_secrets():
 
     cms = [r for r in resources if r["kind"] == "ConfigMap"]
     assert len(cms) == 1
-    cm_data = cms[0]["data"]
-    assert cm_data["REDIS_URL"] == "redis://fithub-redis:6379/0"
-    assert cm_data["UPLOAD_FOLDER"] == "/app/uploads"
+    config_entries = cms[0]["data"]
+    assert config_entries["REDIS_URL"] == "redis://fithub-redis:6379/0"
+    assert config_entries["UPLOAD_FOLDER"] == "/app/uploads"
 
     secrets = [r for r in resources if r["kind"] == "Secret"]
     assert len(secrets) == 1
-    sec_data = secrets[0]["stringData"]
-    assert len(sec_data["SECRET_KEY"]) >= 36
-    assert len(sec_data["JWT_SECRET_KEY"]) >= 36
-    assert "@fithub-postgres:5432/" in sec_data["DATABASE_URL"]
+    secret_entries = secrets[0]["stringData"]
+    assert len(secret_entries["SECRET_KEY"]) >= 36
+    assert len(secret_entries["JWT_SECRET_KEY"]) >= 36
+    assert "@fithub-postgres:5432/" in secret_entries["DATABASE_URL"]
 
 
 def test_k8s_persistent_volume_claims_for_db_and_uploads():

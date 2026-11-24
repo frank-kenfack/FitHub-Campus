@@ -6,7 +6,7 @@ from flask_socketio import disconnect, emit, join_room
 
 from app.extensions import db, socketio
 from app.models import User
-from app.utils.buddies_service import create_and_emit_encouragement
+from app.services.buddy_matching import create_and_emit_encouragement
 
 # Association sid Socket.IO -> user_id authentifie
 SOCKET_USERS: dict[str, int] = {}
@@ -58,14 +58,13 @@ def handle_socket_disconnect():
 
 
 @socketio.on("send_encouragement")
-def handle_socket_encouragement(data: dict | None):
-    """Recoit un encouragement via WebSocket, le sauvegarde et le diffuse en direct."""
+def handle_socket_encouragement(incoming_message: dict | None):
     sender_id = SOCKET_USERS.get(request.sid)
     if not sender_id:
         emit("encouragement_error", {"error": "Session WebSocket non authentifiee."})
         return {"ok": False, "error": "Non authentifie"}
 
-    payload_in = data or {}
+    payload_in = incoming_message or {}
     try:
         receiver_id = int(payload_in.get("receiver_id", 0))
     except (TypeError, ValueError):

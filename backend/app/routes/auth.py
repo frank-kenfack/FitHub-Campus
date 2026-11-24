@@ -1,4 +1,4 @@
-"""Routes d'authentification JWT (inscription, connexion, session)."""
+"""Routes d'authentification JWT."""
 
 import bcrypt
 from flask import Blueprint, jsonify, request
@@ -6,18 +6,16 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 
 from app.extensions import db
 from app.models import Campus, User
-from app.utils.serializers import serialize_user
+from app.services.domain_serializers import serialize_user
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 def hash_password(plain_password: str) -> str:
-    """Hache un mot de passe en clair avec bcrypt."""
     return bcrypt.hashpw(plain_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain_password: str, password_hash: str) -> bool:
-    """Verifie un mot de passe en clair face a son empreinte bcrypt."""
     try:
         return bcrypt.checkpw(
             plain_password.encode("utf-8"),
@@ -29,12 +27,11 @@ def verify_password(plain_password: str, password_hash: str) -> bool:
 
 @auth_bp.post("/register")
 def register():
-    """Inscrit un nouvel etudiant et retourne son jeton JWT."""
-    data = request.get_json(silent=True) or {}
-    email = (data.get("email") or "").strip().lower()
-    username = (data.get("username") or "").strip()
-    password = data.get("password") or ""
-    campus_id = data.get("campus_id")
+    request_body = request.get_json(silent=True) or {}
+    email = (request_body.get("email") or "").strip().lower()
+    username = (request_body.get("username") or "").strip()
+    password = request_body.get("password") or ""
+    campus_id = request_body.get("campus_id")
 
     if not email or "@" not in email:
         return jsonify({"error": "Adresse email invalide."}), 400
@@ -55,9 +52,9 @@ def register():
         username=username,
         password_hash=hash_password(password),
         campus_id=campus_id,
-        bio=(data.get("bio") or "").strip(),
-        favorite_sports=(data.get("favorite_sports") or "Fitness").strip() or "Fitness",
-        level=(data.get("level") or "Intermediaire").strip() or "Intermediaire",
+        bio=(request_body.get("bio") or "").strip(),
+        favorite_sports=(request_body.get("favorite_sports") or "Fitness").strip() or "Fitness",
+        level=(request_body.get("level") or "Intermediaire").strip() or "Intermediaire",
     )
     db.session.add(user)
     db.session.commit()
@@ -76,10 +73,9 @@ def register():
 
 @auth_bp.post("/login")
 def login():
-    """Authentifie un etudiant par email/mot de passe et emet un JWT."""
-    data = request.get_json(silent=True) or {}
-    email = (data.get("email") or "").strip().lower()
-    password = data.get("password") or ""
+    request_body = request.get_json(silent=True) or {}
+    email = (request_body.get("email") or "").strip().lower()
+    password = request_body.get("password") or ""
 
     if not email or not password:
         return jsonify({"error": "Email et mot de passe requis."}), 400
@@ -103,7 +99,6 @@ def login():
 @auth_bp.get("/me")
 @jwt_required()
 def get_session_user():
-    """Retourne le profil complet de l'utilisateur authentifie."""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401

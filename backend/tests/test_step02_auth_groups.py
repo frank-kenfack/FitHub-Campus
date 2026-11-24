@@ -12,7 +12,7 @@ from app.config import TestingConfig
 from app.extensions import db
 from app.models import Campus, SportGroup, User
 from app.seed import seed_database
-from app.utils.media import remove_uploaded_file
+from app.services.media_storage import remove_uploaded_file
 
 
 @pytest.fixture()
@@ -51,8 +51,7 @@ def client(app):
     return app.test_client()
 
 
-def _register_temp_user(app, client, suffix: str = "") -> tuple[dict, str]:
-    """Cree un etudiant temporaire unique et retourne (user_dict, token)."""
+def _register_student_account(app, client, suffix: str = "") -> tuple[dict, str]:
     tag = f"{uuid.uuid4().hex[:8]}{suffix}"
     email = f"test_{tag}@campus.fr"
     campus = Campus.query.order_by(Campus.id.asc()).first()
@@ -70,13 +69,12 @@ def _register_temp_user(app, client, suffix: str = "") -> tuple[dict, str]:
         },
     )
     assert res.status_code == 201, res.get_json()
-    body = res.get_json()
-    return body["user"], body["access_token"]
+    response_payload = res.get_json()
+    return response_payload["user"], response_payload["access_token"]
 
 
 def test_register_hashes_password_and_returns_jwt(app, client):
-    """US-2.1 : L'inscription hache le mot de passe en bcrypt et renvoie un JWT."""
-    user_json, token = _register_temp_user(app, client)
+    user_json, token = _register_student_account(app, client)
     assert token
     assert "password" not in user_json
     assert "password_hash" not in user_json
@@ -89,7 +87,7 @@ def test_register_hashes_password_and_returns_jwt(app, client):
 
 def test_register_validation_and_duplicates(app, client):
     """US-2.1 : Rejette mot de passe trop court, campus inconnu et email doublon."""
-    user_json, _ = _register_temp_user(app, client)
+    user_json, _ = _register_student_account(app, client)
     campus = Campus.query.first()
 
     # Doublon d'email -> 409
@@ -131,7 +129,7 @@ def test_register_validation_and_duplicates(app, client):
 
 def test_login_success_and_invalid_credentials(app, client):
     """US-2.1 : Connexion valide renvoie 200+JWT ; mauvais mot de passe renvoie 401."""
-    user_json, _ = _register_temp_user(app, client)
+    user_json, _ = _register_student_account(app, client)
 
     ok_res = client.post(
         "/api/auth/login",
@@ -163,7 +161,7 @@ def test_protected_routes_return_401_without_valid_jwt(client):
 
 def test_profile_update_and_personal_stats(app, client):
     """US-2.2 : Edition du profil persistee en BDD et lecture des statistiques."""
-    _, token = _register_temp_user(app, client)
+    _, token = _register_student_account(app, client)
     campuses = Campus.query.order_by(Campus.id.asc()).all()
     new_campus = campuses[-1]
 
@@ -196,7 +194,7 @@ def test_profile_update_and_personal_stats(app, client):
 
 def test_avatar_upload_saved_on_volume_and_served(app, client):
     """US-2.2 : Upload d'avatar PNG valide sur volume persistant et servi en HTTP."""
-    _, token = _register_temp_user(app, client)
+    _, token = _register_student_account(app, client)
 
     img_buf = io.BytesIO()
     Image.new("RGB", (600, 600), color=(230, 26, 95)).save(img_buf, format="PNG")
@@ -224,7 +222,7 @@ def test_avatar_upload_saved_on_volume_and_served(app, client):
 
 def test_avatar_upload_rejects_invalid_file(app, client):
     """US-2.2 : Un fichier texte deguise en image est rejete avec un code 400."""
-    _, token = _register_temp_user(app, client)
+    _, token = _register_student_account(app, client)
     fake_buf = io.BytesIO(b"ceci n est pas une image")
 
     res = client.post(
@@ -238,8 +236,8 @@ def test_avatar_upload_rejects_invalid_file(app, client):
 
 def test_groups_crud_permissions_and_filters(app, client):
     """US-2.3 : Creation, filtrage campus/sport, modification et controle createur."""
-    _, token_owner = _register_temp_user(app, client, "_owner")
-    _, token_other = _register_temp_user(app, client, "_other")
+    _, token_owner = _register_student_account(app, client, "_owner")
+    _, token_other = _register_student_account(app, client, "_other")
     campus = Campus.query.order_by(Campus.id.asc()).first()
 
     create_res = client.post(
@@ -301,8 +299,8 @@ def test_groups_crud_permissions_and_filters(app, client):
 
 def test_group_join_leave_and_member_listing(app, client):
     """US-2.3 : Rejoindre et quitter un groupe met a jour la liste des membres."""
-    _, token_owner = _register_temp_user(app, client, "_g1")
-    user_member, token_member = _register_temp_user(app, client, "_g2")
+    _, token_owner = _register_student_account(app, client, "_g1")
+    user_member, token_member = _register_student_account(app, client, "_g2")
 
     create_res = client.post(
         "/api/groups",

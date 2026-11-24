@@ -1,11 +1,11 @@
-"""Routes CRUD et d'adhesion des groupes sportifs etudiants."""
+"""Routes des groupes sportifs etudiants."""
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
 from app.models import Campus, GroupMember, SportGroup, User
-from app.utils.serializers import serialize_group
+from app.services.domain_serializers import serialize_group
 
 groups_bp = Blueprint("groups", __name__, url_prefix="/api/groups")
 
@@ -18,7 +18,6 @@ def _optional_user_id() -> int | None:
 @groups_bp.get("")
 @jwt_required(optional=True)
 def list_groups():
-    """Liste et filtre les groupes sportifs par campus, discipline ou mot-cle."""
     query = SportGroup.query
     campus_id = request.args.get("campus_id", type=int)
     sport = (request.args.get("sport") or "").strip()
@@ -44,7 +43,6 @@ def list_groups():
 @groups_bp.get("/<int:group_id>")
 @jwt_required(optional=True)
 def get_group_detail(group_id: int):
-    """Retourne le detail complet d'un groupe ainsi que ses membres."""
     group = db.session.get(SportGroup, group_id)
     if group is None:
         return jsonify({"error": "Groupe sportif introuvable."}), 404
@@ -66,16 +64,15 @@ def get_group_detail(group_id: int):
 @groups_bp.post("")
 @jwt_required()
 def create_group():
-    """Cree un groupe sportif et inscrit automatiquement son createur en admin."""
     user = db.session.get(User, int(get_jwt_identity()))
     if user is None:
         return jsonify({"error": "Utilisateur introuvable."}), 401
 
-    data = request.get_json(silent=True) or {}
-    name = (data.get("name") or "").strip()
-    sport = (data.get("sport") or "").strip()
-    description = (data.get("description") or "").strip()
-    campus_id = data.get("campus_id", user.campus_id)
+    request_body = request.get_json(silent=True) or {}
+    name = (request_body.get("name") or "").strip()
+    sport = (request_body.get("sport") or "").strip()
+    description = (request_body.get("description") or "").strip()
+    campus_id = request_body.get("campus_id", user.campus_id)
 
     if len(name) < 3 or len(name) > 120:
         return jsonify({"error": "Le nom du groupe doit faire entre 3 et 120 caracteres."}), 400
@@ -115,7 +112,6 @@ def create_group():
 @groups_bp.put("/<int:group_id>")
 @jwt_required()
 def update_group(group_id: int):
-    """Modifie les informations d'un groupe (reserve au createur)."""
     uid = int(get_jwt_identity())
     group = db.session.get(SportGroup, group_id)
     if group is None:
@@ -123,21 +119,21 @@ def update_group(group_id: int):
     if group.created_by != uid:
         return jsonify({"error": "Seul le createur du groupe peut le modifier."}), 403
 
-    data = request.get_json(silent=True) or {}
-    if "name" in data:
-        name = (data.get("name") or "").strip()
+    request_body = request.get_json(silent=True) or {}
+    if "name" in request_body:
+        name = (request_body.get("name") or "").strip()
         if len(name) < 3 or len(name) > 120:
             return jsonify({"error": "Nom de groupe invalide."}), 400
         group.name = name
-    if "sport" in data:
-        sport = (data.get("sport") or "").strip()
+    if "sport" in request_body:
+        sport = (request_body.get("sport") or "").strip()
         if len(sport) < 2 or len(sport) > 60:
             return jsonify({"error": "Discipline invalide."}), 400
         group.sport = sport
-    if "description" in data:
-        group.description = (data.get("description") or "").strip()[:600]
-    if "campus_id" in data:
-        campus_id = data.get("campus_id")
+    if "description" in request_body:
+        group.description = (request_body.get("description") or "").strip()[:600]
+    if "campus_id" in request_body:
+        campus_id = request_body.get("campus_id")
         if not isinstance(campus_id, int) or db.session.get(Campus, campus_id) is None:
             return jsonify({"error": "Campus introuvable."}), 400
         group.campus_id = campus_id
@@ -160,7 +156,6 @@ def update_group(group_id: int):
 @groups_bp.delete("/<int:group_id>")
 @jwt_required()
 def delete_group(group_id: int):
-    """Supprime un groupe sportif (reserve au createur)."""
     uid = int(get_jwt_identity())
     group = db.session.get(SportGroup, group_id)
     if group is None:
@@ -176,7 +171,6 @@ def delete_group(group_id: int):
 @groups_bp.post("/<int:group_id>/join")
 @jwt_required()
 def join_group(group_id: int):
-    """Inscrit l'utilisateur authentifie au groupe sportif (idempotent)."""
     uid = int(get_jwt_identity())
     group = db.session.get(SportGroup, group_id)
     if group is None:
@@ -205,7 +199,6 @@ def join_group(group_id: int):
 @groups_bp.post("/<int:group_id>/leave")
 @jwt_required()
 def leave_group(group_id: int):
-    """Desinscrit l'utilisateur authentifie du groupe sportif."""
     uid = int(get_jwt_identity())
     group = db.session.get(SportGroup, group_id)
     if group is None:

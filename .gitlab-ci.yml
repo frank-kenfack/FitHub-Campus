@@ -1,5 +1,5 @@
 # =============================================================================
-# FitHub Campus — Pipeline CI/CD GitLab (.gitlab-ci.yml)
+# Pipeline CI/CD GitLab pour FitHub Campus (lint, test, build, deploy)
 # Étapes : lint -> test -> build -> deploy (Staging auto / Production manuelle)
 # =============================================================================
 

@@ -21,15 +21,15 @@ function BeforeAfterComparator({ beforeUrl, afterUrl, title, durationLabel }) {
     <div className="ba-wrapper">
       <div className="ba-toolbar">
         <span className="badge badge-ok">
-          Avant / Après {durationLabel ? `• ${durationLabel}` : ""}
+          Avant et après {durationLabel ? `(${durationLabel})` : ""}
         </span>
         <button
           type="button"
           className="outline-btn"
-          style={{ padding: "4px 10px", fontSize: "11.5px" }}
+          style={{ padding: "4px 10px", fontSize: "12px" }}
           onClick={() => setSideBySide(!sideBySide)}
         >
-          {sideBySide ? "Mode Slider ◀▶" : "Vue Côte à côte"}
+          {sideBySide ? "Curseur comparatif" : "Vue côte à côte"}
         </button>
       </div>
 
@@ -56,7 +56,7 @@ function BeforeAfterComparator({ beforeUrl, afterUrl, title, durationLabel }) {
           <span className="ba-tag ba-tag-before">AVANT</span>
           <span className="ba-tag ba-tag-after">APRÈS</span>
           <div className="ba-divider" style={{ left: `${split}%` }}>
-            <span className="ba-handle">◀▶</span>
+            <span className="ba-handle">&lt;|&gt;</span>
           </div>
           <input
             type="range"
@@ -121,8 +121,8 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
         params.set("campus_id", campusId);
       }
       const qs = params.toString();
-      const data = await apiRequest(`/api/social/posts${qs ? `?${qs}` : ""}`);
-      setPosts(data.posts || []);
+      const feedPayload = await apiRequest(`/api/social/posts${qs ? `?${qs}` : ""}`);
+      setPosts(feedPayload.posts || []);
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     } finally {
@@ -136,8 +136,8 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
       return;
     }
     try {
-      const data = await apiRequest("/api/groups");
-      setMyGroups((data.groups || []).filter((g) => g.is_member));
+      const groupsPayload = await apiRequest("/api/groups");
+      setMyGroups((groupsPayload.groups || []).filter((g) => g.is_member));
     } catch {
       setMyGroups([]);
     }
@@ -247,13 +247,13 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
       return;
     }
     try {
-      const data = await apiRequest(`/api/social/posts/${postId}/like`, {
+      const likePayload = await apiRequest(`/api/social/posts/${postId}/like`, {
         method: "POST"
       });
       setPosts((prev) =>
         prev.map((p) =>
           p.id === postId
-            ? { ...p, is_liked: data.liked, likes_count: data.likes_count }
+            ? { ...p, is_liked: likePayload.liked, likes_count: likePayload.likes_count }
             : p
         )
       );
@@ -272,7 +272,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
     if (!text) return;
 
     try {
-      const data = await apiRequest(`/api/social/posts/${postId}/comments`, {
+      const commentPayload = await apiRequest(`/api/social/posts/${postId}/comments`, {
         method: "POST",
         body: { content: text }
       });
@@ -282,8 +282,8 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
           p.id === postId
             ? {
                 ...p,
-                comments_count: data.comments_count,
-                comments: [...(p.comments || []), data.comment]
+                comments_count: commentPayload.comments_count,
+                comments: [...(p.comments || []), commentPayload.comment]
               }
             : p
         )
@@ -295,7 +295,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
 
   async function handleDeleteComment(postId, commentId) {
     try {
-      const data = await apiRequest(`/api/social/comments/${commentId}`, {
+      const deletePayload = await apiRequest(`/api/social/comments/${commentId}`, {
         method: "DELETE"
       });
       setPosts((prev) =>
@@ -303,7 +303,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
           p.id === postId
             ? {
                 ...p,
-                comments_count: data.comments_count,
+                comments_count: deletePayload.comments_count,
                 comments: (p.comments || []).filter((c) => c.id !== commentId)
               }
             : p
@@ -335,7 +335,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
       {/* CARROUSEL STORIES 24H */}
       <section className="card" style={{ marginBottom: "14px" }}>
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>Stories du Jour ({freshStories.length})</h2>
+          <h2 style={{ margin: 0 }}>STORIES DU JOUR ({freshStories.length})</h2>
           <div className="quick-actions">
             <button
               type="button"
@@ -346,7 +346,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                   : onRequireAuth()
               }
             >
-              {composerType === "story" ? "Fermer" : "+ Story Workout"}
+              {composerType === "story" ? "Fermer" : "Publier une séance"}
             </button>
             <button
               type="button"
@@ -355,7 +355,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                 user ? setComposerType(composerType === "ba" ? "" : "ba") : onRequireAuth()
               }
             >
-              {composerType === "ba" ? "Fermer" : "+ Avant / Après"}
+              {composerType === "ba" ? "Fermer" : "Avant et après"}
             </button>
           </div>
         </div>
@@ -405,8 +405,8 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
               alt={activeStoryModal.title}
               className="spotlight-img"
             />
-            <p style={{ margin: "8px 0 0", fontSize: "13px" }}>
-              <strong>{activeStoryModal.title}</strong> — {activeStoryModal.caption}
+            <p style={{ margin: "8px 0 0", fontSize: "14px" }}>
+              <strong>{activeStoryModal.title}</strong> : {activeStoryModal.caption}
             </p>
           </div>
         )}
@@ -694,7 +694,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                   </div>
                   <div className="quick-actions">
                     <span className="badge badge-soon">
-                      {post.kind === "before_after" ? "Avant / Après" : "Story Workout"}
+                      {post.kind === "before_after" ? "Avant et après" : "Séance publiée"}
                     </span>
                     {isAuthor && (
                       <button
@@ -702,7 +702,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                         className="danger-btn"
                         onClick={() => handleDeletePost(post.id)}
                       >
-                        Suppr.
+                        Supprimer
                       </button>
                     )}
                   </div>
@@ -742,10 +742,10 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                     className={`like-btn ${post.is_liked ? "liked" : ""}`}
                     onClick={() => handleToggleLike(post.id)}
                   >
-                    {post.is_liked ? "👏 Applaudi" : "👏 Applaudir"} ({post.likes_count})
+                    {post.is_liked ? "Applaudi" : "Applaudir"} ({post.likes_count})
                   </button>
                   <span className="muted-text" style={{ fontWeight: 600 }}>
-                    💬 {post.comments_count} commentaire{post.comments_count > 1 ? "s" : ""}
+                    {post.comments_count} commentaire{post.comments_count > 1 ? "s" : ""}
                   </span>
                 </div>
 
@@ -764,7 +764,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
                             title="Supprimer ce commentaire"
                             onClick={() => handleDeleteComment(post.id, c.id)}
                           >
-                            ✕
+                            Supprimer
                           </button>
                         )}
                       </div>

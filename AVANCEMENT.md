@@ -1,7 +1,7 @@
 # FitHub Campus — Journal d'Avancement & Visualisation
 
 Dépôt GitHub : https://github.com/frank-kenfack/FitHub-Campus  
-Branche active : [`step-01/socle-docker`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker)  
+Branche active : [`step-02/auth-profils-groupes`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-02/auth-profils-groupes)  
 Tableau de bord visuel interactif : [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html)  
 Album des captures par étape : [CAPTURES_ETAPES.md](./CAPTURES_ETAPES.md)  
 Backlog MVP complet : [FitHub_Campus_Backlog_MVP.pdf](./FitHub_Campus_Backlog_MVP.pdf)  
@@ -9,12 +9,12 @@ Application locale en cours d'exécution : http://localhost:8080
 
 ---
 
-## Progression globale : 1 / 8 étapes validées (12,5 %)
+## Progression globale : 2 / 8 étapes validées (25 %)
 
 | Étape | Branche Git | Périmètre principal | Statut | Validation / Tests |
 | :---: | :--- | :--- | :---: | :--- |
-| **1** | [`step-01/socle-docker`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker) | Socle Git, MCD/Migrations PostgreSQL, Stack Docker 4 conteneurs, `/api/health`, Squelette UI mobile-first | ✅ Validée (attente revue) | 4 conteneurs `healthy` • `ruff` OK • `pytest` 5/5 • Persistance `down`/`up` OK • Non-root OK |
-| **2** | `step-02/auth-profils-groupes` | Auth JWT sécurisée (bcrypt), profils + upload avatar persistant, groupes sportifs | ⏳ À faire | — |
+| **1** | [`step-01/socle-docker`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker) | Socle Git, MCD/Migrations PostgreSQL, Stack Docker 4 conteneurs, `/api/health`, Squelette UI mobile-first | ✅ Fusionnée (`develop`) | 4 conteneurs `healthy` • `ruff` OK • `pytest` 5/5 • Persistance `down`/`up` OK |
+| **2** | [`step-02/auth-profils-groupes`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-02/auth-profils-groupes) | Auth JWT sécurisée (`bcrypt`), profils + upload avatar persistant, groupes sportifs | ✅ Validée (attente revue) | `ruff` OK • `pytest` **14/14** (0 warning) • Upload & persistance avatar après restart OK |
 | **3** | `step-03/social-fitness` | Stories workouts, partage photos Avant/Après (slider comparatif), likes & commentaires | ⏳ À faire | — |
 | **4** | `step-04/defis-classements` | Création/participation défis inter-campus, soumission performances, leaderboards campus & individuels | ⏳ À faire | — |
 | **5** | `step-05/fitbuddy-realtime` | Matching Fit-Buddy, encouragements temps réel Flask-SocketIO + Redis, streak partagé | ⏳ À faire | — |
@@ -24,29 +24,27 @@ Application locale en cours d'exécution : http://localhost:8080
 
 ---
 
-## Détail de l'Étape 1 — `step-01/socle-docker`
+## Détail de l'Étape 2 — `step-02/auth-profils-groupes`
 
 ### Livrables implémentés
-- **Infra & Config racine** : `docker-compose.yml` (4 services + réseau privé `fithub_net` + 2 volumes persistants `postgres_data` et `uploads_data`), `.env.example`, `.gitignore`, `README.md`.
-- **Backend (`backend/`)** :
-  - `Dockerfile` multi-stage Python 3.12-slim exécuté en utilisateur non-root (`appuser`, `uid=999`) + `entrypoint.sh` (migrations + seed + Gunicorn/Eventlet).
-  - `app/models.py` : 16 tables relationnelles avec clés étrangères et contraintes d'unicité (`campuses`, `users`, `groups`, `group_members`, `workouts`, `stories`, `story_likes`, `story_comments`, `challenges`, `challenge_entries`, `fit_buddies`, `encouragements`, `places_events`, `event_rsvps`, `badges`, `user_badges`).
-  - `migrations/versions/b7ed6f971fa6_initial_schema.py` : migration Alembic initiale générée et appliquée.
-  - `app/seed.py` : seed idempotent (4 campus étudiants, 5 badges de base, 4 lieux sportifs).
-  - `app/routes/health.py` : `GET /api/health` (statut PostgreSQL + Redis + compteurs) et `GET /api/campuses`.
-  - `tests/test_step01_socle.py` : 5 tests automatisés.
-- **Frontend (`frontend/`)** :
-  - `Dockerfile` multi-stage (`node:20-alpine` → `nginxinc/nginx-unprivileged:1.27-alpine`, `uid=101`).
-  - `nginx.conf` : proxy `/api/`, `/uploads/`, `/socket.io/` (WebSocket) + endpoint `/nginx-health`.
-  - `src/App.jsx` & `src/styles/global.css` : interface *mobile-first* responsive (navigation basse mobile + barre desktop) affichant le diagnostic live et les campus depuis PostgreSQL.
+- **Authentification JWT & Sécurité (`backend/app/routes/auth.py`)** :
+  - `POST /api/auth/register` : validation email/pseudo/campus, hachage mot de passe `bcrypt` (`$2b$`), émission jeton JWT RFC 7518.
+  - `POST /api/auth/login` & `GET /api/auth/me` : vérification d'identifiants et gestionnaire d'erreurs JWT retournant systématiquement `401` sur accès non authentifié ou jeton invalide.
+- **Profils sportifs & Avatar persistant (`backend/app/routes/users.py`, `backend/app/utils/media.py`)** :
+  - `GET /api/users/me`, `PUT /api/users/me`, `GET /api/users/<id>` : lecture/modification du profil sportif (pseudo, campus, sports favoris, niveau, bio) et statistiques personnelles (`xp_points`, `groups_count`, `workouts_count`, `badges_count`).
+  - `POST /api/users/me/avatar` : validation réelle de l'image via Pillow (`JPEG`, `PNG`, `WEBP`), redimensionnement (`400x400`), stockage sur le volume persistant `/app/uploads/avatars/` et exposition via `/uploads/<path>` derrière Nginx.
+- **Groupes sportifs (`backend/app/routes/groups.py`)** :
+  - `GET /api/groups` (filtres `campus_id`, `sport`, recherche `q`), `GET /api/groups/<id>` (liste détaillée des membres et rôles), `POST /api/groups`, `PUT /api/groups/<id>`, `DELETE /api/groups/<id>` (contrôle créateur `403`), `POST /api/groups/<id>/join` et `POST /api/groups/<id>/leave`.
+- **Seed enrichi (`backend/app/seed.py`)** : 3 comptes étudiants de démo (`InaFit_Lyon`, `LucasBarz_Paris`, `SarahRun_Bdx`) et 3 groupes sportifs pré-remplis.
+- **Interface React Mobile-First (`frontend/src/`)** :
+  - `src/api.js` (client HTTP JWT), `src/components/AuthProfileView.jsx` (Connexion / Inscription + connexion démo 1-clic + édition profil + upload d'avatar), `src/components/GroupsView.jsx` (filtres campus/sport/recherche, création de groupe, adhésion/désinscription, tiroir des membres).
 
 ### Résultats des vérifications
-- **`docker compose ps`** : `fithub-db`, `fithub-redis`, `fithub-backend`, `fithub-frontend` tous en `Up (healthy)`.
 - **`ruff check app tests wsgi.py gunicorn_wsgi.py`** : `All checks passed!`
-- **`pytest -v`** : `5 passed in 1.29s` (`test_health_endpoint_ok`, `test_all_mvp_tables_created`, `test_seed_is_idempotent`, `test_campuses_endpoint_returns_seeded_data`, `test_foreign_key_integrity_enforced`).
-- **Endpoints HTTP via Nginx (`localhost:8080`)** :
-  - `GET /api/health` → `200 OK` (`database: ok`, `redis: ok`, `campuses: 4`, `badges: 5`, `places: 4`)
-  - `GET /api/campuses` → `200 OK` (4 campus)
-  - `GET /` → `200 OK` (`FitHub Campus`)
-- **Persistance PostgreSQL** : insertion d'un campus témoin → `docker compose down` (sans `-v`) → `docker compose up -d --wait` → ligne toujours présente en base → nettoyage confirmé (`4` campus).
-- **Sécurité** : conteneurs backend (`uid=999(appuser)`) et frontend (`uid=101(nginx)`) non-root ; `0` occurrence de jeton dans `.git/config` et le workspace.
+- **`pytest -v`** : **`14 passed in 7.26s`** (0 warning — 5 tests Étape 1 + 9 nouveaux tests Étape 2 dans `tests/test_step02_auth_groups.py`).
+- **Persistance `uploads_data` via Nginx (`:8080`)** : connexion `InaFit_Lyon` → upload `ina_avatar.png` → `docker compose restart backend` → `GET http://localhost:8080/uploads/avatars/...` renvoie toujours `200 OK` (`image/png`).
+
+---
+
+## Historique — Étape 1 (`step-01/socle-docker`) — Fusionnée dans `develop`
+- Stack Docker 4 conteneurs (`frontend`, `backend`, `db`, `redis`), 16 tables SQLAlchemy + migration Alembic initiale, seed idempotent, `/api/health` & `/api/campuses`, 5/5 tests `pytest`.

@@ -12,7 +12,7 @@ Ce document conserve, **étape par étape**, les captures d'écran réelles vali
 ## Sommaire des Étapes
 
 1. [Étape 1 — `step-01/socle-docker` (Socle Git, PostgreSQL, Stack Docker 4 conteneurs & UI Mobile-First)](#étape-1--step-01socle-docker) ✅
-2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ⏳
+2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ✅
 3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ⏳
 4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ⏳
 5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ⏳
@@ -58,7 +58,35 @@ Synthèse visuelle de l'architecture à 4 conteneurs, des livrables et des résu
 
 ## Étape 2 — `step-02/auth-profils-groupes`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 2 dans `docs/screenshots/step-02/` (inscription/connexion JWT, édition de profil + upload d'avatar persistant, liste et création de groupes sportifs).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **14/14** sans warning • upload & persistance d'avatar sur `uploads_data` vérifiés après redémarrage conteneur)
+- **Branche GitHub** : [`step-02/auth-profils-groupes`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-02/auth-profils-groupes)
+- **Fonctionnalités couvertes** : Inscription/Connexion JWT (`bcrypt`), édition de profil + statistiques personnelles, upload d'avatar redimensionné via Pillow et servi par Nginx, CRUD groupes sportifs + filtres + adhésion/désinscription + liste des membres.
+
+### 2.1 Écran Connexion / Inscription JWT & Comptes de démonstration
+Formulaire d'authentification étudiante (bascule Connexion / Inscription) accompagné des 3 comptes étudiants pré-seedés pour tester immédiatement les parcours.
+
+![Étape 2 - Connexion JWT et Comptes Démo](./docs/screenshots/step-02/01-auth-connexion-desktop.png)
+
+---
+
+### 2.2 Profil Sportif connecté (`InaFit_Lyon`) & Avatar persistant
+Vue connectée affichant l'avatar stocké sur le volume persistant `/uploads/avatars/...`, les compteurs personnels (`220 Points XP`, `2 Groupes`, `Séances`, `Badges`) et le formulaire d'édition du profil.
+
+![Étape 2 - Profil connecté et Avatar persistant](./docs/screenshots/step-02/02-profil-avatar-connecte.png)
+
+---
+
+### 2.3 Groupes Sportifs Inter-Campus, Filtres & Liste des Membres
+Exploration des groupes par campus/discipline/mot-clé, boutons d'adhésion (`Rejoindre` / `Quitter`), contrôle créateur (`Suppr.`) et tiroir des membres déplié sur *Lyon Running Rhone*.
+
+![Étape 2 - Groupes Sportifs et Membres](./docs/screenshots/step-02/03-groupes-sportifs-membres.png)
+
+---
+
+### 2.4 Tableau de bord d'avancement mis à jour (25 % — 14/14 Pytest)
+Synthèse visuelle de l'Étape 2 validée et trace d'exécution des 14 tests automatisés (non-régression Étape 1 incluse).
+
+![Étape 2 - Tableau de bord et tests](./docs/screenshots/step-02/04-suivi-dashboard-step02.png)
 
 ---
 

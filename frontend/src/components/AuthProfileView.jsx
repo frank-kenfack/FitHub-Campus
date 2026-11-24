@@ -4,7 +4,8 @@ import { apiRequest, setStoredToken } from "../api.js";
 const DEMO_ACCOUNTS = [
   { label: "Ina (Lyon)", email: "ina.lyon@fithub.fr", password: "Password123!" },
   { label: "Lucas (Paris)", email: "lucas.paris@fithub.fr", password: "Password123!" },
-  { label: "Sarah (Bordeaux)", email: "sarah.bordeaux@fithub.fr", password: "Password123!" }
+  { label: "Sarah (Bordeaux)", email: "sarah.bordeaux@fithub.fr", password: "Password123!" },
+  { label: "Mehdi (Lille)", email: "mehdi.lille@fithub.fr", password: "Password123!" }
 ];
 
 const LEVELS = ["Débutant", "Intermédiaire", "Avancé", "Compétiteur"];

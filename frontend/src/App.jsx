@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { apiRequest, getStoredToken, setStoredToken } from "./api.js";
 import AuthProfileView from "./components/AuthProfileView.jsx";
+import ChallengesView from "./components/ChallengesView.jsx";
 import GroupsView from "./components/GroupsView.jsx";
 import SocialFeedView from "./components/SocialFeedView.jsx";
 
 const TABS = [
-  { id: "home", label: "Accueil", step: "Étapes 1–3" },
+  { id: "home", label: "Accueil", step: "Étapes 1–4" },
   { id: "social", label: "Social", step: "Étape 3 (Actif)" },
+  { id: "challenges", label: "Défis", step: "Étape 4 (Actif)" },
   { id: "groups", label: "Groupes", step: "Étape 2 (Actif)" },
-  { id: "challenges", label: "Défis", step: "Étape 4" },
   { id: "buddy", label: "Buddy", step: "Étape 5" },
   { id: "profile", label: "Profil", step: "Étape 2 (Actif)" }
 ];
@@ -74,11 +75,11 @@ export default function App() {
           <div>
             <h1 className="brand">FitHub Campus</h1>
             <p className="topbar-sub">
-              Réseau Social Fitness Étudiant — Stories Workouts, Avant/Après &amp; Communauté
+              Réseau Social Fitness Étudiant — Défis Inter-Campus, Podiums &amp; Communauté
             </p>
           </div>
           <div className="topbar-right">
-            <span className="step-pill">step-03/social-fitness</span>
+            <span className="step-pill">step-04/defis-classements</span>
             <button
               type="button"
               className="user-pill-btn"
@@ -153,15 +154,15 @@ export default function App() {
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>Activité sociale</span>
+                    <span>Compétition &amp; Social</span>
                     <span className="badge badge-soon">
-                      {health.stats?.stories ?? 0} publications • {health.stats?.groups ?? 0} groupes
+                      {health.stats?.challenges ?? 0} défis • {health.stats?.stories ?? 0} posts
                     </span>
                   </div>
                   <div className="status-row">
                     <span>Communauté campus</span>
                     <span className="badge badge-soon">
-                      {health.stats?.users ?? 0} étudiants • {health.stats?.campuses ?? 0} campus
+                      {health.stats?.users ?? 0} étudiants • {health.stats?.groups ?? 0} groupes
                     </span>
                   </div>
                 </div>
@@ -169,40 +170,40 @@ export default function App() {
             </section>
 
             <section className="card">
-              <h2>Modules Actifs (Étapes 1 à 3)</h2>
+              <h2>Modules Actifs (Étapes 1 à 4)</h2>
               <p className="muted-text" style={{ marginTop: 0 }}>
-                Découvrez le fil Social Fitness (Stories 24h, comparateur Avant/Après, likes &amp; commentaires) :
+                Participez aux défis inter-campus, soumettez vos performances et hissez votre école sur le podium :
               </p>
               <div className="quick-actions">
                 <button
                   type="button"
                   className="primary-btn"
-                  onClick={() => setActiveTab("social")}
+                  onClick={() => setActiveTab("challenges")}
                 >
-                  Ouvrir le Fil Social Fitness
+                  Défis &amp; Classements
                 </button>
                 <button
                   type="button"
                   className="secondary-btn"
-                  onClick={() => setActiveTab("groups")}
+                  onClick={() => setActiveTab("social")}
                 >
-                  Groupes Sportifs
+                  Fil Social Fitness
                 </button>
                 <button
                   type="button"
                   className="outline-btn"
-                  onClick={() => setActiveTab("profile")}
+                  onClick={() => setActiveTab("groups")}
                 >
-                  {currentUser ? `Profil (${currentUser.username})` : "Connexion"}
+                  Groupes
                 </button>
               </div>
               <div className="status-row" style={{ marginTop: "8px" }}>
-                <span>Défis Inter-Campus &amp; Classements</span>
-                <span className="badge badge-soon">Étape 4</span>
+                <span>Fit-Buddy &amp; Encouragements Temps Réel</span>
+                <span className="badge badge-soon">Étape 5</span>
               </div>
               <div className="status-row">
-                <span>Fit-Buddy Temps Réel &amp; Carte OSM</span>
-                <span className="badge badge-soon">Étapes 5–6</span>
+                <span>Carte Leaflet/OSM &amp; Gamification</span>
+                <span className="badge badge-soon">Étape 6</span>
               </div>
             </section>
           </div>
@@ -232,6 +233,14 @@ export default function App() {
         />
       )}
 
+      {activeTab === "challenges" && (
+        <ChallengesView
+          user={currentUser}
+          onRequireAuth={() => setActiveTab("profile")}
+          onScoreChanged={refreshSessionAndStats}
+        />
+      )}
+
       {activeTab === "groups" && (
         <GroupsView
           user={currentUser}
@@ -250,7 +259,7 @@ export default function App() {
         />
       )}
 
-      {!["home", "social", "groups", "profile"].includes(activeTab) && (
+      {!["home", "social", "challenges", "groups", "profile"].includes(activeTab) && (
         <section className="card">
           <h2>Module {currentTabMeta?.label}</h2>
           <p>

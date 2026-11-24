@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fithub-campus
+  labels:
+    app.kubernetes.io/name: fithub-campus
+    app.kubernetes.io/part-of: fithub-campus-platform
+    app.kubernetes.io/managed-by: kustomize

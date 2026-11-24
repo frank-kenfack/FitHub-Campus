@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fithub-config
+  namespace: fithub-campus
+  labels:
+    app.kubernetes.io/part-of: fithub-campus-platform
+data:
+  POSTGRES_DB: "fithub"
+  POSTGRES_USER: "fithub_user"
+  REDIS_URL: "redis://fithub-redis:6379/0"
+  UPLOAD_FOLDER: "/app/uploads"
+  FLASK_APP: "wsgi:app"
+  PYTHONUNBUFFERED: "1"

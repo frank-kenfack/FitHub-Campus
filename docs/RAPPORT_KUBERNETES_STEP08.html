@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>FitHub Campus — Orchestration Kubernetes (+20 % Bonus) &amp; Soutenance Jury</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #F8FAFC;
+      color: #0F172A;
+      padding: 24px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .hero {
+      background: linear-gradient(135deg, #1E2E5C 0%, #BE123C 55%, #E61A5F 100%);
+      color: #FFF;
+      padding: 22px 26px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+    .hero h1 { margin: 0 0 6px; font-size: 24px; }
+    .hero p { margin: 0; font-size: 13.5px; opacity: 0.94; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-top: 4px solid #1B8A3D;
+      border-radius: 10px;
+      padding: 13px 15px;
+    }
+    .kpi span { font-size: 11.5px; font-weight: 700; color: #64748B; text-transform: uppercase; }
+    .kpi strong { display: block; font-size: 21px; color: #1E2E5C; margin: 4px 0 2px; }
+    .kpi small { font-size: 12px; color: #475569; }
+    .card {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 16.5px;
+      color: #1E2E5C;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #F1F5F9; }
+    th { color: #475569; font-size: 11.5px; text-transform: uppercase; background: #F8FAFC; }
+    .pill-ok {
+      background: #DCFCE7;
+      color: #166534;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .pill-ha {
+      background: #FFF1F2;
+      color: #BE123C;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .time-box {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-left: 4px solid #E61A5F;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+    }
+    .time-box strong { display: block; color: #1E2E5C; font-size: 13.5px; margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>FitHub Campus — Orchestration Kubernetes (+20 % Bonus) &amp; Guide Jury</h1>
+      <p>Étape 8 Finale (step-08/kubernetes-bonus) • Validation Kustomize v5.8.1 (kubectl v1.36.1) • 14 ressources Kubernetes dans le namespace fithub-campus</p>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <span>Validation Kustomize</span>
+        <strong>463 lignes YAML</strong>
+        <small>kubectl kustomize k8s/ : OK</small>
+      </div>
+      <div class="kpi">
+        <span>Haute Disponibilité</span>
+        <strong>2 → 5 Réplicas</strong>
+        <small>RollingUpdate (0 coupure) + HPA</small>
+      </div>
+      <div class="kpi">
+        <span>Stockage Persistant</span>
+        <strong>2 PVC (7 Gi)</strong>
+        <small>PostgreSQL (5Gi) + Uploads (2Gi)</small>
+      </div>
+      <div class="kpi">
+        <span>Suite Totale Pytest</span>
+        <strong>58 / 58 VERT</strong>
+        <small>Étapes 1 à 8 • 100 % validé</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Topologie des 14 Ressources Kubernetes (k8s/00-namespace.yaml → 08-ingress.yaml)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Manifest</th>
+            <th>Kind Kubernetes</th>
+            <th>Nom Ressource</th>
+            <th>Réplicas / Capacité</th>
+            <th>Probes &amp; Sécurité</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>00-namespace.yaml</code></td>
+            <td>Namespace</td>
+            <td><code>fithub-campus</code></td>
+            <td>Isolation cluster</td>
+            <td>Labels standards K8s</td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>01-configmap.yaml</code></td>
+            <td>ConfigMap</td>
+            <td><code>fithub-config</code></td>
+            <td>5 clés d'env</td>
+            <td>REDIS_URL, UPLOAD_FOLDER</td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>02-secret.yaml</code></td>
+            <td>Secret (Opaque)</td>
+            <td><code>fithub-secrets</code></td>
+            <td>4 secrets</td>
+            <td>Clés HMAC JWT RFC 7518 (&ge; 36B)</td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>03-pvc.yaml</code></td>
+            <td>PersistentVolumeClaim (x2)</td>
+            <td><code>postgres-data-pvc</code>, <code>uploads-data-pvc</code></td>
+            <td>5Gi + 2Gi (RWO)</td>
+            <td>Survie aux redémarrages pods</td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>04-postgres.yaml</code></td>
+            <td>Deployment + Service</td>
+            <td><code>fithub-postgres</code> (<code>:5432</code>)</td>
+            <td>1 pod Stateful</td>
+            <td>readiness/liveness <code>pg_isready</code></td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>05-redis.yaml</code></td>
+            <td>Deployment + Service</td>
+            <td><code>fithub-redis</code> (<code>:6379</code>)</td>
+            <td>1 pod Broker</td>
+            <td>readiness/liveness <code>redis-cli ping</code></td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>06-backend.yaml</code></td>
+            <td>Deployment + Service + HPA</td>
+            <td><code>fithub-backend</code> (<code>:5000</code>)</td>
+            <td><span class="pill-ha">2 à 5 pods (HPA 75%)</span></td>
+            <td><code>runAsNonRoot: true</code> • <code>GET /api/health</code></td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>07-frontend.yaml</code></td>
+            <td>Deployment + Service</td>
+            <td><code>fithub-frontend</code> (<code>:80 → :8080</code>)</td>
+            <td><span class="pill-ha">2 pods HA</span></td>
+            <td><code>runAsUser: 101</code> • <code>GET /nginx-health</code></td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+          <tr>
+            <td><code>08-ingress.yaml</code></td>
+            <td>Ingress (nginx)</td>
+            <td><code>fithub-ingress</code></td>
+            <td>4 routes L7</td>
+            <td><code>/</code>, <code>/api</code>, <code>/uploads</code>, WS <code>/socket.io</code></td>
+            <td><span class="pill-ok">Validé ✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Scénario Chronométré de Soutenance Jury (15 Minutes — docs/DEMO_JURY.md)</h2>
+      <div class="timeline">
+        <div class="time-box">
+          <strong>00:00 – 05:00 • Architecture &amp; DevOps</strong>
+          Présentation du backlog Agile (9 Epics, 30 US), stack Docker 4 conteneurs non-root, pipelines CI/CD GitLab &amp; GitHub Actions, playbook Ansible et manifests Kubernetes (+20 % bonus).
+        </div>
+        <div class="time-box">
+          <strong>05:00 – 12:00 • Démonstration Live</strong>
+          Connexion 1-clic <code>InaFit_Lyon</code>, stories 24h &amp; slider Avant/Après, podiums défis inter-campus, encouragement WebSocket instantané entre 2 navigateurs, carte Leaflet Haversine + RSVP et sync Google Fit / GPX.
+        </div>
+        <div class="time-box">
+          <strong>12:00 – 15:00 • Questions Techniques Jury</strong>
+          Synchronisation WebSocket multi-pods via Redis Pub/Sub, verrouillage transactionnel <code>SELECT FOR UPDATE</code> sur les capacités RSVP, sécurité Pillow / anti-XXE GPX et latence E2E &lt; 30 ms.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

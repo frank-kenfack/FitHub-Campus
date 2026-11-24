@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fithub-ingress
+  namespace: fithub-campus
+  labels:
+    app.kubernetes.io/component: ingress-gateway
+    app.kubernetes.io/part-of: fithub-campus-platform
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/websocket-services: "fithub-backend"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "fithub_ws_route"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: fithub-campus.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: fithub-backend
+                port:
+                  number: 5000
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: fithub-backend
+                port:
+                  number: 5000
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: fithub-backend
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fithub-frontend
+                port:
+                  number: 80

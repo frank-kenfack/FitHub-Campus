@@ -91,7 +91,7 @@
 
     .progress-bar {
       height: 100%;
-      width: 87.5%;
+      width: 100%;
       background: #4ADE80;
       border-radius: 999px;
     }
@@ -193,7 +193,6 @@
     }
 
     .step-item.done { border-left-color: var(--green); background: #F0FDF4; }
-    .step-item.active { border-left-color: var(--pink); background: #FFF1F2; }
 
     .step-head {
       display: flex;
@@ -218,8 +217,6 @@
       font-weight: 700;
     }
 
-    .badge-todo { background: #F1F5F9; color: #475569; }
-    .badge-active { background: #FFE4E6; color: var(--pink-dark); }
     .badge-done { background: #DCFCE7; color: #166534; }
 
     .branch-code {
@@ -261,91 +258,84 @@
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Suivi Visuel • Étape 7 Validée (En attente de revue)</span>
+        <span class="pill">Suivi Visuel • Release Finale v1.0.0 Fusionnée dans develop &amp; main (100 % + Bonus K8s +20 %)</span>
         <div class="pill-row">
           <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-07/cicd-qualite-docs/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs" target="_blank" rel="noreferrer">Branche GitHub : step-07/cicd-qualite-docs ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/main/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/main" target="_blank" rel="noreferrer">Dépôt GitHub : main (v1.0.0) ↗</a>
         </div>
       </div>
-      <h1>FitHub Campus — Tableau de Bord d'Avancement</h1>
-      <p>Chaque étape possède sa branche GitHub dédiée, ses tests de non-régression et une validation visuelle avant passage à l'étape suivante.</p>
+      <h1>FitHub Campus — Tableau de Bord d'Avancement Final</h1>
+      <p>Toutes les 8 étapes du projet (MVP Full-Stack, WebSockets, Carte Leaflet, Gamification, CI/CD, Ansible &amp; Bonus Kubernetes +20 %) sont complétées et validées par 58 tests automatisés.</p>
       <div class="progress-wrap">
         <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 7 / 8 étapes validées (CI/CD, Qualité E2E &amp; Documentation complètes)</span>
-        <span>87,5 %</span>
+        <span>Progression : 8 / 8 étapes validées (MVP + CI/CD + Bonus Kubernetes +20 % complets)</span>
+        <span>100 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
       <div class="kpi green">
-        <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Étape 7 Validée</div>
-        <div class="kpi-sub">Prête pour fusion vers <code>develop</code> après votre revue</div>
+        <div class="kpi-label">Statut Projet</div>
+        <div class="kpi-val">Release v1.0.0</div>
+        <div class="kpi-sub">Fusionnée dans <code>develop</code> &amp; <code>main</code></div>
       </div>
       <div class="kpi pink">
-        <div class="kpi-label">Branche GitHub</div>
-        <div class="kpi-val" style="font-size:14.5px;">step-07/cicd-qualite-docs</div>
-        <div class="kpi-sub">Étapes 1 à 6 fusionnées dans <code>develop</code></div>
+        <div class="kpi-label">Branches GitHub</div>
+        <div class="kpi-val" style="font-size:14.5px;">main • develop • step-01..08</div>
+        <div class="kpi-sub">8 branches d'étapes intégrées à 100 %</div>
       </div>
       <div class="kpi green">
-        <div class="kpi-label">Suite de Tests &amp; SLA</div>
-        <div class="kpi-val">51 / 51 Pytest</div>
-        <div class="kpi-sub">Latence Nginx E2E : 4 à 31 ms (&lt; 300 ms)</div>
+        <div class="kpi-label">Suite de Tests</div>
+        <div class="kpi-val">58 / 58 Pytest</div>
+        <div class="kpi-sub">0 warning • Ruff OK • Kustomize 463 lignes OK</div>
       </div>
-      <div class="kpi amber">
-        <div class="kpi-label">Dernière étape (+20 %)</div>
-        <div class="kpi-val" style="font-size:15px;">Étape 8 • Kubernetes</div>
-        <div class="kpi-sub">Branche <code>step-08/kubernetes-bonus</code></div>
+      <div class="kpi green">
+        <div class="kpi-label">Bonus Kubernetes</div>
+        <div class="kpi-val" style="font-size:16px;">+20 % Validé</div>
+        <div class="kpi-sub">14 objets K8s • HA 2→5 pods • Ingress WS</div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Livrables Réalisés à l'Étape 7 (Pipelines CI/CD, Scripts Ansible, Recette E2E &amp; Docs)</h2>
+      <h2>Livrables Réalisés à l'Étape 8 (Orchestration Kubernetes +20 % &amp; Soutenance Jury)</h2>
       <div class="files-grid">
         <div class="files-box">
-          <strong>Pipelines CI/CD (US-8.2)</strong>
+          <strong>Manifests Kubernetes (US-8.4)</strong>
           <ul>
-            <li><code>.gitlab-ci.yml</code> (4 stages : lint, test, build, deploy)</li>
-            <li><code>.github/workflows/ci.yml</code> (3 jobs cloud automatisés)</li>
-            <li>Services PostgreSQL 16 + Redis 7 &amp; rapport JUnit</li>
+            <li><code>k8s/00-namespace.yaml</code> à <code>08-ingress.yaml</code></li>
+            <li><code>k8s/kustomization.yaml</code> (compilé par <code>kubectl kustomize</code>)</li>
+            <li>2 PVC (<code>5Gi</code> Postgres + <code>2Gi</code> Uploads)</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Automatisation &amp; IaC (US-8.3)</strong>
+          <strong>Haute Disponibilité &amp; Scaling</strong>
           <ul>
-            <li><code>scripts/deploy.sh</code> &amp; <code>scripts/run_tests.sh</code></li>
-            <li><code>scripts/smoke_test.sh</code> (vérification HTTP 200 &lt; 300 ms)</li>
-            <li><code>infra/ansible/deploy.yml</code> + inventaire type</li>
+            <li>2 réplicas min sur <code>fithub-backend</code> &amp; <code>fithub-frontend</code></li>
+            <li><code>HorizontalPodAutoscaler</code> (<code>2 → 5</code> pods à 75 % CPU)</li>
+            <li>Ingress NGINX L7 + support WebSocket <code>/socket.io</code></li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Recette E2E, Perfs &amp; Docs (US-9.1..9.3)</strong>
+          <strong>Tests K8s &amp; Guide Jury (US-9.4)</strong>
           <ul>
-            <li><code>test_step07_quality_perf.py</code> (parcours complet 5/5 badges, SQLi, &lt; 300 ms)</li>
-            <li><code>README.md</code> complet + diagrammes Mermaid</li>
-            <li><code>docs/ARCHITECTURE_TECHNIQUE.md</code> &amp; rapport latence</li>
+            <li>7 nouveaux tests dans <code>test_step08_kubernetes_bonus.py</code></li>
+            <li>Script <code>scripts/k8s_deploy.sh</code></li>
+            <li>Guide chronométré 15 min <code>docs/DEMO_JURY.md</code></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Journal des Tests &amp; Smoke Benchmark Observés (Étape 7)</h2>
-      <div class="test-log">$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
-All checks passed!
+      <h2>Journal des Tests Observés (Étapes 1 à 8 — 58 / 58 Pytest + Validation Kustomize)</h2>
+      <div class="test-log">$ kubectl kustomize k8s/ | wc -l
+463
 
-$ bash ./scripts/smoke_test.sh http://localhost:8080
-[OK] /nginx-health -> HTTP 200 (4 ms &lt; 300 ms)
-[OK] / -> HTTP 200 (4 ms &lt; 300 ms)
-[OK] /api/health -> HTTP 200 (21 ms &lt; 300 ms)
-[OK] /api/campuses -> HTTP 200 (16 ms &lt; 300 ms)
-[OK] /api/groups -> HTTP 200 (22 ms &lt; 300 ms)
-[OK] /api/social/posts -> HTTP 200 (31 ms &lt; 300 ms)
-[OK] /api/challenges -> HTTP 200 (19 ms &lt; 300 ms)
-[OK] /api/places -> HTTP 200 (16 ms &lt; 300 ms)
+$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
+All checks passed!
 
 $ docker compose exec -T backend pytest -v
 tests/test_step01_socle.py (5 tests) ............................................ PASSED
@@ -354,12 +344,19 @@ tests/test_step03_social.py (8 tests) ..........................................
 tests/test_step04_challenges.py (8 tests) ....................................... PASSED
 tests/test_step05_fitbuddy.py (7 tests) ......................................... PASSED
 tests/test_step06_geoloc_gamification.py (8 tests) .............................. PASSED
-tests/test_step07_quality_perf.py (6 tests : E2E 5/5 badges, &lt;300ms, SQLi, CORS) . PASSED
-============================= 51 passed (0 warnings) ============================</div>
+tests/test_step07_quality_perf.py (6 tests) ..................................... PASSED
+tests/test_step08_kubernetes_bonus.py::test_k8s_directory_and_kustomization_complete PASSED [ 89%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_namespace_configmap_and_rfc7518_secrets PASSED [ 91%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_persistent_volume_claims_for_db_and_uploads PASSED [ 93%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_deployments_high_availability_probes_and_non_root PASSED [ 94%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_services_and_horizontal_pod_autoscaler PASSED [ 96%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_ingress_routes_http_and_websocket_socketio PASSED [ 98%]
+tests/test_step08_kubernetes_bonus.py::test_health_endpoint_reports_step08 PASSED [100%]
+============================= 58 passed (0 warnings) ============================</div>
     </div>
 
     <div class="card">
-      <h2>Feuille de route des 8 étapes</h2>
+      <h2>Feuille de route des 8 étapes (100 % Complétée)</h2>
       <div class="steps-list">
         <div class="step-item done">
           <div class="step-head">
@@ -412,20 +409,20 @@ tests/test_step07_quality_perf.py (6 tests : E2E 5/5 badges, &lt;300ms, SQLi, CO
         <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
-            <span class="badge badge-done">✅ Validée — Revue en cours</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
-          <div>
-            Branche : <span class="branch-code">step-07/cicd-qualite-docs</span> •
-            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
-          </div>
+          <div>Branche : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
         </div>
 
-        <div class="step-item active">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 8 — Orchestration Kubernetes (+20 % Bonus) &amp; Préparation Jury</span>
-            <span class="badge badge-active">⏭️ Dernière étape (après validation)</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop &amp; main (v1.0.0)</span>
           </div>
-          <div>Branche prévue : <span class="branch-code">step-08/kubernetes-bonus</span></div>
+          <div>
+            Branche : <span class="branch-code">step-08/kubernetes-bonus</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/main" target="_blank" rel="noreferrer">Voir Release main sur GitHub ↗</a>
+          </div>
         </div>
       </div>
     </div>

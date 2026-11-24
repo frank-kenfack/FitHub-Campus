@@ -228,7 +228,7 @@ Synthèse visuelle de l'achèvement fonctionnel du MVP (6 / 8 étapes validées)
 
 ## Étape 7 — `step-07/cicd-qualite-docs`
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **51/51** sans warning • Smoke test Nginx **4 ms à 31 ms** `< 300 ms` • GitHub Actions CI/CD actif)
+- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **51/51** sans warning • Smoke test Nginx **4 ms à 31 ms** `< 300 ms` • GitHub Actions CI/CD actif)
 - **Branche GitHub** : [`step-07/cicd-qualite-docs`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs)
 - **Fonctionnalités couvertes** : Pipelines CI/CD automatisés (`.gitlab-ci.yml` 4 stages & `.github/workflows/ci.yml` 3 jobs), scripts DevOps (`deploy.sh`, `run_tests.sh`, `smoke_test.sh`), playbook Ansible (`infra/ansible/deploy.yml`), suite de recette E2E complète & benchmark de latence `< 300 ms`, et documentation technique finale (`README.md`, `docs/ARCHITECTURE_TECHNIQUE.md`).
 
@@ -262,4 +262,32 @@ Synthèse visuelle de l'Étape 7 validée (7 / 8 étapes complétées) avant l'�
 
 ## Étape 8 — `step-08/kubernetes-bonus`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 8 dans `docs/screenshots/step-08/` (état des pods/services/PVC/Ingress Kubernetes pour le bonus +20 % et parcours final de démo jury).*
+- **Statut** : ✅ Fusionnée dans `develop` & `main` — Release `v1.0.0` (`ruff` OK • `pytest` **58/58** sans warning • Compilation `kubectl kustomize k8s/` validée sur 14 ressources Kubernetes • Bonus +20 % complet)
+- **Branche GitHub** : [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus)
+- **Fonctionnalités couvertes** : Orchestration Kubernetes complète dans `k8s/` (Namespace `fithub-campus`, ConfigMap, Secret RFC 7518, 2 PersistentVolumeClaims, 4 Deployments avec probes `liveness`/`readiness` et limites CPU/RAM, haute disponibilité `>= 2` réplicas + `HorizontalPodAutoscaler` `2→5` pods, 4 Services `ClusterIP`, Ingress NGINX avec support WebSocket `/socket.io`, `kustomization.yaml`) et guide de soutenance jury 15 minutes (`docs/DEMO_JURY.md`).
+
+### 8.1 Application Finale FitHub Campus (Étape 8 Active — 100 % des Modules &amp; Bonus K8s)
+Vue d'accueil de l'application sur `http://localhost:8080` affichant la branche `step-08/kubernetes-bonus` et l'activation complète de l'orchestration Kubernetes (+20 % Bonus) et du dispositif de démo jury.
+
+![Étape 8 - Accueil Final Step 08](./docs/screenshots/step-08/01-accueil-final-step08.png)
+
+---
+
+### 8.2 Topologie des 14 Ressources Kubernetes (+20 % Bonus) &amp; Scénario Jury 15 min
+Tableau de bord technique récapitulant la validation Kustomize (`463 lignes YAML`), les 9 manifests (`00-namespace.yaml` à `08-ingress.yaml`), l'auto-scaling HPA (`2 → 5` pods) et le minutage de la soutenance jury.
+
+![Étape 8 - Topologie Kubernetes et Guide Jury](./docs/screenshots/step-08/02-topologie-kubernetes-et-jury.png)
+
+---
+
+### 8.3 Vue Mobile-First Responsive (390 px — Parcours Étudiant Mobile)
+Vérification du rendu *mobile-first* avec barre de navigation inférieure fixe (`z-index` isolé au-dessus de la carte Leaflet) sur écran smartphone (`390 × 844`).
+
+![Étape 8 - Vue Mobile First Responsive](./docs/screenshots/step-08/03-vue-mobile-first-responsive.png)
+
+---
+
+### 8.4 Tableau de bord d'avancement final (100 % — 8/8 Étapes — 58/58 Pytest)
+Synthèse finale attestant la validation des 8 étapes et des 58 tests automatisés de non-régression.
+
+![Étape 8 - Tableau de bord final 100%](./docs/screenshots/step-08/04-suivi-dashboard-final-100pct.png)

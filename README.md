@@ -141,7 +141,33 @@ docker compose exec -T backend pytest -v
 
 ---
 
-## 8. Sécurité Applicative & Conteneurs
+## 8. Orchestration Kubernetes (+20 % Bonus — `k8s/`)
+
+L'intégralité de la stack est prête pour un déploiement en cluster Kubernetes (namespace `fithub-campus`) via **Kustomize** :
+
+| Fichier Manifest | Ressources Kubernetes | Rôle & Haute Disponibilité |
+| :--- | :--- | :--- |
+| [`k8s/00-namespace.yaml`](./k8s/00-namespace.yaml) | `Namespace` (`fithub-campus`) | Isolation logique des ressources du projet |
+| [`k8s/01-configmap.yaml`](./k8s/01-configmap.yaml) | `ConfigMap` (`fithub-config`) | Configuration non sensible (URL Redis, dossier uploads) |
+| [`k8s/02-secret.yaml`](./k8s/02-secret.yaml) | `Secret` (`fithub-secrets`) | Identifiants BDD et clés JWT conformes RFC 7518 |
+| [`k8s/03-pvc.yaml`](./k8s/03-pvc.yaml) | `PersistentVolumeClaim` (`5Gi` + `2Gi`) | Persistance `postgres-data-pvc` & `uploads-data-pvc` |
+| [`k8s/04-postgres.yaml`](./k8s/04-postgres.yaml) | `Deployment` + `Service` (`:5432`) | PostgreSQL 16 avec probes `pg_isready` |
+| [`k8s/05-redis.yaml`](./k8s/05-redis.yaml) | `Deployment` + `Service` (`:6379`) | Broker Redis 7 avec probes `redis-cli ping` |
+| [`k8s/06-backend.yaml`](./k8s/06-backend.yaml) | `Deployment` (**2 réplicas**) + `Service` + `HPA` | API Flask/Socket.IO non-root, probes `/api/health`, auto-scaling `2→5` pods |
+| [`k8s/07-frontend.yaml`](./k8s/07-frontend.yaml) | `Deployment` (**2 réplicas**) + `Service` (`:80`) | SPA React/Nginx non-root (UID 101), probes `/nginx-health` |
+| [`k8s/08-ingress.yaml`](./k8s/08-ingress.yaml) | `Ingress` (`fithub-ingress`) | Routage `/`, `/api`, `/uploads` et WebSocket `/socket.io` |
+
+```bash
+# Valider la compilation Kustomize (463 lignes YAML)
+./scripts/k8s_deploy.sh --validate-only
+
+# Déployer sur un cluster Kubernetes actif
+kubectl apply -k k8s/
+```
+
+---
+
+## 9. Sécurité Applicative & Conteneurs
 
 - **Mots de passe & Jetons** : Hachage `bcrypt` salé, clés HMAC JWT conformes à la RFC 7518 (`>= 256 bits`), authentification stricte sur la poignée de main WebSocket Socket.IO.
 - **Moindre privilège Docker** : Image frontend basée sur `nginxinc/nginx-unprivileged` (port `8080`, UID `101`) et image backend exécutée sous l'utilisateur système non-root `appuser`.
@@ -150,8 +176,9 @@ docker compose exec -T backend pytest -v
 
 ---
 
-## 9. Documentation Complémentaire & Suivi Visuel
+## 10. Documentation Complémentaire & Suivi Visuel
 
+- Guide de soutenance & démo jury (15 min) : [docs/DEMO_JURY.md](./docs/DEMO_JURY.md)
 - Architecture détaillée & MCD : [docs/ARCHITECTURE_TECHNIQUE.md](./docs/ARCHITECTURE_TECHNIQUE.md)
 - Backlog MVP découpé (9 Epics, 30 US) : [FitHub_Campus_Backlog_MVP.pdf](./FitHub_Campus_Backlog_MVP.pdf)
 - Album des captures par étape : [CAPTURES_ETAPES.md](./CAPTURES_ETAPES.md)

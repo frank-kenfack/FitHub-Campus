@@ -1,7 +1,7 @@
 # FitHub Campus — Journal d'Avancement & Visualisation
 
 Dépôt GitHub : https://github.com/frank-kenfack/FitHub-Campus  
-Branche active : [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus)  
+Branche active : [`main`](https://github.com/frank-kenfack/FitHub-Campus/tree/main) (`v1.0.0` — synchronisée avec [`develop`](https://github.com/frank-kenfack/FitHub-Campus/tree/develop))  
 Tableau de bord visuel interactif : [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html)  
 Topologie Kubernetes (+20 % Bonus) : [docs/RAPPORT_KUBERNETES_STEP08.html](./docs/RAPPORT_KUBERNETES_STEP08.html)  
 Rapport qualité & benchmark latence : [docs/RAPPORT_QUALITE_STEP07.html](./docs/RAPPORT_QUALITE_STEP07.html)  
@@ -23,7 +23,7 @@ Application locale en cours d'exécution : http://localhost:8080
 | **5** | [`step-05/fitbuddy-realtime`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime) | Matching Fit-Buddy, encouragements temps réel Flask-SocketIO + Redis, streak partagé | ✅ Fusionnée (`develop`) | `ruff` OK • `pytest` 37/37 • WebSocket live OK |
 | **6** | [`step-06/geoloc-gamification`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification) | Carte Leaflet/OSM salles & événements + RSVP + filtres Haversine + badges automatiques + import Google Fit/GPX | ✅ Fusionnée (`develop`) | `ruff` OK • `pytest` 45/45 |
 | **7** | [`step-07/cicd-qualite-docs`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs) | `.gitlab-ci.yml` + `.github/workflows/ci.yml`, scripts Bash/Ansible, recette E2E & perfs `< 300 ms`, `README.md` & architecture | ✅ Fusionnée (`develop`) | `ruff` OK • `pytest` 51/51 • Latence E2E 4–31 ms |
-| **8** | [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus) | Manifests `k8s/` complets (+20 % bonus : Deployments ≥ 2 réplicas, HPA, probes, Services, PVC, Ingress WebSocket) + guide démo jury | ✅ Validée (attente revue finale) | `ruff` OK • `pytest` **58/58** • `kubectl kustomize` OK |
+| **8** | [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus) | Manifests `k8s/` complets (+20 % bonus : Deployments ≥ 2 réplicas, HPA, probes, Services, PVC, Ingress WebSocket) + guide démo jury | ✅ Fusionnée (`develop` & `main`) | `ruff` OK • `pytest` **58/58** • `kubectl kustomize` OK |
 
 ---
 

@@ -262,7 +262,7 @@ Synthèse visuelle de l'Étape 7 validée (7 / 8 étapes complétées) avant l'�
 
 ## Étape 8 — `step-08/kubernetes-bonus`
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **58/58** sans warning • Compilation `kubectl kustomize k8s/` validée sur 14 ressources Kubernetes • Bonus +20 % complet)
+- **Statut** : ✅ Fusionnée dans `develop` & `main` — Release `v1.0.0` (`ruff` OK • `pytest` **58/58** sans warning • Compilation `kubectl kustomize k8s/` validée sur 14 ressources Kubernetes • Bonus +20 % complet)
 - **Branche GitHub** : [`step-08/kubernetes-bonus`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-08/kubernetes-bonus)
 - **Fonctionnalités couvertes** : Orchestration Kubernetes complète dans `k8s/` (Namespace `fithub-campus`, ConfigMap, Secret RFC 7518, 2 PersistentVolumeClaims, 4 Deployments avec probes `liveness`/`readiness` et limites CPU/RAM, haute disponibilité `>= 2` réplicas + `HorizontalPodAutoscaler` `2→5` pods, 4 Services `ClusterIP`, Ingress NGINX avec support WebSocket `/socket.io`, `kustomization.yaml`) et guide de soutenance jury 15 minutes (`docs/DEMO_JURY.md`).
 

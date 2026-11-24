@@ -9,7 +9,7 @@ import MapEventsView from "./components/MapEventsView.jsx";
 import SocialFeedView from "./components/SocialFeedView.jsx";
 
 const TABS = [
-  { id: "home", label: "Accueil", step: "Étapes 1–6" },
+  { id: "home", label: "Accueil", step: "Étapes 1–8" },
   { id: "social", label: "Social", step: "Étape 3 (Actif)" },
   { id: "challenges", label: "Défis", step: "Étape 4 (Actif)" },
   { id: "buddy", label: "Buddy", step: "Étape 5 (Actif)" },
@@ -82,7 +82,7 @@ export default function App() {
             </p>
           </div>
           <div className="topbar-right">
-            <span className="step-pill">step-07/cicd-qualite-docs</span>
+            <span className="step-pill">step-08/kubernetes-bonus</span>
             <button
               type="button"
               className="user-pill-btn"
@@ -208,7 +208,7 @@ export default function App() {
               </div>
               <div className="status-row">
                 <span>Orchestration Kubernetes (+20 % Bonus) &amp; Démo Jury</span>
-                <span className="badge badge-soon">Étape 8</span>
+                <span className="badge badge-ok">Actif (Étape 8)</span>
               </div>
             </section>
           </div>

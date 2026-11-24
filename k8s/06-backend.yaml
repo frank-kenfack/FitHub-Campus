@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fithub-backend
+  namespace: fithub-campus
+  labels:
+    app: fithub-backend
+    app.kubernetes.io/component: api-websocket
+    app.kubernetes.io/part-of: fithub-campus-platform
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: fithub-backend
+  template:
+    metadata:
+      labels:
+        app: fithub-backend
+        app.kubernetes.io/component: api-websocket
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: backend
+          image: fithubcampus-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http-api
+          envFrom:
+            - configMapRef:
+                name: fithub-config
+            - secretRef:
+                name: fithub-secrets
+          volumeMounts:
+            - name: uploads-storage
+              mountPath: /app/uploads
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "600m"
+              memory: "512Mi"
+      volumes:
+        - name: uploads-storage
+          persistentVolumeClaim:
+            claimName: uploads-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fithub-backend
+  namespace: fithub-campus
+  labels:
+    app: fithub-backend
+    app.kubernetes.io/component: api-websocket
+spec:
+  type: ClusterIP
+  selector:
+    app: fithub-backend
+  ports:
+    - name: http-api
+      port: 5000
+      targetPort: 5000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fithub-backend-hpa
+  namespace: fithub-campus
+  labels:
+    app.kubernetes.io/part-of: fithub-campus-platform
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fithub-backend
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75

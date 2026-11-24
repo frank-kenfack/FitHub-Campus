@@ -41,6 +41,10 @@ jobs:
           npm install
           npm run build
 
+      - name: Validate Kubernetes Kustomize Stack (k8s/)
+        run: |
+          kubectl kustomize k8s/ > /dev/null
+
   pytest-integration:
     name: "2. Pytest Integration & Performance (< 300 ms)"
     runs-on: ubuntu-latest
@@ -82,8 +86,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: backend/requirements.txt
 
       - name: Install Backend Dependencies
         working-directory: backend

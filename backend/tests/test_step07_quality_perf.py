@@ -390,6 +390,6 @@ def test_health_reports_step07_and_consistent_counts(client):
     assert res.status_code == 200
     body = res.get_json()
     assert body["status"] == "ok"
-    assert body["step"] == "step-07/cicd-qualite-docs"
+    assert body["step"] in {"step-07/cicd-qualite-docs", "step-08/kubernetes-bonus"}
     assert body["stats"]["campuses"] == 4
     assert body["stats"]["badges"] == 5

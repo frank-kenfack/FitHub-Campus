@@ -47,8 +47,14 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 10px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .pill {
@@ -76,26 +82,25 @@
     }
 
     .progress-wrap {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 999px;
-      height: 12px;
+      height: 13px;
       overflow: hidden;
       margin-top: 16px;
     }
 
     .progress-bar {
       height: 100%;
-      width: 0%;
+      width: 12.5%;
       background: #4ADE80;
       border-radius: 999px;
-      transition: width 0.4s ease;
     }
 
     .progress-caption {
       display: flex;
       justify-content: space-between;
       font-size: 12.5px;
-      font-weight: 600;
+      font-weight: 700;
       margin-top: 6px;
     }
 
@@ -126,7 +131,7 @@
     }
 
     .kpi-val {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 800;
       color: var(--navy);
       margin: 4px 0 2px;
@@ -154,16 +159,43 @@
       padding-bottom: 8px;
     }
 
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .arch-box {
+      border: 1px solid #CBD5E1;
+      border-top: 3px solid var(--green);
+      border-radius: 8px;
+      padding: 12px;
+      background: #F8FAFC;
+    }
+
+    .arch-box h3 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    .arch-box p {
+      margin: 0;
+      font-size: 12.5px;
+      color: #475569;
+    }
+
     .steps-list {
       display: grid;
-      gap: 12px;
+      gap: 11px;
     }
 
     .step-item {
       border: 1px solid var(--border);
       border-left: 5px solid var(--slate);
       border-radius: 10px;
-      padding: 14px 16px;
+      padding: 13px 16px;
       background: #FFFFFF;
     }
 
@@ -181,7 +213,7 @@
 
     .step-title {
       font-weight: 800;
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--navy);
     }
 
@@ -207,29 +239,23 @@
       color: var(--navy);
     }
 
-    .arch-grid {
+    .files-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
+      font-size: 13px;
     }
 
-    .arch-box {
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      padding: 12px;
+    .files-box {
       background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
     }
 
-    .arch-box h3 {
-      margin: 0 0 4px;
-      font-size: 14px;
-      color: var(--navy);
-    }
-
-    .arch-box p {
-      margin: 0;
-      font-size: 12.5px;
-      color: #475569;
+    .files-box ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
     }
 
     .test-log {
@@ -241,75 +267,159 @@
       font-size: 12px;
       overflow-x: auto;
       white-space: pre-wrap;
+      line-height: 1.45;
     }
 
-    a.btn-link {
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    a.ext {
       color: var(--pink-dark);
       font-weight: 700;
       text-decoration: none;
     }
-    a.btn-link:hover { text-decoration: underline; }
+    a.ext:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Tableau de bord d'avancement • Projet Solo</span>
-        <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus" target="_blank" rel="noreferrer">GitHub : frank-kenfack/FitHub-Campus ↗</a>
+        <span class="pill">Suivi Visuel • Étape 1 Validée (En attente de revue)</span>
+        <div class="pill-row">
+          <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-01/socle-docker/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker" target="_blank" rel="noreferrer">Branche GitHub : step-01/socle-docker ↗</a>
+        </div>
       </div>
-      <h1>FitHub Campus — Visualisation des Étapes</h1>
-      <p>Chaque étape dispose de sa branche GitHub dédiée, de tests automatisés et d'une validation visuelle avant de passer à l'étape suivante.</p>
+      <h1>FitHub Campus — Tableau de Bord d'Avancement</h1>
+      <p>Chaque étape possède sa branche GitHub dédiée, ses tests de non-régression et une validation visuelle avant passage à l'étape suivante.</p>
       <div class="progress-wrap">
-        <div class="progress-bar" style="width: 0%;"></div>
+        <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 0 / 8 étapes validées</span>
-        <span>0 %</span>
+        <span>Progression : 1 / 8 étapes validées</span>
+        <span>12,5 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
-      <div class="kpi pink">
+      <div class="kpi green">
         <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Initialisation</div>
-        <div class="kpi-sub">Mise en place dépôt GitHub &amp; Étape 1</div>
+        <div class="kpi-val">Étape 1 Validée</div>
+        <div class="kpi-sub">Prête pour fusion vers <code>develop</code> après votre revue</div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Branche active</div>
-        <div class="kpi-val" style="font-size:16px;">main / develop</div>
-        <div class="kpi-sub">Puis bascule sur <code>step-01/socle-docker</code></div>
+      <div class="kpi pink">
+        <div class="kpi-label">Branche GitHub</div>
+        <div class="kpi-val" style="font-size:15px;">step-01/socle-docker</div>
+        <div class="kpi-sub">Basée sur <code>develop</code> (<code>main</code> à jour)</div>
       </div>
       <div class="kpi green">
-        <div class="kpi-label">Tests validés</div>
-        <div class="kpi-val">En attente</div>
-        <div class="kpi-sub">Exécutés en fin d'étape</div>
+        <div class="kpi-label">Tests Étape 1</div>
+        <div class="kpi-val">5 / 5 Pytest + Lint</div>
+        <div class="kpi-sub">4 conteneurs <code>healthy</code> • Persistance OK • Non-root OK</div>
       </div>
       <div class="kpi amber">
-        <div class="kpi-label">Bonus Kubernetes</div>
-        <div class="kpi-val">+20 % visé</div>
-        <div class="kpi-sub">Planifié à l'Étape 8</div>
+        <div class="kpi-label">Prochaine étape</div>
+        <div class="kpi-val" style="font-size:16px;">Étape 2 • Auth &amp; Groupes</div>
+        <div class="kpi-sub">Branche <code>step-02/auth-profils-groupes</code></div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Architecture Déployée à l'Étape 1 (4 Conteneurs &amp; 2 Volumes Persistants)</h2>
+      <div class="arch-grid">
+        <div class="arch-box">
+          <h3>1. fithub-frontend (port 8080)</h3>
+          <p>React 18 + Vite servi par <strong>Nginx unprivileged</strong> (<code>uid=101</code>). Reverse proxy <code>/api</code>, <code>/uploads</code> et <code>/socket.io</code>.</p>
+        </div>
+        <div class="arch-box">
+          <h3>2. fithub-backend (port 5000)</h3>
+          <p>Python 3.12 + Flask + Gunicorn/Eventlet (<code>uid=999</code>). Migrations Alembic, seed idempotent, <code>/api/health</code> &amp; <code>/api/campuses</code>.</p>
+        </div>
+        <div class="arch-box">
+          <h3>3. fithub-db (PostgreSQL 16)</h3>
+          <p>16 tables métier avec FK &amp; contraintes d'unicité. Données conservées sur volume nommé <code>postgres_data</code>.</p>
+        </div>
+        <div class="arch-box">
+          <h3>4. fithub-redis (Redis 7)</h3>
+          <p>Broker temps réel &amp; cache sur le réseau privé <code>fithub_net</code>, prêt pour Socket.IO à l'Étape 5.</p>
+        </div>
+      </div>
+      <div class="files-grid">
+        <div class="files-box">
+          <strong>Racine &amp; Infrastructure</strong>
+          <ul>
+            <li><code>docker-compose.yml</code>, <code>.env.example</code>, <code>.gitignore</code></li>
+            <li><code>README.md</code>, <code>AVANCEMENT.md</code>, <code>docs/SUIVI_ETAPES.html</code></li>
+          </ul>
+        </div>
+        <div class="files-box">
+          <strong>Backend Flask &amp; PostgreSQL</strong>
+          <ul>
+            <li><code>backend/Dockerfile</code>, <code>entrypoint.sh</code>, <code>requirements.txt</code></li>
+            <li><code>backend/app/models.py</code> (16 tables) &amp; <code>seed.py</code></li>
+            <li><code>backend/migrations/versions/b7ed6f971fa6_initial_schema.py</code></li>
+            <li><code>backend/app/routes/health.py</code> &amp; <code>tests/test_step01_socle.py</code></li>
+          </ul>
+        </div>
+        <div class="files-box">
+          <strong>Frontend React Mobile-First</strong>
+          <ul>
+            <li><code>frontend/Dockerfile</code> &amp; <code>frontend/nginx.conf</code></li>
+            <li><code>frontend/src/App.jsx</code> &amp; <code>src/styles/global.css</code></li>
+            <li>Onglets mobile/desktop + diagnostic live <code>/api/health</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Journal des Tests Observés (Étape 1)</h2>
+      <div class="test-log">$ docker compose ps
+fithub-backend    fithubcampus-backend    Up (healthy)   0.0.0.0:5000->5000/tcp
+fithub-db         postgres:16-alpine      Up (healthy)   5432/tcp
+fithub-frontend   fithubcampus-frontend   Up (healthy)   0.0.0.0:8080->8080/tcp
+fithub-redis      redis:7-alpine          Up (healthy)   6379/tcp
+
+$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
+All checks passed!
+
+$ docker compose exec -T backend pytest -v
+tests/test_step01_socle.py::test_health_endpoint_ok PASSED               [ 20%]
+tests/test_step01_socle.py::test_all_mvp_tables_created PASSED           [ 40%]
+tests/test_step01_socle.py::test_seed_is_idempotent PASSED               [ 60%]
+tests/test_step01_socle.py::test_campuses_endpoint_returns_seeded_data PASSED [ 80%]
+tests/test_step01_socle.py::test_foreign_key_integrity_enforced PASSED   [100%]
+============================== 5 passed in 1.29s ===============================
+
+HTTP via Nginx : GET /api/health -> 200 (database: ok, redis: ok) | GET /api/campuses -> 200 (4 campus) | GET / -> 200
+Persistance DB : INSERT campus temoin -> docker compose down -> docker compose up -d -> ligne toujours presente -> cleanup OK
+Securite       : backend uid=999(appuser) | frontend uid=101(nginx) | 0 fuite PAT dans .git/config ou workspace</div>
     </div>
 
     <div class="card">
       <h2>Feuille de route des 8 étapes</h2>
       <div class="steps-list">
-        <div class="step-item active">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 1 — Socle Git, BDD PostgreSQL, Stack Docker &amp; Squelette UI</span>
-            <span class="badge badge-active">🔄 En cours</span>
+            <span class="badge badge-done">✅ Validée — Revue en cours</span>
           </div>
-          <div>Branche : <span class="branch-code">step-01/socle-docker</span></div>
-          <p style="margin:6px 0 0; font-size:13px;">Architecture 4 conteneurs (Frontend Nginx/React, Backend Flask, PostgreSQL, Redis), 16 tables + migrations Alembic, seed idempotent, <code>/api/health</code>, UI mobile-first et 5 tests <code>pytest</code>.</p>
+          <div>
+            Branche : <span class="branch-code">step-01/socle-docker</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
+          </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item active">
           <div class="step-head">
             <span class="step-title">Étape 2 — Authentification JWT, Profils &amp; Groupes Sportifs</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
           </div>
-          <div>Branche : <span class="branch-code">step-02/auth-profils-groupes</span></div>
+          <div>Branche prévue : <span class="branch-code">step-02/auth-profils-groupes</span></div>
         </div>
 
         <div class="step-item">
@@ -317,7 +427,7 @@
             <span class="step-title">Étape 3 — Social Fitness (Stories Workouts, Photos Avant/Après, Likes/Commentaires)</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-03/social-fitness</span></div>
+          <div>Branche prévue : <span class="branch-code">step-03/social-fitness</span></div>
         </div>
 
         <div class="step-item">
@@ -325,7 +435,7 @@
             <span class="step-title">Étape 4 — Défis Inter-Campus &amp; Classements</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-04/defis-classements</span></div>
+          <div>Branche prévue : <span class="branch-code">step-04/defis-classements</span></div>
         </div>
 
         <div class="step-item">
@@ -333,7 +443,7 @@
             <span class="step-title">Étape 5 — Motivation Fit-Buddy &amp; Temps Réel WebSockets</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-05/fitbuddy-realtime</span></div>
+          <div>Branche prévue : <span class="branch-code">step-05/fitbuddy-realtime</span></div>
         </div>
 
         <div class="step-item">
@@ -341,7 +451,7 @@
             <span class="step-title">Étape 6 — Géolocalisation (Carte Leaflet/OSM) &amp; Gamification</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-06/geoloc-gamification</span></div>
+          <div>Branche prévue : <span class="branch-code">step-06/geoloc-gamification</span></div>
         </div>
 
         <div class="step-item">
@@ -349,7 +459,7 @@
             <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
+          <div>Branche prévue : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
         </div>
 
         <div class="step-item">
@@ -357,14 +467,9 @@
             <span class="step-title">Étape 8 — Orchestration Kubernetes (+20 % Bonus) &amp; Préparation Jury</span>
             <span class="badge badge-todo">⏳ À venir</span>
           </div>
-          <div>Branche : <span class="branch-code">step-08/kubernetes-bonus</span></div>
+          <div>Branche prévue : <span class="branch-code">step-08/kubernetes-bonus</span></div>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Architecture &amp; Résultats des Tests (Dernière Étape Exécutée)</h2>
-      <div class="test-log">Initialisation du dépôt GitHub et préparation de l'Étape 1 en cours...</div>
     </div>
   </div>
 </body>

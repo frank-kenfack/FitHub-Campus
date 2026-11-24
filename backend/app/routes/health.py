@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, jsonify
 from sqlalchemy import text
 
 from app.extensions import db
-from app.models import Badge, Campus, PlaceEvent, SportGroup, Story, User
+from app.models import Badge, Campus, Challenge, PlaceEvent, SportGroup, Story, User
 
 health_bp = Blueprint("health", __name__, url_prefix="/api")
 
@@ -21,6 +21,7 @@ def health_check():
         "users": 0,
         "groups": 0,
         "stories": 0,
+        "challenges": 0,
     }
 
     try:
@@ -33,6 +34,7 @@ def health_check():
             "users": User.query.count(),
             "groups": SportGroup.query.count(),
             "stories": Story.query.count(),
+            "challenges": Challenge.query.count(),
         }
     except Exception as exc:  # pragma: no cover - remonte diagnostic sante
         checks["database_error"] = str(exc)
@@ -54,7 +56,7 @@ def health_check():
             {
                 "status": "ok" if healthy else "degraded",
                 "service": "fithub-campus-api",
-                "step": "step-03/social-fitness",
+                "step": "step-04/defis-classements",
                 "checks": checks,
                 "stats": stats,
             }

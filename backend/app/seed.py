@@ -1,6 +1,7 @@
 """Initialisation idempotente des donnees de reference FitHub Campus."""
 
 import os
+from datetime import datetime, timedelta, timezone
 
 import bcrypt
 from flask import current_app
@@ -11,6 +12,8 @@ from app.extensions import db
 from app.models import (
     Badge,
     Campus,
+    Challenge,
+    ChallengeEntry,
     GroupMember,
     PlaceEvent,
     SportGroup,
@@ -264,6 +267,15 @@ def seed_database() -> dict:
             "level": "Intermediaire",
             "xp_points": 140,
         },
+        {
+            "email": "mehdi.lille@fithub.fr",
+            "username": "MehdiLift_Lille",
+            "campus_name": "Campus Lille EuraTechnologies",
+            "bio": "Force athletique et cardio collectif entre etudiants B3.",
+            "favorite_sports": "Musculation, Running",
+            "level": "Avance",
+            "xp_points": 195,
+        },
     ]
 
     user_map: dict[str, User] = {}
@@ -462,6 +474,88 @@ def seed_database() -> dict:
             )
         )
 
+    # Defis inter-campus de demonstration (2 actifs + 1 termine)
+    mehdi = user_map["mehdi.lille@fithub.fr"]
+    now_utc = datetime.now(timezone.utc)
+
+    demo_challenges_spec = [
+        {
+            "title": "Grand Defi Running Inter-Campus — 150 km",
+            "description": "Cumulez un maximum de kilometres de course pour hisser votre campus sur la plus haute marche du podium !",
+            "sport": "Running",
+            "target_value": 150.0,
+            "unit": "km",
+            "starts_at": now_utc - timedelta(days=4),
+            "ends_at": now_utc + timedelta(days=10),
+            "creator": ina,
+            "group_id": group_map["Lyon Running Rhone"].id,
+            "entries": [
+                (ina, 46.5),
+                (mehdi, 38.0),
+                (sarah, 34.2),
+                (lucas, 25.0),
+            ],
+        },
+        {
+            "title": "Challenge 2 000 Pompes & Tractions",
+            "description": "Defi street-workout inter-ecoles : chaque serie validee fait grimper le compteur collectif.",
+            "sport": "Calisthenics",
+            "target_value": 2000.0,
+            "unit": "reps",
+            "starts_at": now_utc - timedelta(days=2),
+            "ends_at": now_utc + timedelta(days=7),
+            "creator": lucas,
+            "group_id": group_map["Paris Street-Workout Nation"].id,
+            "entries": [
+                (lucas, 640.0),
+                (mehdi, 510.0),
+                (ina, 390.0),
+            ],
+        },
+        {
+            "title": "Sprint Rentree B3 — 500 min Cardio",
+            "description": "Premier defi de la saison cloture la semaine derniere.",
+            "sport": "Fitness",
+            "target_value": 500.0,
+            "unit": "min",
+            "starts_at": now_utc - timedelta(days=12),
+            "ends_at": now_utc - timedelta(days=2),
+            "creator": sarah,
+            "group_id": None,
+            "entries": [
+                (sarah, 210.0),
+                (ina, 185.0),
+                (mehdi, 145.0),
+            ],
+        },
+    ]
+
+    for ch_spec in demo_challenges_spec:
+        existing_ch = Challenge.query.filter_by(title=ch_spec["title"]).first()
+        if existing_ch is None:
+            ch = Challenge(
+                title=ch_spec["title"],
+                description=ch_spec["description"],
+                sport=ch_spec["sport"],
+                target_value=ch_spec["target_value"],
+                unit=ch_spec["unit"],
+                starts_at=ch_spec["starts_at"],
+                ends_at=ch_spec["ends_at"],
+                created_by=ch_spec["creator"].id,
+                group_id=ch_spec["group_id"],
+            )
+            db.session.add(ch)
+            db.session.flush()
+            for participant, score_val in ch_spec["entries"]:
+                db.session.add(
+                    ChallengeEntry(
+                        challenge_id=ch.id,
+                        user_id=participant.id,
+                        campus_id=participant.campus_id,
+                        score=score_val,
+                    )
+                )
+
     db.session.commit()
     return {
         "campuses": Campus.query.count(),
@@ -470,6 +564,7 @@ def seed_database() -> dict:
         "users": User.query.count(),
         "groups": SportGroup.query.count(),
         "stories": Story.query.count(),
+        "challenges": Challenge.query.count(),
     }
 
 

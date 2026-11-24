@@ -1,8 +1,10 @@
 """Initialisation idempotente des donnees de reference FitHub Campus."""
 
+import bcrypt
+
 from app import create_app
 from app.extensions import db
-from app.models import Badge, Campus, PlaceEvent
+from app.models import Badge, Campus, GroupMember, PlaceEvent, SportGroup, User
 
 DEFAULT_CAMPUSES = [
     {
@@ -64,9 +66,14 @@ DEFAULT_BADGES = [
     },
 ]
 
+DEMO_PASSWORD_HASH = bcrypt.hashpw(
+    b"Password123!",
+    bcrypt.gensalt(),
+).decode("utf-8")
+
 
 def seed_database() -> dict:
-    """Insere campus, badges et lieux initiaux sans creer de doublons."""
+    """Insere campus, badges, lieux, etudiants et groupes de demo sans doublons."""
     campus_map: dict[str, Campus] = {}
 
     for item in DEFAULT_CAMPUSES:
@@ -144,11 +151,118 @@ def seed_database() -> dict:
                 )
             )
 
+    demo_users_spec = [
+        {
+            "email": "ina.lyon@fithub.fr",
+            "username": "InaFit_Lyon",
+            "campus_name": "Campus Lyon Gerland",
+            "bio": "Passionnee de semi-marathon et de renforcement musculaire.",
+            "favorite_sports": "Running, Renforcement",
+            "level": "Avance",
+            "xp_points": 220,
+        },
+        {
+            "email": "lucas.paris@fithub.fr",
+            "username": "LucasBarz_Paris",
+            "campus_name": "Campus Paris Nation",
+            "bio": "Street-workout & tractions lestees apres les cours.",
+            "favorite_sports": "Calisthenics, Cross-Training",
+            "level": "Intermediaire",
+            "xp_points": 160,
+        },
+        {
+            "email": "sarah.bordeaux@fithub.fr",
+            "username": "SarahRun_Bdx",
+            "campus_name": "Campus Bordeaux Chartrons",
+            "bio": "Sorties footing sur les quais et prepa HYROX.",
+            "favorite_sports": "Running, Fitness",
+            "level": "Intermediaire",
+            "xp_points": 140,
+        },
+    ]
+
+    user_map: dict[str, User] = {}
+    for u_spec in demo_users_spec:
+        user = User.query.filter_by(email=u_spec["email"]).first()
+        if user is None:
+            user = User(
+                email=u_spec["email"],
+                username=u_spec["username"],
+                password_hash=DEMO_PASSWORD_HASH,
+                campus_id=campus_map[u_spec["campus_name"]].id,
+                bio=u_spec["bio"],
+                favorite_sports=u_spec["favorite_sports"],
+                level=u_spec["level"],
+                xp_points=u_spec["xp_points"],
+            )
+            db.session.add(user)
+            db.session.flush()
+        user_map[u_spec["email"]] = user
+
+    demo_groups_spec = [
+        {
+            "name": "Lyon Running Rhone",
+            "sport": "Running",
+            "description": "Sorties collectives mardi et jeudi 18h30 depuis Gerland.",
+            "campus_name": "Campus Lyon Gerland",
+            "creator_email": "ina.lyon@fithub.fr",
+            "extra_members": ["sarah.bordeaux@fithub.fr"],
+        },
+        {
+            "name": "Paris Street-Workout Nation",
+            "sport": "Calisthenics",
+            "description": "Sessions figures statiques, dips et muscle-ups tout niveau.",
+            "campus_name": "Campus Paris Nation",
+            "creator_email": "lucas.paris@fithub.fr",
+            "extra_members": ["ina.lyon@fithub.fr"],
+        },
+        {
+            "name": "Bordeaux Cross-Training B3",
+            "sport": "Cross-Training",
+            "description": "WOD d'equipe du vendredi midi pour preparer les defis campus.",
+            "campus_name": "Campus Bordeaux Chartrons",
+            "creator_email": "sarah.bordeaux@fithub.fr",
+            "extra_members": [],
+        },
+    ]
+
+    for g_spec in demo_groups_spec:
+        campus = campus_map[g_spec["campus_name"]]
+        creator = user_map[g_spec["creator_email"]]
+        group = SportGroup.query.filter_by(
+            name=g_spec["name"],
+            campus_id=campus.id,
+        ).first()
+        if group is None:
+            group = SportGroup(
+                name=g_spec["name"],
+                sport=g_spec["sport"],
+                description=g_spec["description"],
+                campus_id=campus.id,
+                created_by=creator.id,
+            )
+            db.session.add(group)
+            db.session.flush()
+            db.session.add(
+                GroupMember(group_id=group.id, user_id=creator.id, role="admin")
+            )
+            for extra_email in g_spec["extra_members"]:
+                extra_user = user_map[extra_email]
+                db.session.add(
+                    GroupMember(
+                        group_id=group.id,
+                        user_id=extra_user.id,
+                        role="member",
+                    )
+                )
+
     db.session.commit()
     return {
         "campuses": Campus.query.count(),
         "badges": Badge.query.count(),
         "places": PlaceEvent.query.count(),
+        "users": User.query.count(),
+        "groups": SportGroup.query.count(),
     }
 
 

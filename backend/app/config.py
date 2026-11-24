@@ -15,8 +15,14 @@ def _normalize_db_url(raw_url: str) -> str:
 class Config:
     """Configuration par defaut chargee depuis les variables d'environnement."""
 
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-change-me")
-    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-jwt-secret-change-me")
+    SECRET_KEY = os.environ.get(
+        "SECRET_KEY",
+        "fithub-campus-dev-secret-key-2026-secure",
+    )
+    JWT_SECRET_KEY = os.environ.get(
+        "JWT_SECRET_KEY",
+        "fithub-campus-dev-jwt-secret-key-2026-rfc7518",
+    )
     SQLALCHEMY_DATABASE_URI = _normalize_db_url(
         os.environ.get(
             "DATABASE_URL",

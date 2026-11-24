@@ -1,11 +1,11 @@
-"""Routes de sante et donnees de reference (Etape 1)."""
+"""Routes de sante et donnees de reference."""
 
 import redis
 from flask import Blueprint, current_app, jsonify
 from sqlalchemy import text
 
 from app.extensions import db
-from app.models import Badge, Campus, PlaceEvent
+from app.models import Badge, Campus, PlaceEvent, SportGroup, User
 
 health_bp = Blueprint("health", __name__, url_prefix="/api")
 
@@ -14,7 +14,7 @@ health_bp = Blueprint("health", __name__, url_prefix="/api")
 def health_check():
     """Verifie la disponibilite de l'API, PostgreSQL et Redis."""
     checks = {"database": "error", "redis": "error"}
-    stats = {"campuses": 0, "badges": 0, "places": 0}
+    stats = {"campuses": 0, "badges": 0, "places": 0, "users": 0, "groups": 0}
 
     try:
         db.session.execute(text("SELECT 1"))
@@ -23,6 +23,8 @@ def health_check():
             "campuses": Campus.query.count(),
             "badges": Badge.query.count(),
             "places": PlaceEvent.query.count(),
+            "users": User.query.count(),
+            "groups": SportGroup.query.count(),
         }
     except Exception as exc:  # pragma: no cover - remonte diagnostic sante
         checks["database_error"] = str(exc)
@@ -44,7 +46,7 @@ def health_check():
             {
                 "status": "ok" if healthy else "degraded",
                 "service": "fithub-campus-api",
-                "step": "step-01/socle-docker",
+                "step": "step-02/auth-profils-groupes",
                 "checks": checks,
                 "stats": stats,
             }

@@ -13,7 +13,7 @@ Ce document conserve, **étape par étape**, les captures d'écran réelles vali
 
 1. [Étape 1 — `step-01/socle-docker` (Socle Git, PostgreSQL, Stack Docker 4 conteneurs & UI Mobile-First)](#étape-1--step-01socle-docker) ✅
 2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ✅
-3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ⏳
+3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ✅
 4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ⏳
 5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ⏳
 6. [Étape 6 — `step-06/geoloc-gamification` (Carte Leaflet/OSM, Événements & Badges)](#étape-6--step-06geoloc-gamification) ⏳
@@ -92,7 +92,35 @@ Synthèse visuelle de l'Étape 2 validée et trace d'exécution des 14 tests aut
 
 ## Étape 3 — `step-03/social-fitness`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 3 dans `docs/screenshots/step-03/` (fil de stories workouts, comparateur Avant/Après, likes et commentaires).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **22/22** sans warning • médias `/uploads/stories/` persistés et servis en `200 OK` via Nginx)
+- **Branche GitHub** : [`step-03/social-fitness`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-03/social-fitness)
+- **Fonctionnalités couvertes** : Stories de workouts (`< 24h` + métriques séance + `+25 XP`), comparatifs Avant/Après à double upload avec slider interactif et vue côte à côte (`+35 XP`), visibilité privée par groupe, likes idempotents, commentaires en direct et suppression réservée à l'auteur avec nettoyage disque.
+
+### 3.1 Carrousel Stories &lt; 24h &amp; Comparateur interactif Avant / Après
+Vue principale de l'onglet **Social** affichant les anneaux des stories récentes et le curseur glissant Avant/Après (`10 semaines`) avec applaudissements et commentaires.
+
+![Étape 3 - Carrousel Stories et Slider Avant/Après](./docs/screenshots/step-03/01-social-stories-avant-apres.png)
+
+---
+
+### 3.2 Filtre « Stories &lt; 24h », Métriques de séance &amp; Contrôle auteur
+Affichage filtré des séances des dernières 24h avec puces métriques (`Calisthenics`, `60 min`, `460 kcal`), compteur d'applaudissements et bouton `Suppr.` réservé à l'auteur.
+
+![Étape 3 - Stories Workouts 24h](./docs/screenshots/step-03/02-social-workout-stories-24h.png)
+
+---
+
+### 3.3 Formulaire de publication d'une Story de Workout
+Saisie complète d'une séance sportive (discipline, durée, distance, calories, visibilité publique ou groupe, upload photo validé par Pillow).
+
+![Étape 3 - Formulaire Publication Story](./docs/screenshots/step-03/03-social-publication-workout.png)
+
+---
+
+### 3.4 Tableau de bord d'avancement mis à jour (37,5 % — 22/22 Pytest)
+Synthèse visuelle de l'Étape 3 validée et trace d'exécution des 22 tests automatisés (non-régression Étapes 1 et 2 incluse).
+
+![Étape 3 - Tableau de bord et tests](./docs/screenshots/step-03/04-suivi-dashboard-step03.png)
 
 ---
 

@@ -1,10 +1,25 @@
 """Initialisation idempotente des donnees de reference FitHub Campus."""
 
+import os
+
 import bcrypt
+from flask import current_app
+from PIL import Image, ImageDraw
 
 from app import create_app
 from app.extensions import db
-from app.models import Badge, Campus, GroupMember, PlaceEvent, SportGroup, User
+from app.models import (
+    Badge,
+    Campus,
+    GroupMember,
+    PlaceEvent,
+    SportGroup,
+    Story,
+    StoryComment,
+    StoryLike,
+    User,
+    Workout,
+)
 
 DEFAULT_CAMPUSES = [
     {
@@ -72,8 +87,78 @@ DEMO_PASSWORD_HASH = bcrypt.hashpw(
 ).decode("utf-8")
 
 
+def _ensure_demo_story_image(
+    upload_folder: str,
+    filename: str,
+    bg_rgb: tuple[int, int, int],
+    accent_rgb: tuple[int, int, int],
+    progress_ratio: float,
+    variant: str,
+) -> str:
+    """Genere de maniere deterministe un visuel sportif illustre dans uploads/stories."""
+    stories_dir = os.path.join(upload_folder, "stories")
+    os.makedirs(stories_dir, exist_ok=True)
+    full_path = os.path.join(stories_dir, filename)
+    if not os.path.isfile(full_path):
+        w, h = 800, 500
+        img = Image.new("RGB", (w, h), bg_rgb)
+        draw = ImageDraw.Draw(img)
+
+        # Cercles decoratifs dynamiques
+        draw.ellipse((460, -80, 880, 340), fill=accent_rgb)
+        draw.ellipse((-90, 260, 260, 610), fill=(255, 255, 255))
+
+        # Carte centrale graphique
+        draw.rounded_rectangle((55, 65, 745, 435), radius=24, fill=(15, 23, 42))
+
+        if variant == "run":
+            # Trace GPS stylise
+            pts = [(110, 330), (230, 250), (350, 290), (490, 175), (650, 210)]
+            draw.line(pts, fill=accent_rgb, width=10)
+            for px, py in pts:
+                draw.ellipse((px - 11, py - 11, px + 11, py + 11), fill=(255, 255, 255))
+        elif variant == "bars":
+            # Barres d'intensite street-workout
+            heights = [110, 165, 210, 255, 230, 275]
+            for idx, bh in enumerate(heights):
+                x0 = 125 + idx * 92
+                draw.rounded_rectangle(
+                    (x0, 355 - bh, x0 + 56, 355),
+                    radius=10,
+                    fill=accent_rgb if idx >= 3 else (100, 116, 139),
+                )
+        else:
+            # Silhouette / jauge comparative Avant vs Apres
+            bar_x0, bar_x1 = 110, 690
+            fill_x = int(bar_x0 + (bar_x1 - bar_x0) * progress_ratio)
+            draw.rounded_rectangle(
+                (bar_x0, 235, bar_x1, 295),
+                radius=18,
+                fill=(51, 65, 85),
+            )
+            draw.rounded_rectangle(
+                (bar_x0, 235, fill_x, 295),
+                radius=18,
+                fill=accent_rgb,
+            )
+            # Anneau de forme
+            cx = 230 if progress_ratio < 0.5 else 570
+            draw.ellipse((cx - 68, 105, cx + 68, 215), outline=accent_rgb, width=12)
+
+        # Barre inferieure de progression
+        draw.rounded_rectangle((110, 375, 690, 398), radius=10, fill=(30, 41, 59))
+        draw.rounded_rectangle(
+            (110, 375, int(110 + 580 * progress_ratio), 398),
+            radius=10,
+            fill=(74, 222, 128) if progress_ratio > 0.7 else accent_rgb,
+        )
+        img.save(full_path, format="PNG", optimize=True)
+
+    return f"/uploads/stories/{filename}"
+
+
 def seed_database() -> dict:
-    """Insere campus, badges, lieux, etudiants et groupes de demo sans doublons."""
+    """Insere campus, badges, lieux, etudiants, groupes et publications de demo."""
     campus_map: dict[str, Campus] = {}
 
     for item in DEFAULT_CAMPUSES:
@@ -226,6 +311,7 @@ def seed_database() -> dict:
         },
     ]
 
+    group_map: dict[str, SportGroup] = {}
     for g_spec in demo_groups_spec:
         campus = campus_map[g_spec["campus_name"]]
         creator = user_map[g_spec["creator_email"]]
@@ -255,6 +341,126 @@ def seed_database() -> dict:
                         role="member",
                     )
                 )
+        group_map[g_spec["name"]] = group
+
+    # Publications sociales de demonstration (idempotentes)
+    upload_dir = current_app.config.get("UPLOAD_FOLDER", "/app/uploads")
+    ina = user_map["ina.lyon@fithub.fr"]
+    lucas = user_map["lucas.paris@fithub.fr"]
+    sarah = user_map["sarah.bordeaux@fithub.fr"]
+
+    if Story.query.filter_by(user_id=ina.id, kind="workout_story").first() is None:
+        run_media = _ensure_demo_story_image(
+            upload_dir,
+            "demo_ina_run.png",
+            bg_rgb=(30, 46, 92),
+            accent_rgb=(230, 26, 95),
+            progress_ratio=0.82,
+            variant="run",
+        )
+        w1 = Workout(
+            user_id=ina.id,
+            sport="Running",
+            duration_minutes=48,
+            calories=540,
+            distance_km=9.4,
+            source="story",
+        )
+        db.session.add(w1)
+        db.session.flush()
+        s1 = Story(
+            user_id=ina.id,
+            workout_id=w1.id,
+            group_id=group_map["Lyon Running Rhone"].id,
+            kind="workout_story",
+            title="Fractionne Quais du Rhone",
+            caption="Super rythme ce soir avec le groupe Lyon Running Rhone ! Objectif sub-45 min sur 10 km.",
+            media_url=run_media,
+            visibility="public",
+        )
+        db.session.add(s1)
+        db.session.flush()
+        db.session.add(StoryLike(story_id=s1.id, user_id=lucas.id))
+        db.session.add(StoryLike(story_id=s1.id, user_id=sarah.id))
+        db.session.add(
+            StoryComment(
+                story_id=s1.id,
+                user_id=lucas.id,
+                content="Solide l'allure a 5'06/km ! Bravo la team Lyon.",
+            )
+        )
+
+    if Story.query.filter_by(user_id=lucas.id, kind="workout_story").first() is None:
+        sw_media = _ensure_demo_story_image(
+            upload_dir,
+            "demo_lucas_sw.png",
+            bg_rgb=(17, 24, 39),
+            accent_rgb=(27, 138, 61),
+            progress_ratio=0.76,
+            variant="bars",
+        )
+        w2 = Workout(
+            user_id=lucas.id,
+            sport="Calisthenics",
+            duration_minutes=60,
+            calories=460,
+            distance_km=0.0,
+            source="story",
+        )
+        db.session.add(w2)
+        db.session.flush()
+        s2 = Story(
+            user_id=lucas.id,
+            workout_id=w2.id,
+            group_id=group_map["Paris Street-Workout Nation"].id,
+            kind="workout_story",
+            title="Session Muscle-Ups & Dips Lestes",
+            caption="5x5 muscle-ups stricts + dips a +20 kg au Parc de Vincennes.",
+            media_url=sw_media,
+            visibility="public",
+        )
+        db.session.add(s2)
+        db.session.flush()
+        db.session.add(StoryLike(story_id=s2.id, user_id=ina.id))
+
+    if Story.query.filter_by(user_id=sarah.id, kind="before_after").first() is None:
+        before_media = _ensure_demo_story_image(
+            upload_dir,
+            "demo_sarah_before.png",
+            bg_rgb=(71, 85, 105),
+            accent_rgb=(217, 119, 6),
+            progress_ratio=0.34,
+            variant="compare",
+        )
+        after_media = _ensure_demo_story_image(
+            upload_dir,
+            "demo_sarah_after.png",
+            bg_rgb=(27, 138, 61),
+            accent_rgb=(230, 26, 95),
+            progress_ratio=0.92,
+            variant="compare",
+        )
+        s3 = Story(
+            user_id=sarah.id,
+            group_id=group_map["Bordeaux Cross-Training B3"].id,
+            kind="before_after",
+            title="Progression Cardio & Gainage HYROX||10 semaines",
+            caption="Passage de 32 min a 24 min sur le circuit 5 km + burpees grace aux seances collectives du vendredi !",
+            before_media_url=before_media,
+            after_media_url=after_media,
+            visibility="public",
+        )
+        db.session.add(s3)
+        db.session.flush()
+        db.session.add(StoryLike(story_id=s3.id, user_id=ina.id))
+        db.session.add(StoryLike(story_id=s3.id, user_id=lucas.id))
+        db.session.add(
+            StoryComment(
+                story_id=s3.id,
+                user_id=ina.id,
+                content="Progression impressionnante en 10 semaines, bravo Sarah !",
+            )
+        )
 
     db.session.commit()
     return {
@@ -263,6 +469,7 @@ def seed_database() -> dict:
         "places": PlaceEvent.query.count(),
         "users": User.query.count(),
         "groups": SportGroup.query.count(),
+        "stories": Story.query.count(),
     }
 
 

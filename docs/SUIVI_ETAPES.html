@@ -91,7 +91,7 @@
 
     .progress-bar {
       height: 100%;
-      width: 25%;
+      width: 37.5%;
       background: #4ADE80;
       border-radius: 999px;
     }
@@ -261,11 +261,11 @@
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Suivi Visuel • Étape 2 Validée (En attente de revue)</span>
+        <span class="pill">Suivi Visuel • Étape 3 Validée (En attente de revue)</span>
         <div class="pill-row">
           <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-02/auth-profils-groupes/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-02/auth-profils-groupes" target="_blank" rel="noreferrer">Branche GitHub : step-02/auth-profils-groupes ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-03/social-fitness/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-03/social-fitness" target="_blank" rel="noreferrer">Branche GitHub : step-03/social-fitness ↗</a>
         </div>
       </div>
       <h1>FitHub Campus — Tableau de Bord d'Avancement</h1>
@@ -274,87 +274,81 @@
         <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 2 / 8 étapes validées</span>
-        <span>25 %</span>
+        <span>Progression : 3 / 8 étapes validées</span>
+        <span>37,5 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
       <div class="kpi green">
         <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Étape 2 Validée</div>
+        <div class="kpi-val">Étape 3 Validée</div>
         <div class="kpi-sub">Prête pour fusion vers <code>develop</code> après votre revue</div>
       </div>
       <div class="kpi pink">
         <div class="kpi-label">Branche GitHub</div>
-        <div class="kpi-val" style="font-size:14.5px;">step-02/auth-profils-groupes</div>
-        <div class="kpi-sub">Étape 1 déjà fusionnée dans <code>develop</code></div>
+        <div class="kpi-val" style="font-size:15px;">step-03/social-fitness</div>
+        <div class="kpi-sub">Étapes 1 &amp; 2 fusionnées dans <code>develop</code></div>
       </div>
       <div class="kpi green">
         <div class="kpi-label">Suite de Tests</div>
-        <div class="kpi-val">14 / 14 Pytest</div>
-        <div class="kpi-sub">0 warning • Ruff OK • Persistance avatar OK</div>
+        <div class="kpi-val">22 / 22 Pytest</div>
+        <div class="kpi-sub">0 warning • Ruff OK • Médias persistants OK</div>
       </div>
       <div class="kpi amber">
         <div class="kpi-label">Prochaine étape</div>
-        <div class="kpi-val" style="font-size:16px;">Étape 3 • Social Fitness</div>
-        <div class="kpi-sub">Branche <code>step-03/social-fitness</code></div>
+        <div class="kpi-val" style="font-size:15.5px;">Étape 4 • Défis &amp; Podiums</div>
+        <div class="kpi-sub">Branche <code>step-04/defis-classements</code></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Livrables Réalisés à l'Étape 2 (Auth JWT, Profils &amp; Groupes Sportifs)</h2>
+      <h2>Livrables Réalisés à l'Étape 3 (Social Fitness : Stories, Avant/Après &amp; Interactions)</h2>
       <div class="files-grid">
         <div class="files-box">
-          <strong>Sécurité &amp; Auth JWT (US-2.1)</strong>
+          <strong>Stories Workouts &lt; 24h (US-3.1)</strong>
           <ul>
-            <li><code>backend/app/routes/auth.py</code> : register, login, session <code>/me</code></li>
-            <li>Hachage <code>bcrypt</code> (<code>$2b$</code>) + clés JWT RFC 7518</li>
-            <li>Protection routes privées (retour systématique <code>401</code>)</li>
+            <li><code>POST /api/social/stories</code> + création <code>Workout</code> (+25 XP)</li>
+            <li>Compression Pillow <code>1080x1080</code> dans <code>uploads/stories/</code></li>
+            <li>Carrousel 24h avec visionneuse rapide dans <code>SocialFeedView.jsx</code></li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Profils &amp; Avatar Persistant (US-2.2)</strong>
+          <strong>Comparateur Avant / Après (US-3.2)</strong>
           <ul>
-            <li><code>backend/app/routes/users.py</code> &amp; <code>utils/media.py</code></li>
-            <li>Validation Pillow + resize <code>400x400</code> dans <code>uploads_data</code></li>
-            <li>Édition bio, campus, sports, niveau + stats personnelles</li>
+            <li><code>POST /api/social/before-after</code> (double upload validé)</li>
+            <li>Curseur glissant interactif <code>clip-path</code> + mode Côte à côte</li>
+            <li>Visibilité groupe privé &amp; suppression auteur + nettoyage disque</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Groupes Sportifs &amp; UI React (US-2.3)</strong>
+          <strong>Likes &amp; Commentaires (US-3.3)</strong>
           <ul>
-            <li><code>backend/app/routes/groups.py</code> : CRUD, join/leave, filtres</li>
-            <li><code>AuthProfileView.jsx</code> &amp; <code>GroupsView.jsx</code></li>
-            <li>3 étudiants &amp; 3 clubs sportifs seedés pour la démo</li>
+            <li><code>POST /api/social/posts/&lt;id&gt;/like</code> idempotent (toggle / like / unlike)</li>
+            <li><code>GET/POST/DELETE</code> commentaires sans rechargement de page</li>
+            <li>8 nouveaux tests dans <code>test_step03_social.py</code></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Journal des Tests Observés (Étape 2 + Non-Régression Étape 1)</h2>
+      <h2>Journal des Tests Observés (Étape 3 + Non-Régression Étapes 1 &amp; 2)</h2>
       <div class="test-log">$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
 All checks passed!
 
 $ docker compose exec -T backend pytest -v
-tests/test_step01_socle.py::test_health_endpoint_ok PASSED                                [  7%]
-tests/test_step01_socle.py::test_all_mvp_tables_created PASSED                            [ 14%]
-tests/test_step01_socle.py::test_seed_is_idempotent PASSED                                [ 21%]
-tests/test_step01_socle.py::test_campuses_endpoint_returns_seeded_data PASSED             [ 28%]
-tests/test_step01_socle.py::test_foreign_key_integrity_enforced PASSED                    [ 35%]
-tests/test_step02_auth_groups.py::test_register_hashes_password_and_returns_jwt PASSED    [ 42%]
-tests/test_step02_auth_groups.py::test_register_validation_and_duplicates PASSED          [ 50%]
-tests/test_step02_auth_groups.py::test_login_success_and_invalid_credentials PASSED       [ 57%]
-tests/test_step02_auth_groups.py::test_protected_routes_return_401_without_valid_jwt PASSED [ 64%]
-tests/test_step02_auth_groups.py::test_profile_update_and_personal_stats PASSED           [ 71%]
-tests/test_step02_auth_groups.py::test_avatar_upload_saved_on_volume_and_served PASSED    [ 78%]
-tests/test_step02_auth_groups.py::test_avatar_upload_rejects_invalid_file PASSED          [ 85%]
-tests/test_step02_auth_groups.py::test_groups_crud_permissions_and_filters PASSED         [ 92%]
-tests/test_step02_auth_groups.py::test_group_join_leave_and_member_listing PASSED         [100%]
-============================== 14 passed in 7.26s ==============================
-
-E2E Nginx (:8080) : Login InaFit_Lyon -> Upload avatar PNG -> docker compose restart backend -> GET /uploads/avatars/... 200 OK</div>
+tests/test_step01_socle.py (5 tests) ............................................ PASSED
+tests/test_step02_auth_groups.py (9 tests) ...................................... PASSED
+tests/test_step03_social.py::test_create_workout_story_and_24h_feed PASSED        [ 68%]
+tests/test_step03_social.py::test_workout_story_rejects_invalid_payload PASSED    [ 72%]
+tests/test_step03_social.py::test_create_before_after_dual_upload PASSED          [ 77%]
+tests/test_step03_social.py::test_group_visibility_restricts_access_to_members PASSED [ 81%]
+tests/test_step03_social.py::test_delete_post_author_only_and_removes_files PASSED [ 86%]
+tests/test_step03_social.py::test_like_toggle_and_idempotence PASSED              [ 90%]
+tests/test_step03_social.py::test_comments_crud_and_authorization PASSED          [ 95%]
+tests/test_step03_social.py::test_unauthenticated_social_mutations_return_401 PASSED [100%]
+============================= 22 passed in 13.72s ==============================</div>
     </div>
 
     <div class="card">
@@ -374,7 +368,7 @@ E2E Nginx (:8080) : Login InaFit_Lyon -> Upload avatar PNG -> docker compose res
         <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 2 — Authentification JWT, Profils &amp; Groupes Sportifs</span>
-            <span class="badge badge-done">✅ Validée — Revue en cours</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>
             Branche : <span class="branch-code">step-02/auth-profils-groupes</span> •
@@ -382,18 +376,21 @@ E2E Nginx (:8080) : Login InaFit_Lyon -> Upload avatar PNG -> docker compose res
           </div>
         </div>
 
-        <div class="step-item active">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 3 — Social Fitness (Stories Workouts, Photos Avant/Après, Likes/Commentaires)</span>
-            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
+            <span class="badge badge-done">✅ Validée — Revue en cours</span>
           </div>
-          <div>Branche prévue : <span class="branch-code">step-03/social-fitness</span></div>
+          <div>
+            Branche : <span class="branch-code">step-03/social-fitness</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-03/social-fitness" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
+          </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item active">
           <div class="step-head">
             <span class="step-title">Étape 4 — Défis Inter-Campus &amp; Classements</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
           </div>
           <div>Branche prévue : <span class="branch-code">step-04/defis-classements</span></div>
         </div>

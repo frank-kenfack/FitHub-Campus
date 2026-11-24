@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, jsonify
 from sqlalchemy import text
 
 from app.extensions import db
-from app.models import Badge, Campus, PlaceEvent, SportGroup, User
+from app.models import Badge, Campus, PlaceEvent, SportGroup, Story, User
 
 health_bp = Blueprint("health", __name__, url_prefix="/api")
 
@@ -14,7 +14,14 @@ health_bp = Blueprint("health", __name__, url_prefix="/api")
 def health_check():
     """Verifie la disponibilite de l'API, PostgreSQL et Redis."""
     checks = {"database": "error", "redis": "error"}
-    stats = {"campuses": 0, "badges": 0, "places": 0, "users": 0, "groups": 0}
+    stats = {
+        "campuses": 0,
+        "badges": 0,
+        "places": 0,
+        "users": 0,
+        "groups": 0,
+        "stories": 0,
+    }
 
     try:
         db.session.execute(text("SELECT 1"))
@@ -25,6 +32,7 @@ def health_check():
             "places": PlaceEvent.query.count(),
             "users": User.query.count(),
             "groups": SportGroup.query.count(),
+            "stories": Story.query.count(),
         }
     except Exception as exc:  # pragma: no cover - remonte diagnostic sante
         checks["database_error"] = str(exc)
@@ -46,7 +54,7 @@ def health_check():
             {
                 "status": "ok" if healthy else "degraded",
                 "service": "fithub-campus-api",
-                "step": "step-02/auth-profils-groupes",
+                "step": "step-03/social-fitness",
                 "checks": checks,
                 "stats": stats,
             }

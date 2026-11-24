@@ -1,7 +1,20 @@
-"""Serialiseurs JSON pour les utilisateurs et groupes sportifs."""
+"""Serialiseurs JSON pour les utilisateurs, groupes et publications sociales."""
+
+from datetime import datetime, timedelta, timezone
 
 from app.extensions import db
-from app.models import Badge, Campus, GroupMember, SportGroup, User, UserBadge, Workout
+from app.models import (
+    Badge,
+    Campus,
+    GroupMember,
+    SportGroup,
+    Story,
+    StoryComment,
+    StoryLike,
+    User,
+    UserBadge,
+    Workout,
+)
 
 
 def serialize_user(user: User, include_stats: bool = False) -> dict:
@@ -96,3 +109,91 @@ def serialize_group(
                 )
         data["members"] = members_payload
     return data
+
+
+def serialize_comment(comment: StoryComment) -> dict:
+    """Convertit un commentaire social en dictionnaire JSON."""
+    author = db.session.get(User, comment.user_id)
+    campus = db.session.get(Campus, author.campus_id) if author else None
+    return {
+        "id": comment.id,
+        "story_id": comment.story_id,
+        "user_id": comment.user_id,
+        "username": author.username if author else "Etudiant",
+        "avatar_url": author.avatar_url if author else "",
+        "campus_name": campus.name if campus else "",
+        "content": comment.content,
+        "created_at": comment.created_at.isoformat() if comment.created_at else None,
+    }
+
+
+def serialize_story(story: Story, current_user_id: int | None = None) -> dict:
+    """Convertit une publication (story workout ou avant/apres) en JSON complet."""
+    author = db.session.get(User, story.user_id)
+    campus = db.session.get(Campus, author.campus_id) if author else None
+    workout = db.session.get(Workout, story.workout_id) if story.workout_id else None
+    group = db.session.get(SportGroup, story.group_id) if story.group_id else None
+
+    raw_title = story.title or ""
+    if "||" in raw_title:
+        clean_title, duration_label = raw_title.split("||", 1)
+    else:
+        clean_title, duration_label = raw_title, ""
+
+    likes_count = StoryLike.query.filter_by(story_id=story.id).count()
+    is_liked = False
+    if current_user_id:
+        is_liked = (
+            StoryLike.query.filter_by(
+                story_id=story.id,
+                user_id=current_user_id,
+            ).first()
+            is not None
+        )
+
+    comments = (
+        StoryComment.query.filter_by(story_id=story.id)
+        .order_by(StoryComment.created_at.asc(), StoryComment.id.asc())
+        .all()
+    )
+
+    now_utc = datetime.now(timezone.utc)
+    created_utc = story.created_at
+    if created_utc and created_utc.tzinfo is None:
+        created_utc = created_utc.replace(tzinfo=timezone.utc)
+    is_fresh_24h = bool(created_utc and (now_utc - created_utc) <= timedelta(hours=24))
+
+    payload = {
+        "id": story.id,
+        "kind": story.kind,
+        "title": clean_title,
+        "duration_label": duration_label,
+        "caption": story.caption,
+        "media_url": story.media_url,
+        "before_media_url": story.before_media_url,
+        "after_media_url": story.after_media_url,
+        "visibility": story.visibility,
+        "group_id": story.group_id,
+        "group_name": group.name if group else "",
+        "user_id": story.user_id,
+        "username": author.username if author else "Etudiant",
+        "avatar_url": author.avatar_url if author else "",
+        "campus_id": campus.id if campus else None,
+        "campus_name": campus.name if campus else "",
+        "likes_count": likes_count,
+        "is_liked": is_liked,
+        "comments_count": len(comments),
+        "comments": [serialize_comment(c) for c in comments],
+        "is_fresh_24h": is_fresh_24h,
+        "created_at": story.created_at.isoformat() if story.created_at else None,
+        "workout": None,
+    }
+    if workout is not None:
+        payload["workout"] = {
+            "id": workout.id,
+            "sport": workout.sport,
+            "duration_minutes": workout.duration_minutes,
+            "calories": workout.calories,
+            "distance_km": workout.distance_km,
+        }
+    return payload

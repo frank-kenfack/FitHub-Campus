@@ -15,6 +15,7 @@ from app.models import (
     User,
     Workout,
 )
+from app.utils.gamification import evaluate_and_award_badges
 from app.utils.media import remove_uploaded_file, save_validated_image
 from app.utils.serializers import serialize_comment, serialize_story
 
@@ -175,6 +176,7 @@ def create_workout_story():
     user.xp_points = (user.xp_points or 0) + 25
     db.session.add(story)
     db.session.commit()
+    evaluate_and_award_badges(user.id)
 
     return jsonify({"post": serialize_story(story, current_user_id=user.id)}), 201
 
@@ -253,6 +255,7 @@ def create_before_after_post():
     user.xp_points = (user.xp_points or 0) + 35
     db.session.add(story)
     db.session.commit()
+    evaluate_and_award_badges(user.id)
 
     return jsonify({"post": serialize_story(story, current_user_id=user.id)}), 201
 

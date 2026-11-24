@@ -91,7 +91,7 @@
 
     .progress-bar {
       height: 100%;
-      width: 62.5%;
+      width: 75%;
       background: #4ADE80;
       border-radius: 999px;
     }
@@ -261,11 +261,11 @@
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Suivi Visuel • Étape 5 Validée (En attente de revue)</span>
+        <span class="pill">Suivi Visuel • Étape 6 Validée (En attente de revue)</span>
         <div class="pill-row">
           <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-05/fitbuddy-realtime/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime" target="_blank" rel="noreferrer">Branche GitHub : step-05/fitbuddy-realtime ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-06/geoloc-gamification/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification" target="_blank" rel="noreferrer">Branche GitHub : step-06/geoloc-gamification ↗</a>
         </div>
       </div>
       <h1>FitHub Campus — Tableau de Bord d'Avancement</h1>
@@ -274,66 +274,66 @@
         <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 5 / 8 étapes validées</span>
-        <span>62,5 %</span>
+        <span>Progression : 6 / 8 étapes validées (MVP fonctionnel complet)</span>
+        <span>75 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
       <div class="kpi green">
         <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Étape 5 Validée</div>
+        <div class="kpi-val">Étape 6 Validée</div>
         <div class="kpi-sub">Prête pour fusion vers <code>develop</code> après votre revue</div>
       </div>
       <div class="kpi pink">
         <div class="kpi-label">Branche GitHub</div>
-        <div class="kpi-val" style="font-size:14.5px;">step-05/fitbuddy-realtime</div>
-        <div class="kpi-sub">Étapes 1 à 4 fusionnées dans <code>develop</code></div>
+        <div class="kpi-val" style="font-size:14.5px;">step-06/geoloc-gamification</div>
+        <div class="kpi-sub">Étapes 1 à 5 fusionnées dans <code>develop</code></div>
       </div>
       <div class="kpi green">
         <div class="kpi-label">Suite de Tests</div>
-        <div class="kpi-val">37 / 37 Pytest</div>
-        <div class="kpi-sub">0 warning • Ruff OK • WebSocket 2 sessions OK</div>
+        <div class="kpi-val">45 / 45 Pytest</div>
+        <div class="kpi-sub">0 warning • Ruff OK • Haversine, RSVP &amp; GPX OK</div>
       </div>
       <div class="kpi amber">
         <div class="kpi-label">Prochaine étape</div>
-        <div class="kpi-val" style="font-size:15px;">Étape 6 • Carte &amp; Badges</div>
-        <div class="kpi-sub">Branche <code>step-06/geoloc-gamification</code></div>
+        <div class="kpi-val" style="font-size:15px;">Étape 7 • CI/CD &amp; Qualité</div>
+        <div class="kpi-sub">Branche <code>step-07/cicd-qualite-docs</code></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Livrables Réalisés à l'Étape 5 (Fit-Buddy, WebSockets Temps Réel &amp; Streak)</h2>
+      <h2>Livrables Réalisés à l'Étape 6 (Géolocalisation Leaflet/OSM, Événements RSVP &amp; Gamification)</h2>
       <div class="files-grid">
         <div class="files-box">
-          <strong>Matching &amp; Affinité (US-5.1)</strong>
+          <strong>Carte Leaflet &amp; Haversine (US-6.1, US-6.3)</strong>
           <ul>
-            <li><code>GET /api/buddies/discover</code> (score d'affinité %)</li>
-            <li>Workflow <code>pending</code> → <code>accepted</code> / <code>declined</code> (+25 XP)</li>
-            <li>Filtres campus, discipline sportive et niveau</li>
+            <li><code>MapEventsView.jsx</code> (Leaflet 1.9 + OpenStreetMap)</li>
+            <li>Calcul exact Haversine <code>GET /api/places</code> + rayon km</li>
+            <li>Géolocalisation HTML5 avec repli auto sur GPS campus</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>WebSockets Temps Réel (US-5.2)</strong>
+          <strong>Événements &amp; Capacité RSVP (US-6.2)</strong>
           <ul>
-            <li><code>backend/app/sockets.py</code> + broker Redis 7 pub/sub</li>
-            <li>Auth JWT sur <code>connect</code> + rooms privées <code>user_&lt;id&gt;</code></li>
-            <li><code>FitBuddyView.jsx</code> (<code>socket.io-client</code> via Nginx)</li>
+            <li><code>POST /api/places/events</code> + clic carte GPS</li>
+            <li><code>POST /api/places/&lt;id&gt;/rsvp</code> verrouillé (<code>409</code> si complet)</li>
+            <li>Protection des salles partenaires contre la suppression</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Streak &amp; Non-Régression (US-5.3)</strong>
+          <strong>Badges, Paliers XP &amp; Import (US-7.1..7.3)</strong>
           <ul>
-            <li>Calcul dynamique <code>compute_pair_streak_days</code></li>
-            <li>Badge <code>🔥 X j streak</code> affiché sur chaque binôme</li>
-            <li>7 nouveaux tests dans <code>test_step05_fitbuddy.py</code></li>
+            <li>5 badges auto sans doublon + 4 paliers de récompenses</li>
+            <li>Connecteur Google Fit REST JSON + parseur XML <code>.gpx</code></li>
+            <li>8 nouveaux tests dans <code>test_step06_geoloc_gamification.py</code></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Journal des Tests Observés (Étape 5 + Non-Régression Étapes 1 à 4)</h2>
+      <h2>Journal des Tests Observés (Étape 6 + Non-Régression Étapes 1 à 5)</h2>
       <div class="test-log">$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
 All checks passed!
 
@@ -342,14 +342,16 @@ tests/test_step01_socle.py (5 tests) ...........................................
 tests/test_step02_auth_groups.py (9 tests) ...................................... PASSED
 tests/test_step03_social.py (8 tests) ........................................... PASSED
 tests/test_step04_challenges.py (8 tests) ....................................... PASSED
-tests/test_step05_fitbuddy.py::test_discover_buddies_filters_and_compatibility_score PASSED [ 83%]
-tests/test_step05_fitbuddy.py::test_buddy_request_accept_and_decline_workflow PASSED [ 86%]
-tests/test_step05_fitbuddy.py::test_realtime_websocket_delivery_between_two_sessions PASSED [ 89%]
-tests/test_step05_fitbuddy.py::test_encouragement_blocked_if_not_accepted_buddies PASSED [ 91%]
-tests/test_step05_fitbuddy.py::test_shared_streak_computed_from_consecutive_days PASSED [ 94%]
-tests/test_step05_fitbuddy.py::test_websocket_rejects_unauthenticated_or_forged_token PASSED [ 97%]
-tests/test_step05_fitbuddy.py::test_unauthenticated_buddy_routes_return_401 PASSED [100%]
-============================= 37 passed in 23.85s ==============================</div>
+tests/test_step05_fitbuddy.py (7 tests) ......................................... PASSED
+tests/test_step06_geoloc_gamification.py::test_haversine_radius_filtering_and_campus_fallback PASSED [ 84%]
+tests/test_step06_geoloc_gamification.py::test_create_geolocated_event_and_rsvp_capacity_enforcement PASSED [ 86%]
+tests/test_step06_geoloc_gamification.py::test_event_delete_restricted_to_organizer_and_protects_seeded_places PASSED [ 88%]
+tests/test_step06_geoloc_gamification.py::test_automatic_badges_unlocking_without_duplicates PASSED [ 91%]
+tests/test_step06_geoloc_gamification.py::test_reward_tiers_and_xp_progression PASSED [ 93%]
+tests/test_step06_geoloc_gamification.py::test_google_fit_json_import_credits_profile_and_active_challenge PASSED [ 95%]
+tests/test_step06_geoloc_gamification.py::test_gpx_xml_upload_and_xxe_malformed_rejection PASSED [ 97%]
+tests/test_step06_geoloc_gamification.py::test_unauthenticated_step06_mutations_return_401 PASSED [100%]
+============================= 45 passed in 31.80s ==============================</div>
     </div>
 
     <div class="card">
@@ -390,26 +392,26 @@ tests/test_step05_fitbuddy.py::test_unauthenticated_buddy_routes_return_401 PASS
         <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 5 — Motivation Fit-Buddy &amp; Temps Réel WebSockets</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
+          </div>
+          <div>Branche : <span class="branch-code">step-05/fitbuddy-realtime</span></div>
+        </div>
+
+        <div class="step-item done">
+          <div class="step-head">
+            <span class="step-title">Étape 6 — Géolocalisation (Carte Leaflet/OSM) &amp; Gamification</span>
             <span class="badge badge-done">✅ Validée — Revue en cours</span>
           </div>
           <div>
-            Branche : <span class="branch-code">step-05/fitbuddy-realtime</span> •
-            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
+            Branche : <span class="branch-code">step-06/geoloc-gamification</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
           </div>
         </div>
 
         <div class="step-item active">
           <div class="step-head">
-            <span class="step-title">Étape 6 — Géolocalisation (Carte Leaflet/OSM) &amp; Gamification</span>
-            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
-          </div>
-          <div>Branche prévue : <span class="branch-code">step-06/geoloc-gamification</span></div>
-        </div>
-
-        <div class="step-item">
-          <div class="step-head">
             <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
           </div>
           <div>Branche prévue : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
         </div>

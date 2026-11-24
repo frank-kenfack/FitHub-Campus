@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from app.extensions import db, socketio
 from app.models import Campus, Encouragement, FitBuddy, Story, User, Workout
+from app.utils.gamification import evaluate_and_award_badges
 
 
 def find_buddy_relation(user_a_id: int, user_b_id: int) -> FitBuddy | None:
@@ -154,6 +155,7 @@ def create_and_emit_encouragement(
     sender.xp_points = (sender.xp_points or 0) + 5
     db.session.add(enc)
     db.session.commit()
+    evaluate_and_award_badges(sender_id)
 
     streak = compute_pair_streak_days(relation)
     payload = serialize_encouragement(enc)

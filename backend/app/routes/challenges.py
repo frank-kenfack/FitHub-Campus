@@ -16,6 +16,7 @@ from app.models import (
     User,
     Workout,
 )
+from app.utils.gamification import evaluate_and_award_badges
 from app.utils.media import remove_uploaded_file, save_validated_image
 
 challenges_bp = Blueprint("challenges", __name__, url_prefix="/api/challenges")
@@ -505,6 +506,7 @@ def submit_performance(challenge_id: int):
     )
     user.xp_points = (user.xp_points or 0) + 20
     db.session.commit()
+    evaluate_and_award_badges(user.id)
 
     if old_proof:
         remove_uploaded_file(old_proof, current_app.config["UPLOAD_FOLDER"])

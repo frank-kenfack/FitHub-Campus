@@ -67,7 +67,7 @@ def health_check():
             {
                 "status": "ok" if healthy else "degraded",
                 "service": "fithub-campus-api",
-                "step": "step-05/fitbuddy-realtime",
+                "step": "step-06/geoloc-gamification",
                 "checks": checks,
                 "stats": stats,
             }

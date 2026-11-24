@@ -42,11 +42,14 @@ def serialize_user(user: User, include_stats: bool = False) -> dict:
             .order_by(Badge.id.asc())
             .all()
         )
+        badges_xp = sum(int(b.xp_reward or 0) for b in awarded)
         payload["stats"] = {
             "workouts_count": workouts_count,
             "groups_count": groups_count,
             "badges_count": len(awarded),
             "xp_points": user.xp_points,
+            "badges_xp": badges_xp,
+            "total_xp": int(user.xp_points or 0) + badges_xp,
         }
         payload["badges"] = [
             {

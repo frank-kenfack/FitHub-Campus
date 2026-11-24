@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { apiRequest, getStoredToken, setStoredToken } from "./api.js";
+import AuthProfileView from "./components/AuthProfileView.jsx";
+import GroupsView from "./components/GroupsView.jsx";
 
 const TABS = [
-  { id: "home", label: "Accueil", step: "Étape 1 (Actif)" },
+  { id: "home", label: "Accueil", step: "Étapes 1–2" },
+  { id: "groups", label: "Groupes", step: "Étape 2 (Actif)" },
   { id: "social", label: "Social", step: "Étape 3" },
   { id: "challenges", label: "Défis", step: "Étape 4" },
-  { id: "buddy", label: "Fit-Buddy", step: "Étape 5" },
-  { id: "map", label: "Carte", step: "Étape 6" }
+  { id: "buddy", label: "Buddy", step: "Étape 5" },
+  { id: "profile", label: "Profil", step: "Étape 2 (Actif)" }
 ];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
   const [health, setHealth] = useState(null);
   const [campuses, setCampuses] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -19,18 +24,39 @@ export default function App() {
     setLoading(true);
     setError("");
     try {
-      const [healthRes, campusesRes] = await Promise.all([
-        fetch("/api/health"),
-        fetch("/api/campuses")
+      const [healthData, campusesData] = await Promise.all([
+        apiRequest("/api/health"),
+        apiRequest("/api/campuses")
       ]);
-      const healthData = await healthRes.json();
-      const campusesData = await campusesRes.json();
       setHealth(healthData);
       setCampuses(campusesData.campuses || []);
-    } catch (err) {
+
+      if (getStoredToken()) {
+        try {
+          const meData = await apiRequest("/api/users/me");
+          setCurrentUser(meData.user);
+        } catch {
+          setStoredToken("");
+          setCurrentUser(null);
+        }
+      }
+    } catch {
       setError("Impossible de joindre l'API backend pour le moment.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function refreshSessionAndStats() {
+    try {
+      const healthData = await apiRequest("/api/health");
+      setHealth(healthData);
+      if (getStoredToken()) {
+        const meData = await apiRequest("/api/users/me");
+        setCurrentUser(meData.user);
+      }
+    } catch {
+      // ignore background refresh error
     }
   }
 
@@ -44,12 +70,40 @@ export default function App() {
     <div className="app-shell">
       <header className="topbar">
         <div className="topbar-row">
-          <h1 className="brand">FitHub Campus</h1>
-          <span className="step-pill">step-01/socle-docker • 4 conteneurs</span>
+          <div>
+            <h1 className="brand">FitHub Campus</h1>
+            <p className="topbar-sub">
+              Réseau Social Fitness Étudiant — Auth JWT, Profils &amp; Groupes Sportifs
+            </p>
+          </div>
+          <div className="topbar-right">
+            <span className="step-pill">step-02/auth-profils-groupes</span>
+            <button
+              type="button"
+              className="user-pill-btn"
+              onClick={() => setActiveTab("profile")}
+            >
+              {currentUser ? (
+                <>
+                  {currentUser.avatar_url ? (
+                    <img
+                      src={currentUser.avatar_url}
+                      alt={currentUser.username}
+                      className="mini-avatar"
+                    />
+                  ) : (
+                    <span className="mini-initials">
+                      {currentUser.username.slice(0, 2).toUpperCase()}
+                    </span>
+                  )}
+                  <span>{currentUser.username}</span>
+                </>
+              ) : (
+                <span>Connexion / Inscription</span>
+              )}
+            </button>
+          </div>
         </div>
-        <p className="topbar-sub">
-          Réseau Social Fitness Étudiant — Socle Docker, PostgreSQL, Redis &amp; Interface Mobile-First
-        </p>
       </header>
 
       <nav className="desktop-nav" aria-label="Navigation principale">
@@ -65,7 +119,7 @@ export default function App() {
         ))}
       </nav>
 
-      {activeTab === "home" ? (
+      {activeTab === "home" && (
         <>
           <div className="grid-cards">
             <section className="card">
@@ -75,7 +129,7 @@ export default function App() {
                   Actualiser
                 </button>
               </div>
-              {loading && <p>Vérification de l'API en cours...</p>}
+              {loading && <p>Vérification de l&apos;API en cours...</p>}
               {error && <p style={{ color: "#BE123C", fontWeight: 700 }}>{error}</p>}
               {health && (
                 <div>
@@ -87,20 +141,25 @@ export default function App() {
                   </div>
                   <div className="status-row">
                     <span>PostgreSQL (16 tables migrées)</span>
-                    <span className={`badge ${health.checks?.database === "ok" ? "badge-ok" : "badge-err"}`}>
+                    <span
+                      className={`badge ${health.checks?.database === "ok" ? "badge-ok" : "badge-err"}`}
+                    >
                       {health.checks?.database === "ok" ? "Connecté" : "Erreur"}
                     </span>
                   </div>
                   <div className="status-row">
                     <span>Redis (Broker temps réel)</span>
-                    <span className={`badge ${health.checks?.redis === "ok" ? "badge-ok" : "badge-err"}`}>
+                    <span
+                      className={`badge ${health.checks?.redis === "ok" ? "badge-ok" : "badge-err"}`}
+                    >
                       {health.checks?.redis === "ok" ? "Connecté" : "Erreur"}
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>Données seedées</span>
+                    <span>Communauté active</span>
                     <span className="badge badge-soon">
-                      {health.stats?.campuses ?? 0} campus • {health.stats?.badges ?? 0} badges • {health.stats?.places ?? 0} lieux
+                      {health.stats?.users ?? 0} étudiants • {health.stats?.groups ?? 0} groupes •{" "}
+                      {health.stats?.campuses ?? 0} campus
                     </span>
                   </div>
                 </div>
@@ -108,22 +167,33 @@ export default function App() {
             </section>
 
             <section className="card">
-              <h2>Prochaines Étapes du MVP</h2>
-              <div className="status-row">
-                <span>Authentification JWT &amp; Groupes</span>
-                <span className="badge badge-soon">Étape 2</span>
+              <h2>Modules Actifs (Étape 2)</h2>
+              <p className="muted-text" style={{ marginTop: 0 }}>
+                Authentifiez-vous en JWT, personnalisez votre avatar persistant et rejoignez un club sportif sur votre campus :
+              </p>
+              <div className="quick-actions">
+                <button
+                  type="button"
+                  className="primary-btn"
+                  onClick={() => setActiveTab("groups")}
+                >
+                  Explorer les Groupes Sportifs
+                </button>
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  onClick={() => setActiveTab("profile")}
+                >
+                  {currentUser ? `Mon Profil (${currentUser.username})` : "Se connecter / S'inscrire"}
+                </button>
               </div>
-              <div className="status-row">
-                <span>Stories Workouts &amp; Photos Avant/Après</span>
+              <div className="status-row" style={{ marginTop: "8px" }}>
+                <span>Stories &amp; Photos Avant/Après</span>
                 <span className="badge badge-soon">Étape 3</span>
               </div>
               <div className="status-row">
-                <span>Défis Inter-Campus &amp; Podiums</span>
-                <span className="badge badge-soon">Étape 4</span>
-              </div>
-              <div className="status-row">
-                <span>Fit-Buddy Temps Réel &amp; Carte OSM</span>
-                <span className="badge badge-soon">Étapes 5–6</span>
+                <span>Défis Inter-Campus &amp; Fit-Buddy Live</span>
+                <span className="badge badge-soon">Étapes 4–5</span>
               </div>
             </section>
           </div>
@@ -142,7 +212,27 @@ export default function App() {
             </div>
           </section>
         </>
-      ) : (
+      )}
+
+      {activeTab === "groups" && (
+        <GroupsView
+          user={currentUser}
+          campuses={campuses}
+          onRequireAuth={() => setActiveTab("profile")}
+          onMembershipChanged={refreshSessionAndStats}
+        />
+      )}
+
+      {activeTab === "profile" && (
+        <AuthProfileView
+          user={currentUser}
+          campuses={campuses}
+          onAuthChange={setCurrentUser}
+          onDataRefresh={refreshSessionAndStats}
+        />
+      )}
+
+      {!["home", "groups", "profile"].includes(activeTab) && (
         <section className="card">
           <h2>Module {currentTabMeta?.label}</h2>
           <p>

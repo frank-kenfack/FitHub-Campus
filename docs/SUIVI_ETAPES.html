@@ -91,7 +91,7 @@
 
     .progress-bar {
       height: 100%;
-      width: 75%;
+      width: 87.5%;
       background: #4ADE80;
       border-radius: 999px;
     }
@@ -261,11 +261,11 @@
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Suivi Visuel • Étape 6 Validée (En attente de revue)</span>
+        <span class="pill">Suivi Visuel • Étape 7 Validée (En attente de revue)</span>
         <div class="pill-row">
           <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-06/geoloc-gamification/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
-          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification" target="_blank" rel="noreferrer">Branche GitHub : step-06/geoloc-gamification ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/step-07/cicd-qualite-docs/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs" target="_blank" rel="noreferrer">Branche GitHub : step-07/cicd-qualite-docs ↗</a>
         </div>
       </div>
       <h1>FitHub Campus — Tableau de Bord d'Avancement</h1>
@@ -274,68 +274,78 @@
         <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 6 / 8 étapes validées (MVP fonctionnel complet)</span>
-        <span>75 %</span>
+        <span>Progression : 7 / 8 étapes validées (CI/CD, Qualité E2E &amp; Documentation complètes)</span>
+        <span>87,5 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
       <div class="kpi green">
         <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Étape 6 Validée</div>
+        <div class="kpi-val">Étape 7 Validée</div>
         <div class="kpi-sub">Prête pour fusion vers <code>develop</code> après votre revue</div>
       </div>
       <div class="kpi pink">
         <div class="kpi-label">Branche GitHub</div>
-        <div class="kpi-val" style="font-size:14.5px;">step-06/geoloc-gamification</div>
-        <div class="kpi-sub">Étapes 1 à 5 fusionnées dans <code>develop</code></div>
+        <div class="kpi-val" style="font-size:14.5px;">step-07/cicd-qualite-docs</div>
+        <div class="kpi-sub">Étapes 1 à 6 fusionnées dans <code>develop</code></div>
       </div>
       <div class="kpi green">
-        <div class="kpi-label">Suite de Tests</div>
-        <div class="kpi-val">45 / 45 Pytest</div>
-        <div class="kpi-sub">0 warning • Ruff OK • Haversine, RSVP &amp; GPX OK</div>
+        <div class="kpi-label">Suite de Tests &amp; SLA</div>
+        <div class="kpi-val">51 / 51 Pytest</div>
+        <div class="kpi-sub">Latence Nginx E2E : 4 à 31 ms (&lt; 300 ms)</div>
       </div>
       <div class="kpi amber">
-        <div class="kpi-label">Prochaine étape</div>
-        <div class="kpi-val" style="font-size:15px;">Étape 7 • CI/CD &amp; Qualité</div>
-        <div class="kpi-sub">Branche <code>step-07/cicd-qualite-docs</code></div>
+        <div class="kpi-label">Dernière étape (+20 %)</div>
+        <div class="kpi-val" style="font-size:15px;">Étape 8 • Kubernetes</div>
+        <div class="kpi-sub">Branche <code>step-08/kubernetes-bonus</code></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Livrables Réalisés à l'Étape 6 (Géolocalisation Leaflet/OSM, Événements RSVP &amp; Gamification)</h2>
+      <h2>Livrables Réalisés à l'Étape 7 (Pipelines CI/CD, Scripts Ansible, Recette E2E &amp; Docs)</h2>
       <div class="files-grid">
         <div class="files-box">
-          <strong>Carte Leaflet &amp; Haversine (US-6.1, US-6.3)</strong>
+          <strong>Pipelines CI/CD (US-8.2)</strong>
           <ul>
-            <li><code>MapEventsView.jsx</code> (Leaflet 1.9 + OpenStreetMap)</li>
-            <li>Calcul exact Haversine <code>GET /api/places</code> + rayon km</li>
-            <li>Géolocalisation HTML5 avec repli auto sur GPS campus</li>
+            <li><code>.gitlab-ci.yml</code> (4 stages : lint, test, build, deploy)</li>
+            <li><code>.github/workflows/ci.yml</code> (3 jobs cloud automatisés)</li>
+            <li>Services PostgreSQL 16 + Redis 7 &amp; rapport JUnit</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Événements &amp; Capacité RSVP (US-6.2)</strong>
+          <strong>Automatisation &amp; IaC (US-8.3)</strong>
           <ul>
-            <li><code>POST /api/places/events</code> + clic carte GPS</li>
-            <li><code>POST /api/places/&lt;id&gt;/rsvp</code> verrouillé (<code>409</code> si complet)</li>
-            <li>Protection des salles partenaires contre la suppression</li>
+            <li><code>scripts/deploy.sh</code> &amp; <code>scripts/run_tests.sh</code></li>
+            <li><code>scripts/smoke_test.sh</code> (vérification HTTP 200 &lt; 300 ms)</li>
+            <li><code>infra/ansible/deploy.yml</code> + inventaire type</li>
           </ul>
         </div>
         <div class="files-box">
-          <strong>Badges, Paliers XP &amp; Import (US-7.1..7.3)</strong>
+          <strong>Recette E2E, Perfs &amp; Docs (US-9.1..9.3)</strong>
           <ul>
-            <li>5 badges auto sans doublon + 4 paliers de récompenses</li>
-            <li>Connecteur Google Fit REST JSON + parseur XML <code>.gpx</code></li>
-            <li>8 nouveaux tests dans <code>test_step06_geoloc_gamification.py</code></li>
+            <li><code>test_step07_quality_perf.py</code> (parcours complet 5/5 badges, SQLi, &lt; 300 ms)</li>
+            <li><code>README.md</code> complet + diagrammes Mermaid</li>
+            <li><code>docs/ARCHITECTURE_TECHNIQUE.md</code> &amp; rapport latence</li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Journal des Tests Observés (Étape 6 + Non-Régression Étapes 1 à 5)</h2>
+      <h2>Journal des Tests &amp; Smoke Benchmark Observés (Étape 7)</h2>
       <div class="test-log">$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
 All checks passed!
+
+$ bash ./scripts/smoke_test.sh http://localhost:8080
+[OK] /nginx-health -> HTTP 200 (4 ms &lt; 300 ms)
+[OK] / -> HTTP 200 (4 ms &lt; 300 ms)
+[OK] /api/health -> HTTP 200 (21 ms &lt; 300 ms)
+[OK] /api/campuses -> HTTP 200 (16 ms &lt; 300 ms)
+[OK] /api/groups -> HTTP 200 (22 ms &lt; 300 ms)
+[OK] /api/social/posts -> HTTP 200 (31 ms &lt; 300 ms)
+[OK] /api/challenges -> HTTP 200 (19 ms &lt; 300 ms)
+[OK] /api/places -> HTTP 200 (16 ms &lt; 300 ms)
 
 $ docker compose exec -T backend pytest -v
 tests/test_step01_socle.py (5 tests) ............................................ PASSED
@@ -343,15 +353,9 @@ tests/test_step02_auth_groups.py (9 tests) .....................................
 tests/test_step03_social.py (8 tests) ........................................... PASSED
 tests/test_step04_challenges.py (8 tests) ....................................... PASSED
 tests/test_step05_fitbuddy.py (7 tests) ......................................... PASSED
-tests/test_step06_geoloc_gamification.py::test_haversine_radius_filtering_and_campus_fallback PASSED [ 84%]
-tests/test_step06_geoloc_gamification.py::test_create_geolocated_event_and_rsvp_capacity_enforcement PASSED [ 86%]
-tests/test_step06_geoloc_gamification.py::test_event_delete_restricted_to_organizer_and_protects_seeded_places PASSED [ 88%]
-tests/test_step06_geoloc_gamification.py::test_automatic_badges_unlocking_without_duplicates PASSED [ 91%]
-tests/test_step06_geoloc_gamification.py::test_reward_tiers_and_xp_progression PASSED [ 93%]
-tests/test_step06_geoloc_gamification.py::test_google_fit_json_import_credits_profile_and_active_challenge PASSED [ 95%]
-tests/test_step06_geoloc_gamification.py::test_gpx_xml_upload_and_xxe_malformed_rejection PASSED [ 97%]
-tests/test_step06_geoloc_gamification.py::test_unauthenticated_step06_mutations_return_401 PASSED [100%]
-============================= 45 passed in 31.80s ==============================</div>
+tests/test_step06_geoloc_gamification.py (8 tests) .............................. PASSED
+tests/test_step07_quality_perf.py (6 tests : E2E 5/5 badges, &lt;300ms, SQLi, CORS) . PASSED
+============================= 51 passed (0 warnings) ============================</div>
     </div>
 
     <div class="card">
@@ -400,26 +404,26 @@ tests/test_step06_geoloc_gamification.py::test_unauthenticated_step06_mutations_
         <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 6 — Géolocalisation (Carte Leaflet/OSM) &amp; Gamification</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
+          </div>
+          <div>Branche : <span class="branch-code">step-06/geoloc-gamification</span></div>
+        </div>
+
+        <div class="step-item done">
+          <div class="step-head">
+            <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
             <span class="badge badge-done">✅ Validée — Revue en cours</span>
           </div>
           <div>
-            Branche : <span class="branch-code">step-06/geoloc-gamification</span> •
-            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
+            Branche : <span class="branch-code">step-07/cicd-qualite-docs</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs" target="_blank" rel="noreferrer">Voir sur GitHub ↗</a>
           </div>
         </div>
 
         <div class="step-item active">
           <div class="step-head">
-            <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
-            <span class="badge badge-active">⏭️ Prochaine étape (après validation)</span>
-          </div>
-          <div>Branche prévue : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
-        </div>
-
-        <div class="step-item">
-          <div class="step-head">
             <span class="step-title">Étape 8 — Orchestration Kubernetes (+20 % Bonus) &amp; Préparation Jury</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-active">⏭️ Dernière étape (après validation)</span>
           </div>
           <div>Branche prévue : <span class="branch-code">step-08/kubernetes-bonus</span></div>
         </div>

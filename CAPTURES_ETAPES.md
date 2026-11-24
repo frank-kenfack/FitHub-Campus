@@ -194,7 +194,7 @@ Synthèse visuelle de l'Étape 5 validée et trace d'exécution des 37 tests aut
 
 ## Étape 6 — `step-06/geoloc-gamification`
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **45/45** sans warning • Carte Leaflet/OpenStreetMap, rayon Haversine, capacité RSVP et connecteur Google Fit / GPX vérifiés)
+- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **45/45** sans warning • Carte Leaflet/OpenStreetMap, rayon Haversine, capacité RSVP et connecteur Google Fit / GPX vérifiés)
 - **Branche GitHub** : [`step-06/geoloc-gamification`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification)
 - **Fonctionnalités couvertes** : Carte interactive **Leaflet + OpenStreetMap** des salles partenaires, spots street-workout et événements étudiants, filtrage par rayon kilométrique exact (Haversine) avec repli GPS campus, création d'événements géolocalisés et gestion de capacité RSVP, déblocage automatique des 5 badges, paliers de récompenses XP et import d'activités externes (**Google Fit JSON** & traces **GPX**).
 
@@ -228,7 +228,35 @@ Synthèse visuelle de l'achèvement fonctionnel du MVP (6 / 8 étapes validées)
 
 ## Étape 7 — `step-07/cicd-qualite-docs`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 7 dans `docs/screenshots/step-07/` (exécution des pipelines CI/CD, rapport de tests E2E et benchmark de performance `< 300 ms`).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **51/51** sans warning • Smoke test Nginx **4 ms à 31 ms** `< 300 ms` • GitHub Actions CI/CD actif)
+- **Branche GitHub** : [`step-07/cicd-qualite-docs`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-07/cicd-qualite-docs)
+- **Fonctionnalités couvertes** : Pipelines CI/CD automatisés (`.gitlab-ci.yml` 4 stages & `.github/workflows/ci.yml` 3 jobs), scripts DevOps (`deploy.sh`, `run_tests.sh`, `smoke_test.sh`), playbook Ansible (`infra/ansible/deploy.yml`), suite de recette E2E complète & benchmark de latence `< 300 ms`, et documentation technique finale (`README.md`, `docs/ARCHITECTURE_TECHNIQUE.md`).
+
+### 7.1 Accueil de la Stack Docker (Étape 7 Active — CI/CD &amp; SLA `&lt; 300 ms`)
+Vue d'accueil connectée sur `http://localhost:8080` confirmant l'état opérationnel des 4 conteneurs et l'activation du socle CI/CD &amp; Qualité (`step-07/cicd-qualite-docs`).
+
+![Étape 7 - Accueil Stack et Statut CI/CD](./docs/screenshots/step-07/01-accueil-stack-step07.png)
+
+---
+
+### 7.2 Profil Étudiant Enrichi (Badges Débloqués, XP &amp; Passerelle Connecteurs)
+Vue de l'onglet **Profil** d'`InaFit_Lyon` affichant les statistiques consolidées, les pastilles des badges débloqués et l'accès direct aux paliers XP et connecteurs Google Fit / GPX.
+
+![Étape 7 - Profil Étudiant et Badges](./docs/screenshots/step-07/02-profil-etudiant-badges-actifs.png)
+
+---
+
+### 7.3 Rapport de Recette E2E, Architecture CI/CD &amp; Benchmark de Latence (`&lt; 300 ms`)
+Rapport visuel généré à partir des tirs réels sur le reverse proxy Nginx (`http://localhost:8080`) attestant des temps de réponse compris entre **4 ms et 31 ms** sur l'ensemble des routes critiques.
+
+![Étape 7 - Rapport Qualité, CI/CD et Latence](./docs/screenshots/step-07/03-rapport-qualite-latence-cicd.png)
+
+---
+
+### 7.4 Tableau de bord d'avancement mis à jour (87,5 % — 51/51 Pytest)
+Synthèse visuelle de l'Étape 7 validée (7 / 8 étapes complétées) avant l'étape finale bonus Kubernetes (+20 %).
+
+![Étape 7 - Tableau de bord et tests](./docs/screenshots/step-07/04-suivi-dashboard-step07.png)
 
 ---
 

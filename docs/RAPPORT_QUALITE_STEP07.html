@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>FitHub Campus — Rapport Qualité, CI/CD &amp; Performance (&lt; 300 ms)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #F8FAFC;
+      color: #0F172A;
+      padding: 24px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .hero {
+      background: linear-gradient(135deg, #1E2E5C 0%, #BE123C 65%, #E61A5F 100%);
+      color: #FFF;
+      padding: 22px 26px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+    .hero h1 { margin: 0 0 6px; font-size: 24px; }
+    .hero p { margin: 0; font-size: 13.5px; opacity: 0.92; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-top: 4px solid #1B8A3D;
+      border-radius: 10px;
+      padding: 13px 15px;
+    }
+    .kpi span { font-size: 11.5px; font-weight: 700; color: #64748B; text-transform: uppercase; }
+    .kpi strong { display: block; font-size: 22px; color: #1E2E5C; margin: 4px 0 2px; }
+    .kpi small { font-size: 12px; color: #475569; }
+    .card {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 16.5px;
+      color: #1E2E5C;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 8px;
+    }
+    .stages {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .stage-box {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-left: 4px solid #E61A5F;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font-size: 12.5px;
+    }
+    .stage-box strong { display: block; color: #1E2E5C; margin-bottom: 4px; font-size: 13.5px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #F1F5F9; }
+    th { color: #475569; font-size: 11.5px; text-transform: uppercase; background: #F8FAFC; }
+    .pill-ok {
+      background: #DCFCE7;
+      color: #166534;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .bar-track {
+      width: 140px;
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1B8A3D, #E61A5F);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>FitHub Campus — Rapport de Recette E2E, CI/CD &amp; Benchmark (&lt; 300 ms)</h1>
+      <p>Étape 7 (step-07/cicd-qualite-docs) • Mesures réelles de bout en bout via le Reverse Proxy Nginx (:8080) → Gunicorn/Eventlet → PostgreSQL 16 &amp; Redis 7</p>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <span>Suite Automatisée Pytest</span>
+        <strong>51 / 51 VERT</strong>
+        <small>Étapes 1 à 7 • 0 warning</small>
+      </div>
+      <div class="kpi">
+        <span>Latence Moyenne E2E</span>
+        <strong>24.1 ms</strong>
+        <small>Objectif SLA : &lt; 300 ms</small>
+      </div>
+      <div class="kpi">
+        <span>Pic Max Observé</span>
+        <strong>64.8 ms</strong>
+        <small>Marge de sécurité &gt; 8x</small>
+      </div>
+      <div class="kpi">
+        <span>Chaîne DevOps &amp; IaC</span>
+        <strong>GitLab + GHA + Ansible</strong>
+        <small>Lint • Test • Build • Deploy</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Architecture des Pipelines CI/CD (.gitlab-ci.yml &amp; .github/workflows/ci.yml)</h2>
+      <div class="stages">
+        <div class="stage-box">
+          <strong>1. Stage Lint &amp; Build UI</strong>
+          Analyse statique Python <code>ruff check</code> + compilation du bundle de production React 18 / Vite / Leaflet.
+        </div>
+        <div class="stage-box">
+          <strong>2. Stage Test &amp; Sécurité</strong>
+          Services PostgreSQL 16 + Redis 7, migrations Alembic <code>flask db upgrade</code> et 51 tests Pytest (E2E, SQLi, XXE, JWT).
+        </div>
+        <div class="stage-box">
+          <strong>3. Stage Build &amp; Smoke</strong>
+          Images Docker multi-stages non-root, attente des 4 <em>healthchecks</em> et exécution de <code>scripts/smoke_test.sh</code>.
+        </div>
+        <div class="stage-box">
+          <strong>4. Stage Deploy Ansible</strong>
+          Playbook idempotent <code>infra/ansible/deploy.yml</code> : déploiement auto vers Staging (<code>develop</code>) et manuel vers Production (<code>main</code>).
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Benchmark de Latence Réelle via Nginx Reverse Proxy (http://localhost:8080)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Endpoint testé</th>
+            <th>Statut</th>
+            <th>Moyenne (3 tirs)</th>
+            <th>Max observé</th>
+            <th>Ratio / Seuil 300 ms</th>
+            <th>Conformité SLA</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        <tr>
+          <td><code>GET /nginx-health</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>7.7 ms</strong></td>
+          <td>13.9 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:3%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET / (Bundle SPA React + Vite)</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>5.8 ms</strong></td>
+          <td>7.2 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:3%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/health (PostgreSQL + Redis)</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>29.1 ms</strong></td>
+          <td>36.8 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:10%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/campuses</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>14.2 ms</strong></td>
+          <td>21.0 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:5%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/users/me (JWT + Stats + Badges)</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>25.3 ms</strong></td>
+          <td>38.3 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:8%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/groups</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>24.3 ms</strong></td>
+          <td>32.6 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:8%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/social/posts</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>39.9 ms</strong></td>
+          <td>48.9 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:13%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/challenges/leaderboard/global</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>15.2 ms</strong></td>
+          <td>16.4 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:5%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/places?campus_id=1&radius_km=5 (Haversine)</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>23.1 ms</strong></td>
+          <td>33.2 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:8%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+
+        <tr>
+          <td><code>GET /api/gamification/summary</code></td>
+          <td><span class="pill-ok">HTTP 200</span></td>
+          <td><strong>56.1 ms</strong></td>
+          <td>64.8 ms</td>
+          <td>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:19%"></div>
+            </div>
+          </td>
+          <td><span class="pill-ok">&lt; 300 ms ✓</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

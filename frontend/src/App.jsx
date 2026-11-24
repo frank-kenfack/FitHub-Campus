@@ -82,7 +82,7 @@ export default function App() {
             </p>
           </div>
           <div className="topbar-right">
-            <span className="step-pill">step-06/geoloc-gamification</span>
+            <span className="step-pill">step-07/cicd-qualite-docs</span>
             <button
               type="button"
               className="user-pill-btn"
@@ -203,12 +203,12 @@ export default function App() {
                 </button>
               </div>
               <div className="status-row" style={{ marginTop: "10px" }}>
-                <span>Carte Leaflet Haversine + Gamification &amp; Import GPX</span>
-                <span className="badge badge-ok">Actif (Étape 6)</span>
+                <span>CI/CD GitLab &amp; GitHub Actions + Scripts Ansible (&lt; 300 ms)</span>
+                <span className="badge badge-ok">Actif (Étape 7)</span>
               </div>
               <div className="status-row">
-                <span>CI/CD GitLab/GitHub &amp; Kubernetes (+20 %)</span>
-                <span className="badge badge-soon">Étapes 7–8</span>
+                <span>Orchestration Kubernetes (+20 % Bonus) &amp; Démo Jury</span>
+                <span className="badge badge-soon">Étape 8</span>
               </div>
             </section>
           </div>

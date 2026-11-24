@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from app import models, sockets  # noqa: F401
@@ -48,6 +48,16 @@ def create_app(config_class: type[Config] = Config) -> Flask:
     @jwt.expired_token_loader
     def _expired_token(_jwt_header: dict, _jwt_payload: dict):
         return jsonify({"error": "Jeton JWT expire."}), 401
+
+    @app.errorhandler(404)
+    def _not_found(_err):
+        if request.path.startswith("/api/"):
+            return jsonify({"error": "Ressource API introuvable."}), 404
+        return jsonify({"error": "Ressource introuvable."}), 404
+
+    @app.errorhandler(405)
+    def _method_not_allowed(_err):
+        return jsonify({"error": "Methode HTTP non autorisee sur cette route."}), 405
 
     @app.get("/uploads/<path:filename>")
     def serve_uploaded_media(filename: str):

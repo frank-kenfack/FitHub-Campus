@@ -160,7 +160,7 @@ Synthèse visuelle du passage de mi-parcours (4 / 8 étapes validées) et trace 
 
 ## Étape 5 — `step-05/fitbuddy-realtime`
 
-- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **37/37** sans warning • livraison WebSocket temps réel prouvée entre 2 sessions Chrome indépendantes via Nginx + Redis)
+- **Statut** : ✅ Fusionnée dans `develop` (`ruff` OK • `pytest` **37/37** sans warning • livraison WebSocket temps réel prouvée entre 2 sessions Chrome indépendantes via Nginx + Redis)
 - **Branche GitHub** : [`step-05/fitbuddy-realtime`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime)
 - **Fonctionnalités couvertes** : Recherche et matching Fit-Buddy avec score d'affinité (`%`), workflow `pending` → `accepted` / `declined`, encouragements mutuels en temps réel via Flask-SocketIO + Redis + conservation en PostgreSQL, et compteur de régularité partagé (`🔥 streak`).
 
@@ -194,7 +194,35 @@ Synthèse visuelle de l'Étape 5 validée et trace d'exécution des 37 tests aut
 
 ## Étape 6 — `step-06/geoloc-gamification`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 6 dans `docs/screenshots/step-06/` (carte interactive Leaflet/OpenStreetMap, événements géolocalisés + RSVP, déblocage automatique de badges et import d'activités).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **45/45** sans warning • Carte Leaflet/OpenStreetMap, rayon Haversine, capacité RSVP et connecteur Google Fit / GPX vérifiés)
+- **Branche GitHub** : [`step-06/geoloc-gamification`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-06/geoloc-gamification)
+- **Fonctionnalités couvertes** : Carte interactive **Leaflet + OpenStreetMap** des salles partenaires, spots street-workout et événements étudiants, filtrage par rayon kilométrique exact (Haversine) avec repli GPS campus, création d'événements géolocalisés et gestion de capacité RSVP, déblocage automatique des 5 badges, paliers de récompenses XP et import d'activités externes (**Google Fit JSON** & traces **GPX**).
+
+### 6.1 Carte Interactive Leaflet / OpenStreetMap, Cercle Haversine (5 km) &amp; Popup Événement
+Vue centrée sur le campus de Lyon Gerland avec le rayon de recherche Haversine (`5 km`), les marqueurs personnalisés (`GYM`, `EVENT`, `GPS`), la popup interactive d'un événement local et les cartes de proximité triées par distance.
+
+![Étape 6 - Carte Interactive Leaflet et Haversine](./docs/screenshots/step-06/01-carte-leaflet-haversine-lyon.png)
+
+---
+
+### 6.2 Création d'un Événement Sportif Géolocalisé &amp; Inscriptions RSVP
+Ouverture du formulaire d'organisation d'événement géolocalisé (sélectionnable directement par clic sur la carte Leaflet) et affichage des compteurs de places disponibles (`1 / 12` inscrit).
+
+![Étape 6 - Création Événement et RSVP](./docs/screenshots/step-06/02-creation-evenement-et-rsvp.png)
+
+---
+
+### 6.3 Paliers de Récompenses XP, Synchronisation Google Fit / GPX &amp; Vitrine des 5 Badges
+Synchronisation en 1 clic d'une course **Google Fit** (`8,6 km` crédités automatiquement sur le défi inter-campus actif + `+30 XP`), progression sur l'échelle des récompenses (*Athlète Or*) et vitrine des badges d'accomplissement débloqués.
+
+![Étape 6 - Badges XP et Import Google Fit](./docs/screenshots/step-06/03-badges-paliers-xp-google-fit.png)
+
+---
+
+### 6.4 Tableau de bord d'avancement mis à jour (75 % — 45/45 Pytest)
+Synthèse visuelle de l'achèvement fonctionnel du MVP (6 / 8 étapes validées) et journal complet des 45 tests automatisés.
+
+![Étape 6 - Tableau de bord et tests](./docs/screenshots/step-06/04-suivi-dashboard-step06.png)
 
 ---
 

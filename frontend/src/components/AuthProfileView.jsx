@@ -10,7 +10,13 @@ const DEMO_ACCOUNTS = [
 
 const LEVELS = ["Débutant", "Intermédiaire", "Avancé", "Compétiteur"];
 
-export default function AuthProfileView({ user, campuses, onAuthChange, onDataRefresh }) {
+export default function AuthProfileView({
+  user,
+  campuses,
+  onAuthChange,
+  onDataRefresh,
+  onOpenBadges
+}) {
   const [mode, setMode] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
@@ -377,6 +383,29 @@ export default function AuthProfileView({ user, campuses, onAuthChange, onDataRe
         </div>
 
         {user.bio && <p className="bio-quote">« {user.bio} »</p>}
+
+        {user.badges?.length > 0 && (
+          <div style={{ marginTop: "12px" }}>
+            <strong style={{ fontSize: "13px", color: "#1E2E5C" }}>
+              Badges débloqués ({user.badges.length}) :
+            </strong>
+            <div className="workout-chips" style={{ marginTop: "6px" }}>
+              {user.badges.map((b) => (
+                <span key={b.id} className="metric-chip">
+                  🏅 {b.name} (+{b.xp_reward} XP)
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {onOpenBadges && (
+          <div style={{ marginTop: "12px" }}>
+            <button type="button" className="secondary-btn" onClick={onOpenBadges}>
+              Ouvrir mes Paliers XP &amp; Connecteur Google Fit / GPX
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="card">

@@ -11,8 +11,10 @@ from app.extensions import db, jwt, migrate, socketio
 from app.routes.auth import auth_bp
 from app.routes.buddies import buddies_bp
 from app.routes.challenges import challenges_bp
+from app.routes.gamification import gamification_bp
 from app.routes.groups import groups_bp
 from app.routes.health import health_bp
+from app.routes.places import places_bp
 from app.routes.social import social_bp
 from app.routes.users import users_bp
 
@@ -59,4 +61,6 @@ def create_app(config_class: type[Config] = Config) -> Flask:
     app.register_blueprint(social_bp)
     app.register_blueprint(challenges_bp)
     app.register_blueprint(buddies_bp)
+    app.register_blueprint(places_bp)
+    app.register_blueprint(gamification_bp)
     return app

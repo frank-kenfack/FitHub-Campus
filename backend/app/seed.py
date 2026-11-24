@@ -25,6 +25,7 @@ from app.models import (
     User,
     Workout,
 )
+from app.utils.gamification import evaluate_and_award_badges
 
 DEFAULT_CAMPUSES = [
     {
@@ -626,6 +627,10 @@ def seed_database() -> dict:
         )
 
     db.session.commit()
+
+    for demo_usr in user_map.values():
+        evaluate_and_award_badges(demo_usr.id)
+
     return {
         "campuses": Campus.query.count(),
         "badges": Badge.query.count(),

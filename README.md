@@ -48,4 +48,4 @@ docker compose exec -T backend pytest -v
 - `develop` : branche d'intégration des étapes validées
 - `step-XX/...` : une branche dédiée par étape, validée par tests et revue visuelle avant fusion
 
-Consultez le journal [AVANCEMENT.md](./AVANCEMENT.md) ou ouvrez [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html) dans votre navigateur pour suivre l'avancement détaillé.
+Consultez le journal [AVANCEMENT.md](./AVANCEMENT.md), l'album des captures [CAPTURES_ETAPES.md](./CAPTURES_ETAPES.md) ou ouvrez [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html) dans votre navigateur pour suivre l'avancement détaillé.

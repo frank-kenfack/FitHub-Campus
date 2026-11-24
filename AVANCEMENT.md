@@ -3,6 +3,7 @@
 Dépôt GitHub : https://github.com/frank-kenfack/FitHub-Campus  
 Branche active : [`step-01/socle-docker`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-01/socle-docker)  
 Tableau de bord visuel interactif : [docs/SUIVI_ETAPES.html](./docs/SUIVI_ETAPES.html)  
+Album des captures par étape : [CAPTURES_ETAPES.md](./CAPTURES_ETAPES.md)  
 Backlog MVP complet : [FitHub_Campus_Backlog_MVP.pdf](./FitHub_Campus_Backlog_MVP.pdf)  
 Application locale en cours d'exécution : http://localhost:8080
 

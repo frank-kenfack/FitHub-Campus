@@ -335,7 +335,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
       {/* CARROUSEL STORIES 24H */}
       <section className="card" style={{ marginBottom: "14px" }}>
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>Stories Workouts &lt; 24h ({freshStories.length})</h2>
+          <h2 style={{ margin: 0 }}>Stories du Jour ({freshStories.length})</h2>
           <div className="quick-actions">
             <button
               type="button"
@@ -626,7 +626,7 @@ export default function SocialFeedView({ user, campuses, onRequireAuth, onActivi
           <div className="quick-actions">
             {[
               { id: "all", label: "Tout le fil" },
-              { id: "24h", label: "Stories < 24h" },
+              { id: "24h", label: "Stories du jour" },
               { id: "before_after", label: "Avant / Après" }
             ].map((item) => (
               <button

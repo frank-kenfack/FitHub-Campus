@@ -138,7 +138,7 @@ export default function AuthProfileView({
         isFormData: true
       });
       onAuthChange(data.user);
-      setFeedback({ type: "ok", text: "Nouvel avatar enregistré sur le volume persistant !" });
+      setFeedback({ type: "ok", text: "Photo de profil mise à jour avec succès !" });
     } catch (err) {
       setFeedback({ type: "err", text: err.message });
     } finally {
@@ -209,7 +209,7 @@ export default function AuthProfileView({
                 />
               </label>
               <button type="submit" className="primary-btn" disabled={busy}>
-                {busy ? "Connexion..." : "Se connecter (JWT)"}
+                {busy ? "Connexion..." : "Se connecter"}
               </button>
             </form>
           ) : (
@@ -236,7 +236,7 @@ export default function AuthProfileView({
                 />
               </label>
               <label className="field">
-                <span>Mot de passe (min. 8 caractères, haché bcrypt)</span>
+                <span>Mot de passe (8 caractères minimum)</span>
                 <input
                   type="password"
                   required
@@ -294,9 +294,9 @@ export default function AuthProfileView({
         </section>
 
         <section className="card">
-          <h2>Comptes Étudiants de Démonstration</h2>
+          <h2>Accès Rapide — Profils Étudiants</h2>
           <p className="muted-text">
-            Testez immédiatement l&apos;authentification JWT et l&apos;adhésion aux groupes avec un des 3 comptes pré-seedés :
+            Explorez immédiatement la plateforme avec l&apos;un des profils étudiants de démonstration :
           </p>
           <div className="demo-list">
             {DEMO_ACCOUNTS.map((acc) => (
@@ -311,7 +311,7 @@ export default function AuthProfileView({
                   disabled={busy}
                   onClick={() => handleLogin(null, { email: acc.email, password: acc.password })}
                 >
-                  Connexion 1-clic
+                  Se connecter
                 </button>
               </div>
             ))}
@@ -347,7 +347,7 @@ export default function AuthProfileView({
             </p>
             <div className="profile-actions">
               <label className="upload-label">
-                Changer d&apos;avatar
+                Modifier ma photo
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
@@ -402,7 +402,7 @@ export default function AuthProfileView({
         {onOpenBadges && (
           <div style={{ marginTop: "12px" }}>
             <button type="button" className="secondary-btn" onClick={onOpenBadges}>
-              Ouvrir mes Paliers XP &amp; Connecteur Google Fit / GPX
+              Voir mes récompenses &amp; synchroniser une séance
             </button>
           </div>
         )}

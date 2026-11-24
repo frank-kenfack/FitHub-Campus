@@ -268,9 +268,9 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
   if (!user) {
     return (
       <section className="card">
-        <h2>Motivation Fit-Buddy &amp; Encouragements Temps Réel</h2>
+        <h2>Partenaire Fit-Buddy &amp; Motivation</h2>
         <p className="muted-text">
-          Connectez-vous avec votre compte étudiant pour trouver un binôme sportif compatible et échanger des encouragements instantanés via WebSocket.
+          Connectez-vous pour trouver un partenaire d&apos;entraînement sur votre campus et vous motiver au quotidien.
         </p>
         <button type="button" className="primary-btn" onClick={onRequireAuth}>
           Se connecter pour accéder à Fit-Buddy
@@ -292,7 +292,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
             </p>
           </div>
           <span className={`badge ${wsConnected ? "badge-ok" : "badge-err"}`}>
-            {wsConnected ? "🟢 Live WebSocket Connecté" : "🟠 Connexion temps réel..."}
+            {wsConnected ? "🟢 Messagerie en direct active" : "🟠 Connexion en cours..."}
           </span>
         </div>
 
@@ -387,7 +387,7 @@ export default function FitBuddyView({ user, campuses, onRequireAuth, onActivity
                         </span>
                       </div>
                     </div>
-                    <span className="streak-pill">🔥 {rel.streak_days} j streak</span>
+                    <span className="streak-pill">🔥 Série : {rel.streak_days} j</span>
                   </button>
                 );
               })}

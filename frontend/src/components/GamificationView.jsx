@@ -12,9 +12,18 @@ const BADGE_ICONS = {
 const BADGE_HINTS = {
   first_workout: "Publiez 1 story workout ou importez 1 activité.",
   five_workouts: "Cumulez 5 séances validées (stories, défis ou imports).",
-  fit_buddy_solidarity: "Envoyez un encouragement temps réel à votre Fit-Buddy.",
-  top_campus: "Contribuez au score d'un défi où votre campus est Top 3.",
-  event_participant: "Confirmez votre présence (RSVP) sur la Carte interactive."
+  fit_buddy_solidarity: "Envoyez un encouragement en direct à votre Fit-Buddy.",
+  top_campus: "Contribuez au score d'un défi où votre campus est sur le podium.",
+  event_participant: "Participez à un événement sportif depuis la Carte & Spots."
+};
+
+const SOURCE_LABELS = {
+  story: "Story Workout",
+  challenge: "Défi Campus",
+  google_fit: "Google Fit",
+  gpx: "Trace GPS (.gpx)",
+  json_import: "Import JSON",
+  manual: "Séance manuelle"
 };
 
 const GOOGLE_FIT_PRESETS = [
@@ -309,19 +318,19 @@ export default function GamificationView({
         </section>
 
         <section className="card">
-          <h2>Connecteur Google Fit &amp; Import GPX / JSON</h2>
+          <h2>Synchroniser une Montre GPS ou Google Fit</h2>
           <p className="muted-text" style={{ marginTop: 0 }}>
-            Synchronisez une activité externe pour créditer automatiquement votre profil, vos badges et vos défis inter-campus actifs.
+            Importez une séance extérieure pour créditer automatiquement votre profil, vos badges et vos défis inter-campus en cours.
           </p>
 
           <form className="form-stack" onSubmit={handleGoogleFitSync}>
             <label className="field">
-              <span>Défi inter-campus à créditer (optionnel — auto-détecté sinon)</span>
+              <span>Défi inter-campus à créditer</span>
               <select
                 value={targetChallengeId}
                 onChange={(e) => setTargetChallengeId(e.target.value)}
               >
-                <option value="">Auto-crédit selon la discipline sportive</option>
+                <option value="">Sélection automatique selon le sport</option>
                 {activeChallenges.map((ch) => (
                   <option key={ch.id} value={ch.id}>
                     {ch.title} ({ch.sport} • {ch.unit})
@@ -331,7 +340,7 @@ export default function GamificationView({
             </label>
 
             <label className="field">
-              <span>Flux API Google Fit (simulation OAuth / REST Sessions)</span>
+              <span>Séance enregistrée sur Google Fit</span>
               <select
                 value={selectedPreset}
                 onChange={(e) => setSelectedPreset(e.target.value)}
@@ -388,7 +397,9 @@ export default function GamificationView({
                         {w.distance_km > 0 ? ` • ${w.distance_km} km` : ""} • {w.calories} kcal
                       </span>
                     </div>
-                    <span className="badge badge-soon">{w.source}</span>
+                    <span className="badge badge-soon">
+                      {SOURCE_LABELS[w.source] || w.source}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -405,7 +416,7 @@ export default function GamificationView({
               {summary.total_badges})
             </h2>
             <span className="muted-text">
-              Attribution automatique sans doublon dès validation des objectifs
+              Validez vos objectifs sportifs et collectifs pour débloquer vos trophées
             </span>
           </div>
 

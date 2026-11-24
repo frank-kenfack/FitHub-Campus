@@ -277,7 +277,7 @@ export default function MapEventsView({
     }
   }, [places, referencePoint, selectedPlaceId]);
 
-  function activateFallbackCampus(reasonText) {
+  function activateFallbackCampus() {
     const fallback =
       campuses.find((c) => c.id === Number(campusFilter || user?.campus_id)) ||
       campuses[0];
@@ -287,11 +287,7 @@ export default function MapEventsView({
     if (!radiusFilter) {
       setRadiusFilter("5");
     }
-    setGpsStatus(
-      `${reasonText} Repli automatique sur ${fallback.name} (${fallback.latitude.toFixed(
-        4
-      )}, ${fallback.longitude.toFixed(4)}).`
-    );
+    setGpsStatus(`Carte centrée autour de ${fallback.name} (${fallback.city}).`);
     if (mapInstanceRef.current) {
       mapInstanceRef.current.flyTo([fallback.latitude, fallback.longitude], 14, {
         duration: 0.6
@@ -463,10 +459,10 @@ export default function MapEventsView({
         <div className="topbar-row" style={{ marginBottom: "10px" }}>
           <div>
             <h2 style={{ margin: 0 }}>
-              Carte Interactive des Salles, Spots &amp; Événements Sportifs
+              Carte des Salles, Spots &amp; Séances Collectives
             </h2>
             <p className="muted-text" style={{ margin: "3px 0 0" }}>
-              Explorez les spots autour de votre campus (calcul exact Haversine) ou organisez une séance collective.
+              Découvrez les salles partenaires, aires de street-workout et entraînements étudiants autour de votre campus.
             </p>
           </div>
           <div className="quick-actions">
@@ -646,7 +642,7 @@ export default function MapEventsView({
               </label>
 
               <label className="field">
-                <span>Places max (RSVP)</span>
+                <span>Nombre de places max</span>
                 <input
                   type="number"
                   min={1}
@@ -849,8 +845,8 @@ export default function MapEventsView({
                           : p.is_full
                           ? "Complet"
                           : isEvent
-                          ? "Participer (RSVP)"
-                          : `J'y m'entraîne (${p.rsvp_count})`}
+                          ? "Je participe"
+                          : `Je m'y entraîne (${p.rsvp_count})`}
                       </button>
 
                       {user && p.created_by === user.id && (

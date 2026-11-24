@@ -1,0 +1,123 @@
+name: FitHub Campus CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "step-**"
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint-and-frontend:
+    name: "1. Lint Python (Ruff) & Build React/Vite"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run Ruff linter on Backend
+        working-directory: backend
+        run: |
+          pip install --no-cache-dir ruff==0.6.4
+          ruff check app tests wsgi.py gunicorn_wsgi.py
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build Frontend Production Bundle (Vite + Leaflet + Socket.IO)
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Validate Kubernetes Kustomize Stack (k8s/)
+        run: |
+          kubectl kustomize k8s/ > /dev/null
+
+  pytest-integration:
+    name: "2. Pytest Integration & Performance (< 300 ms)"
+    runs-on: ubuntu-latest
+    needs: lint-and-frontend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: fithub_ci
+          POSTGRES_USER: fithub_user
+          POSTGRES_PASSWORD: fithub_ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U fithub_user -d fithub_ci"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+    env:
+      DATABASE_URL: postgresql://fithub_user:fithub_ci_password@localhost:5432/fithub_ci
+      REDIS_URL: redis://localhost:6379/0
+      SECRET_KEY: github-actions-secret-key-fithub-campus-2026
+      JWT_SECRET_KEY: github-actions-jwt-secret-key-fithub-rfc7518
+      UPLOAD_FOLDER: /tmp/fithub_ci_uploads
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+          mkdir -p "$UPLOAD_FOLDER"
+
+      - name: Apply Alembic Migrations & Run Full Pytest Suite
+        working-directory: backend
+        run: |
+          flask --app wsgi:app db upgrade
+          pytest -v
+
+  docker-compose-smoke:
+    name: "3. Stack Docker 4 Conteneurs & Smoke Test E2E"
+    runs-on: ubuntu-latest
+    needs: pytest-integration
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start 4-Container Docker Stack & Wait for Healthchecks
+        run: |
+          cp .env.example .env
+          docker compose up --build -d --wait
+          docker compose ps
+
+      - name: Run Smoke & Latency Checks via Nginx (:8080)
+        run: |
+          chmod +x scripts/smoke_test.sh
+          ./scripts/smoke_test.sh http://localhost:8080
+
+      - name: Tear Down Stack
+        if: always()
+        run: docker compose down -v

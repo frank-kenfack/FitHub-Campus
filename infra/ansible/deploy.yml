@@ -1,0 +1,63 @@
+---
+# =============================================================================
+# FitHub Campus — Playbook Ansible de Deploiement Continu (Staging / Production)
+# Execution : ansible-playbook -i infra/ansible/inventory.ini infra/ansible/deploy.yml
+# =============================================================================
+- name: Deploy FitHub Campus 4-Container Stack
+  hosts: all
+  become: true
+  vars:
+    app_dir: /opt/fithub-campus
+    repo_url: https://github.com/frank-kenfack/FitHub-Campus.git
+    target_branch: develop
+    frontend_port: 8080
+
+  tasks:
+    - name: Installer les prerequis systeme (Git, curl, Docker)
+      ansible.builtin.apt:
+        name:
+          - git
+          - curl
+          - ca-certificates
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: true
+
+    - name: Activer et demarrer le daemon Docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Synchroniser le depot Git FitHub Campus
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_dir }}"
+        version: "{{ target_branch }}"
+        force: false
+
+    - name: Initialiser le fichier .env s'il n'existe pas encore
+      ansible.builtin.copy:
+        src: "{{ app_dir }}/.env.example"
+        dest: "{{ app_dir }}/.env"
+        remote_src: true
+        force: false
+        mode: "0600"
+
+    - name: Construire et demarrer les 4 conteneurs avec attente des healthchecks
+      ansible.builtin.command:
+        cmd: docker compose up --build -d --wait
+        chdir: "{{ app_dir }}"
+      changed_when: true
+
+    - name: Verifier la disponibilite de l'API /api/health via Nginx
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ frontend_port }}/api/health"
+        method: GET
+        return_content: true
+        status_code: 200
+      register: health_check
+      retries: 5
+      delay: 3
+      until: health_check.status == 200 and health_check.json.status == "ok"

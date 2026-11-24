@@ -47,8 +47,14 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 10px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .pill {
@@ -76,26 +82,25 @@
     }
 
     .progress-wrap {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 999px;
-      height: 12px;
+      height: 13px;
       overflow: hidden;
       margin-top: 16px;
     }
 
     .progress-bar {
       height: 100%;
-      width: 0%;
+      width: 100%;
       background: #4ADE80;
       border-radius: 999px;
-      transition: width 0.4s ease;
     }
 
     .progress-caption {
       display: flex;
       justify-content: space-between;
       font-size: 12.5px;
-      font-weight: 600;
+      font-weight: 700;
       margin-top: 6px;
     }
 
@@ -126,7 +131,7 @@
     }
 
     .kpi-val {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 800;
       color: var(--navy);
       margin: 4px 0 2px;
@@ -154,21 +159,40 @@
       padding-bottom: 8px;
     }
 
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .files-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--pink);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .files-box ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+
     .steps-list {
       display: grid;
-      gap: 12px;
+      gap: 11px;
     }
 
     .step-item {
       border: 1px solid var(--border);
       border-left: 5px solid var(--slate);
       border-radius: 10px;
-      padding: 14px 16px;
+      padding: 13px 16px;
       background: #FFFFFF;
     }
 
     .step-item.done { border-left-color: var(--green); background: #F0FDF4; }
-    .step-item.active { border-left-color: var(--pink); background: #FFF1F2; }
 
     .step-head {
       display: flex;
@@ -181,7 +205,7 @@
 
     .step-title {
       font-weight: 800;
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--navy);
     }
 
@@ -193,8 +217,6 @@
       font-weight: 700;
     }
 
-    .badge-todo { background: #F1F5F9; color: #475569; }
-    .badge-active { background: #FFE4E6; color: var(--pink-dark); }
     .badge-done { background: #DCFCE7; color: #166534; }
 
     .branch-code {
@@ -207,31 +229,6 @@
       color: var(--navy);
     }
 
-    .arch-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-
-    .arch-box {
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      padding: 12px;
-      background: #F8FAFC;
-    }
-
-    .arch-box h3 {
-      margin: 0 0 4px;
-      font-size: 14px;
-      color: var(--navy);
-    }
-
-    .arch-box p {
-      margin: 0;
-      font-size: 12.5px;
-      color: #475569;
-    }
-
     .test-log {
       background: #0F172A;
       color: #E2E8F0;
@@ -241,130 +238,193 @@
       font-size: 12px;
       overflow-x: auto;
       white-space: pre-wrap;
+      line-height: 1.45;
     }
 
-    a.btn-link {
+    code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    a.ext {
       color: var(--pink-dark);
       font-weight: 700;
       text-decoration: none;
     }
-    a.btn-link:hover { text-decoration: underline; }
+    a.ext:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="hero">
       <div class="hero-top">
-        <span class="pill">Tableau de bord d'avancement • Projet Solo</span>
-        <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus" target="_blank" rel="noreferrer">GitHub : frank-kenfack/FitHub-Campus ↗</a>
+        <span class="pill">Suivi Visuel • Release Finale v1.0.0 Fusionnée dans develop &amp; main (100 % + Bonus K8s +20 %)</span>
+        <div class="pill-row">
+          <a class="pill" href="http://localhost:8080" target="_blank" rel="noreferrer">App Locale : localhost:8080 ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/blob/main/CAPTURES_ETAPES.md" target="_blank" rel="noreferrer">Captures (.md) ↗</a>
+          <a class="pill" href="https://github.com/frank-kenfack/FitHub-Campus/tree/main" target="_blank" rel="noreferrer">Dépôt GitHub : main (v1.0.0) ↗</a>
+        </div>
       </div>
-      <h1>FitHub Campus — Visualisation des Étapes</h1>
-      <p>Chaque étape dispose de sa branche GitHub dédiée, de tests automatisés et d'une validation visuelle avant de passer à l'étape suivante.</p>
+      <h1>FitHub Campus — Tableau de Bord d'Avancement Final</h1>
+      <p>Toutes les 8 étapes du projet (MVP Full-Stack, WebSockets, Carte Leaflet, Gamification, CI/CD, Ansible &amp; Bonus Kubernetes +20 %) sont complétées et validées par 58 tests automatisés.</p>
       <div class="progress-wrap">
-        <div class="progress-bar" style="width: 0%;"></div>
+        <div class="progress-bar"></div>
       </div>
       <div class="progress-caption">
-        <span>Progression : 0 / 8 étapes validées</span>
-        <span>0 %</span>
+        <span>Progression : 8 / 8 étapes validées (MVP + CI/CD + Bonus Kubernetes +20 % complets)</span>
+        <span>100 %</span>
       </div>
     </div>
 
     <div class="grid-kpi">
-      <div class="kpi pink">
-        <div class="kpi-label">Étape courante</div>
-        <div class="kpi-val">Initialisation</div>
-        <div class="kpi-sub">Mise en place dépôt GitHub &amp; Étape 1</div>
+      <div class="kpi green">
+        <div class="kpi-label">Statut Projet</div>
+        <div class="kpi-val">Release v1.0.0</div>
+        <div class="kpi-sub">Fusionnée dans <code>develop</code> &amp; <code>main</code></div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Branche active</div>
-        <div class="kpi-val" style="font-size:16px;">main / develop</div>
-        <div class="kpi-sub">Puis bascule sur <code>step-01/socle-docker</code></div>
+      <div class="kpi pink">
+        <div class="kpi-label">Branches GitHub</div>
+        <div class="kpi-val" style="font-size:14.5px;">main • develop • step-01..08</div>
+        <div class="kpi-sub">8 branches d'étapes intégrées à 100 %</div>
       </div>
       <div class="kpi green">
-        <div class="kpi-label">Tests validés</div>
-        <div class="kpi-val">En attente</div>
-        <div class="kpi-sub">Exécutés en fin d'étape</div>
+        <div class="kpi-label">Suite de Tests</div>
+        <div class="kpi-val">58 / 58 Pytest</div>
+        <div class="kpi-sub">0 warning • Ruff OK • Kustomize 463 lignes OK</div>
       </div>
-      <div class="kpi amber">
+      <div class="kpi green">
         <div class="kpi-label">Bonus Kubernetes</div>
-        <div class="kpi-val">+20 % visé</div>
-        <div class="kpi-sub">Planifié à l'Étape 8</div>
+        <div class="kpi-val" style="font-size:16px;">+20 % Validé</div>
+        <div class="kpi-sub">14 objets K8s • HA 2→5 pods • Ingress WS</div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Feuille de route des 8 étapes</h2>
+      <h2>Livrables Réalisés à l'Étape 8 (Orchestration Kubernetes +20 % &amp; Soutenance Jury)</h2>
+      <div class="files-grid">
+        <div class="files-box">
+          <strong>Manifests Kubernetes (US-8.4)</strong>
+          <ul>
+            <li><code>k8s/00-namespace.yaml</code> à <code>08-ingress.yaml</code></li>
+            <li><code>k8s/kustomization.yaml</code> (compilé par <code>kubectl kustomize</code>)</li>
+            <li>2 PVC (<code>5Gi</code> Postgres + <code>2Gi</code> Uploads)</li>
+          </ul>
+        </div>
+        <div class="files-box">
+          <strong>Haute Disponibilité &amp; Scaling</strong>
+          <ul>
+            <li>2 réplicas min sur <code>fithub-backend</code> &amp; <code>fithub-frontend</code></li>
+            <li><code>HorizontalPodAutoscaler</code> (<code>2 → 5</code> pods à 75 % CPU)</li>
+            <li>Ingress NGINX L7 + support WebSocket <code>/socket.io</code></li>
+          </ul>
+        </div>
+        <div class="files-box">
+          <strong>Tests K8s &amp; Guide Jury (US-9.4)</strong>
+          <ul>
+            <li>7 nouveaux tests dans <code>test_step08_kubernetes_bonus.py</code></li>
+            <li>Script <code>scripts/k8s_deploy.sh</code></li>
+            <li>Guide chronométré 15 min <code>docs/DEMO_JURY.md</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Journal des Tests Observés (Étapes 1 à 8 — 58 / 58 Pytest + Validation Kustomize)</h2>
+      <div class="test-log">$ kubectl kustomize k8s/ | wc -l
+463
+
+$ docker compose exec -T backend ruff check app tests wsgi.py gunicorn_wsgi.py
+All checks passed!
+
+$ docker compose exec -T backend pytest -v
+tests/test_step01_socle.py (5 tests) ............................................ PASSED
+tests/test_step02_auth_groups.py (9 tests) ...................................... PASSED
+tests/test_step03_social.py (8 tests) ........................................... PASSED
+tests/test_step04_challenges.py (8 tests) ....................................... PASSED
+tests/test_step05_fitbuddy.py (7 tests) ......................................... PASSED
+tests/test_step06_geoloc_gamification.py (8 tests) .............................. PASSED
+tests/test_step07_quality_perf.py (6 tests) ..................................... PASSED
+tests/test_step08_kubernetes_bonus.py::test_k8s_directory_and_kustomization_complete PASSED [ 89%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_namespace_configmap_and_rfc7518_secrets PASSED [ 91%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_persistent_volume_claims_for_db_and_uploads PASSED [ 93%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_deployments_high_availability_probes_and_non_root PASSED [ 94%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_services_and_horizontal_pod_autoscaler PASSED [ 96%]
+tests/test_step08_kubernetes_bonus.py::test_k8s_ingress_routes_http_and_websocket_socketio PASSED [ 98%]
+tests/test_step08_kubernetes_bonus.py::test_health_endpoint_reports_step08 PASSED [100%]
+============================= 58 passed (0 warnings) ============================</div>
+    </div>
+
+    <div class="card">
+      <h2>Feuille de route des 8 étapes (100 % Complétée)</h2>
       <div class="steps-list">
-        <div class="step-item active">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 1 — Socle Git, BDD PostgreSQL, Stack Docker &amp; Squelette UI</span>
-            <span class="badge badge-active">🔄 En cours</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-01/socle-docker</span></div>
-          <p style="margin:6px 0 0; font-size:13px;">Architecture 4 conteneurs (Frontend Nginx/React, Backend Flask, PostgreSQL, Redis), 16 tables + migrations Alembic, seed idempotent, <code>/api/health</code>, UI mobile-first et 5 tests <code>pytest</code>.</p>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 2 — Authentification JWT, Profils &amp; Groupes Sportifs</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-02/auth-profils-groupes</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 3 — Social Fitness (Stories Workouts, Photos Avant/Après, Likes/Commentaires)</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-03/social-fitness</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 4 — Défis Inter-Campus &amp; Classements</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-04/defis-classements</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 5 — Motivation Fit-Buddy &amp; Temps Réel WebSockets</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-05/fitbuddy-realtime</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 6 — Géolocalisation (Carte Leaflet/OSM) &amp; Gamification</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-06/geoloc-gamification</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 7 — CI/CD GitLab/GitHub, Scripts Automatisation, Recette &amp; Docs</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop</span>
           </div>
           <div>Branche : <span class="branch-code">step-07/cicd-qualite-docs</span></div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item done">
           <div class="step-head">
             <span class="step-title">Étape 8 — Orchestration Kubernetes (+20 % Bonus) &amp; Préparation Jury</span>
-            <span class="badge badge-todo">⏳ À venir</span>
+            <span class="badge badge-done">✅ Fusionnée dans develop &amp; main (v1.0.0)</span>
           </div>
-          <div>Branche : <span class="branch-code">step-08/kubernetes-bonus</span></div>
+          <div>
+            Branche : <span class="branch-code">step-08/kubernetes-bonus</span> •
+            <a class="ext" href="https://github.com/frank-kenfack/FitHub-Campus/tree/main" target="_blank" rel="noreferrer">Voir Release main sur GitHub ↗</a>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Architecture &amp; Résultats des Tests (Dernière Étape Exécutée)</h2>
-      <div class="test-log">Initialisation du dépôt GitHub et préparation de l'Étape 1 en cours...</div>
     </div>
   </div>
 </body>

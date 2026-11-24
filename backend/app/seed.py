@@ -14,6 +14,8 @@ from app.models import (
     Campus,
     Challenge,
     ChallengeEntry,
+    Encouragement,
+    FitBuddy,
     GroupMember,
     PlaceEvent,
     SportGroup,
@@ -556,6 +558,73 @@ def seed_database() -> dict:
                     )
                 )
 
+    # Binomes Fit-Buddy & encouragements temps reel de demonstration
+    pair_ina_sarah = FitBuddy.query.filter(
+        db.or_(
+            db.and_(
+                FitBuddy.requester_id == ina.id,
+                FitBuddy.addressee_id == sarah.id,
+            ),
+            db.and_(
+                FitBuddy.requester_id == sarah.id,
+                FitBuddy.addressee_id == ina.id,
+            ),
+        )
+    ).first()
+    if pair_ina_sarah is None:
+        pair_ina_sarah = FitBuddy(
+            requester_id=ina.id,
+            addressee_id=sarah.id,
+            status="accepted",
+            streak_days=4,
+        )
+        db.session.add(pair_ina_sarah)
+        db.session.flush()
+        db.session.add_all(
+            [
+                Encouragement(
+                    sender_id=ina.id,
+                    receiver_id=sarah.id,
+                    message="Go seance fractionne ce soir ! On garde notre serie active.",
+                    created_at=now_utc - timedelta(days=2),
+                ),
+                Encouragement(
+                    sender_id=sarah.id,
+                    receiver_id=ina.id,
+                    message="Seance validee sur les quais de Bordeaux, a ton tour Lyon !",
+                    created_at=now_utc - timedelta(days=1),
+                ),
+                Encouragement(
+                    sender_id=ina.id,
+                    receiver_id=sarah.id,
+                    message="Bravo pour ta progression HYROX, on vise le top campus !",
+                    created_at=now_utc - timedelta(hours=2),
+                ),
+            ]
+        )
+
+    pending_lucas_ina = FitBuddy.query.filter(
+        db.or_(
+            db.and_(
+                FitBuddy.requester_id == lucas.id,
+                FitBuddy.addressee_id == ina.id,
+            ),
+            db.and_(
+                FitBuddy.requester_id == ina.id,
+                FitBuddy.addressee_id == lucas.id,
+            ),
+        )
+    ).first()
+    if pending_lucas_ina is None:
+        db.session.add(
+            FitBuddy(
+                requester_id=lucas.id,
+                addressee_id=ina.id,
+                status="pending",
+                streak_days=0,
+            )
+        )
+
     db.session.commit()
     return {
         "campuses": Campus.query.count(),
@@ -565,6 +634,7 @@ def seed_database() -> dict:
         "groups": SportGroup.query.count(),
         "stories": Story.query.count(),
         "challenges": Challenge.query.count(),
+        "buddies": FitBuddy.query.filter_by(status="accepted").count(),
     }
 
 

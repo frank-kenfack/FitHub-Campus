@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { apiRequest, getStoredToken, setStoredToken } from "./api.js";
 import AuthProfileView from "./components/AuthProfileView.jsx";
 import GroupsView from "./components/GroupsView.jsx";
+import SocialFeedView from "./components/SocialFeedView.jsx";
 
 const TABS = [
-  { id: "home", label: "Accueil", step: "Étapes 1–2" },
+  { id: "home", label: "Accueil", step: "Étapes 1–3" },
+  { id: "social", label: "Social", step: "Étape 3 (Actif)" },
   { id: "groups", label: "Groupes", step: "Étape 2 (Actif)" },
-  { id: "social", label: "Social", step: "Étape 3" },
   { id: "challenges", label: "Défis", step: "Étape 4" },
   { id: "buddy", label: "Buddy", step: "Étape 5" },
   { id: "profile", label: "Profil", step: "Étape 2 (Actif)" }
@@ -73,11 +74,11 @@ export default function App() {
           <div>
             <h1 className="brand">FitHub Campus</h1>
             <p className="topbar-sub">
-              Réseau Social Fitness Étudiant — Auth JWT, Profils &amp; Groupes Sportifs
+              Réseau Social Fitness Étudiant — Stories Workouts, Avant/Après &amp; Communauté
             </p>
           </div>
           <div className="topbar-right">
-            <span className="step-pill">step-02/auth-profils-groupes</span>
+            <span className="step-pill">step-03/social-fitness</span>
             <button
               type="button"
               className="user-pill-btn"
@@ -140,26 +141,27 @@ export default function App() {
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>PostgreSQL (16 tables migrées)</span>
+                    <span>PostgreSQL &amp; Redis</span>
                     <span
-                      className={`badge ${health.checks?.database === "ok" ? "badge-ok" : "badge-err"}`}
+                      className={`badge ${
+                        health.checks?.database === "ok" && health.checks?.redis === "ok"
+                          ? "badge-ok"
+                          : "badge-err"
+                      }`}
                     >
-                      {health.checks?.database === "ok" ? "Connecté" : "Erreur"}
+                      Connectés
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>Redis (Broker temps réel)</span>
-                    <span
-                      className={`badge ${health.checks?.redis === "ok" ? "badge-ok" : "badge-err"}`}
-                    >
-                      {health.checks?.redis === "ok" ? "Connecté" : "Erreur"}
-                    </span>
-                  </div>
-                  <div className="status-row">
-                    <span>Communauté active</span>
+                    <span>Activité sociale</span>
                     <span className="badge badge-soon">
-                      {health.stats?.users ?? 0} étudiants • {health.stats?.groups ?? 0} groupes •{" "}
-                      {health.stats?.campuses ?? 0} campus
+                      {health.stats?.stories ?? 0} publications • {health.stats?.groups ?? 0} groupes
+                    </span>
+                  </div>
+                  <div className="status-row">
+                    <span>Communauté campus</span>
+                    <span className="badge badge-soon">
+                      {health.stats?.users ?? 0} étudiants • {health.stats?.campuses ?? 0} campus
                     </span>
                   </div>
                 </div>
@@ -167,33 +169,40 @@ export default function App() {
             </section>
 
             <section className="card">
-              <h2>Modules Actifs (Étape 2)</h2>
+              <h2>Modules Actifs (Étapes 1 à 3)</h2>
               <p className="muted-text" style={{ marginTop: 0 }}>
-                Authentifiez-vous en JWT, personnalisez votre avatar persistant et rejoignez un club sportif sur votre campus :
+                Découvrez le fil Social Fitness (Stories 24h, comparateur Avant/Après, likes &amp; commentaires) :
               </p>
               <div className="quick-actions">
                 <button
                   type="button"
                   className="primary-btn"
-                  onClick={() => setActiveTab("groups")}
+                  onClick={() => setActiveTab("social")}
                 >
-                  Explorer les Groupes Sportifs
+                  Ouvrir le Fil Social Fitness
                 </button>
                 <button
                   type="button"
                   className="secondary-btn"
+                  onClick={() => setActiveTab("groups")}
+                >
+                  Groupes Sportifs
+                </button>
+                <button
+                  type="button"
+                  className="outline-btn"
                   onClick={() => setActiveTab("profile")}
                 >
-                  {currentUser ? `Mon Profil (${currentUser.username})` : "Se connecter / S'inscrire"}
+                  {currentUser ? `Profil (${currentUser.username})` : "Connexion"}
                 </button>
               </div>
               <div className="status-row" style={{ marginTop: "8px" }}>
-                <span>Stories &amp; Photos Avant/Après</span>
-                <span className="badge badge-soon">Étape 3</span>
+                <span>Défis Inter-Campus &amp; Classements</span>
+                <span className="badge badge-soon">Étape 4</span>
               </div>
               <div className="status-row">
-                <span>Défis Inter-Campus &amp; Fit-Buddy Live</span>
-                <span className="badge badge-soon">Étapes 4–5</span>
+                <span>Fit-Buddy Temps Réel &amp; Carte OSM</span>
+                <span className="badge badge-soon">Étapes 5–6</span>
               </div>
             </section>
           </div>
@@ -214,6 +223,15 @@ export default function App() {
         </>
       )}
 
+      {activeTab === "social" && (
+        <SocialFeedView
+          user={currentUser}
+          campuses={campuses}
+          onRequireAuth={() => setActiveTab("profile")}
+          onActivityChanged={refreshSessionAndStats}
+        />
+      )}
+
       {activeTab === "groups" && (
         <GroupsView
           user={currentUser}
@@ -232,7 +250,7 @@ export default function App() {
         />
       )}
 
-      {!["home", "groups", "profile"].includes(activeTab) && (
+      {!["home", "social", "groups", "profile"].includes(activeTab) && (
         <section className="card">
           <h2>Module {currentTabMeta?.label}</h2>
           <p>

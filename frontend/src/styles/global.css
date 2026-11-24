@@ -592,6 +592,377 @@ body {
   border-top: 3px solid var(--pink);
 }
 
+/* Social Fitness (Étape 3) */
+.stories-carousel {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 2px 6px;
+}
+
+.story-bubble {
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  min-width: 82px;
+}
+
+.story-ring {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--pink), #F59E0B, var(--navy));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-bubble.selected .story-ring {
+  box-shadow: 0 0 0 3px rgba(230, 26, 95, 0.3);
+}
+
+.story-ring img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #FFFFFF;
+}
+
+.story-bubble strong {
+  font-size: 11.5px;
+  color: var(--navy);
+  max-width: 86px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.story-bubble span {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.story-spotlight {
+  margin-top: 12px;
+  padding: 12px;
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.spotlight-img {
+  width: 100%;
+  max-height: 290px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.metrics-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.feed-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.campus-select-inline {
+  padding: 8px 10px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #FFFFFF;
+  color: var(--text);
+}
+
+.social-feed-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.post-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-avatar,
+.post-initials {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.post-avatar {
+  object-fit: cover;
+  border: 2px solid var(--pink);
+}
+
+.post-initials {
+  background: var(--navy);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.post-author strong {
+  display: block;
+  font-size: 14.5px;
+  color: var(--navy);
+}
+
+.post-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.post-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  color: var(--navy);
+}
+
+.post-caption {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  color: #334155;
+}
+
+.story-main-img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.workout-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.metric-chip {
+  background: #FFF1F2;
+  color: var(--pink-dark);
+  border: 1px solid #FECDD3;
+  border-radius: 999px;
+  padding: 3px 11px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Comparateur Avant / Après */
+.ba-wrapper {
+  margin: 6px 0;
+}
+
+.ba-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ba-slider-box {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  user-select: none;
+}
+
+.ba-img-base,
+.ba-img-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ba-tag {
+  position: absolute;
+  top: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  z-index: 3;
+}
+
+.ba-tag-before {
+  left: 10px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #FFFFFF;
+}
+
+.ba-tag-after {
+  right: 10px;
+  background: rgba(27, 138, 61, 0.9);
+  color: #FFFFFF;
+}
+
+.ba-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #FFFFFF;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.ba-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--pink);
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.ba-range-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 5;
+  margin: 0;
+}
+
+.ba-side-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ba-side-item {
+  position: relative;
+  height: 240px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.ba-side-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.social-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.like-btn {
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.like-btn.liked {
+  background: #FFF1F2;
+  border-color: var(--pink);
+  color: var(--pink-dark);
+}
+
+.comments-box {
+  margin-top: 10px;
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.comment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.comment-row strong {
+  color: var(--navy);
+}
+
+.comment-del-btn {
+  border: none;
+  background: transparent;
+  color: var(--pink-dark);
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
 @media (min-width: 768px) {
   body {
     padding-bottom: 24px;

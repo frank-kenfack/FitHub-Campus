@@ -15,7 +15,7 @@ Ce document conserve, **étape par étape**, les captures d'écran réelles vali
 2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ✅
 3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ✅
 4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ✅
-5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ⏳
+5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ✅
 6. [Étape 6 — `step-06/geoloc-gamification` (Carte Leaflet/OSM, Événements & Badges)](#étape-6--step-06geoloc-gamification) ⏳
 7. [Étape 7 — `step-07/cicd-qualite-docs` (Pipelines CI/CD GitLab/GitHub, Scripts & Recette)](#étape-7--step-07cicd-qualite-docs) ⏳
 8. [Étape 8 — `step-08/kubernetes-bonus` (Orchestration Kubernetes +20 % & Démo Jury)](#étape-8--step-08kubernetes-bonus) ⏳
@@ -160,7 +160,35 @@ Synthèse visuelle du passage de mi-parcours (4 / 8 étapes validées) et trace 
 
 ## Étape 5 — `step-05/fitbuddy-realtime`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 5 dans `docs/screenshots/step-05/` (matching Fit-Buddy, encouragements mutuels en direct via WebSockets entre deux sessions, compteur de streak).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **37/37** sans warning • livraison WebSocket temps réel prouvée entre 2 sessions Chrome indépendantes via Nginx + Redis)
+- **Branche GitHub** : [`step-05/fitbuddy-realtime`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-05/fitbuddy-realtime)
+- **Fonctionnalités couvertes** : Recherche et matching Fit-Buddy avec score d'affinité (`%`), workflow `pending` → `accepted` / `declined`, encouragements mutuels en temps réel via Flask-SocketIO + Redis + conservation en PostgreSQL, et compteur de régularité partagé (`🔥 streak`).
+
+### 5.1 Espace Fit-Buddy, Demandes en attente, Streak &amp; Matching par affinité
+Vue principale connectée (`🟢 Live WebSocket Connecté`) affichant la demande entrante de `LucasBarz_Paris`, le binôme actif `SarahRun_Bdx` (`🔥 4 j streak`) et les candidats triés par score d'affinité.
+
+![Étape 5 - Espace Fit-Buddy et Matching](./docs/screenshots/step-05/01-fitbuddy-vue-principale.png)
+
+---
+
+### 5.2 Session Navigateur B (`SarahRun_Bdx`) — Envoi d'un encouragement en 1 clic via WebSocket
+Depuis une seconde session Chrome isolée, `SarahRun_Bdx` envoie l'encouragement rapide `🔥 Go training !` sur le canal Socket.IO.
+
+![Étape 5 - Session B Envoi WebSocket](./docs/screenshots/step-05/02-session-sarah-envoi-websocket.png)
+
+---
+
+### 5.3 Session Navigateur A (`InaFit_Lyon`) — Réception instantanée sans rechargement
+La première session Chrome d'`InaFit_Lyon` (restée ouverte sans aucun `reload`) affiche immédiatement la notification verte temps réel `⚡ Encouragement reçu en direct de SarahRun_Bdx` et la nouvelle bulle dans la discussion.
+
+![Étape 5 - Session A Réception Temps Réel](./docs/screenshots/step-05/03-session-ina-reception-live.png)
+
+---
+
+### 5.4 Tableau de bord d'avancement mis à jour (62,5 % — 37/37 Pytest)
+Synthèse visuelle de l'Étape 5 validée et trace d'exécution des 37 tests automatisés.
+
+![Étape 5 - Tableau de bord et tests](./docs/screenshots/step-05/04-suivi-dashboard-step05.png)
 
 ---
 

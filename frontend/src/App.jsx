@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { apiRequest, getStoredToken, setStoredToken } from "./api.js";
 import AuthProfileView from "./components/AuthProfileView.jsx";
 import ChallengesView from "./components/ChallengesView.jsx";
+import FitBuddyView from "./components/FitBuddyView.jsx";
 import GroupsView from "./components/GroupsView.jsx";
 import SocialFeedView from "./components/SocialFeedView.jsx";
 
 const TABS = [
-  { id: "home", label: "Accueil", step: "Étapes 1–4" },
+  { id: "home", label: "Accueil", step: "Étapes 1–5" },
   { id: "social", label: "Social", step: "Étape 3 (Actif)" },
   { id: "challenges", label: "Défis", step: "Étape 4 (Actif)" },
+  { id: "buddy", label: "Buddy", step: "Étape 5 (Actif)" },
   { id: "groups", label: "Groupes", step: "Étape 2 (Actif)" },
-  { id: "buddy", label: "Buddy", step: "Étape 5" },
   { id: "profile", label: "Profil", step: "Étape 2 (Actif)" }
 ];
 
@@ -66,8 +67,6 @@ export default function App() {
     loadBackendState();
   }, []);
 
-  const currentTabMeta = TABS.find((tab) => tab.id === activeTab);
-
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -75,11 +74,11 @@ export default function App() {
           <div>
             <h1 className="brand">FitHub Campus</h1>
             <p className="topbar-sub">
-              Réseau Social Fitness Étudiant — Défis Inter-Campus, Podiums &amp; Communauté
+              Réseau Social Fitness Étudiant — Fit-Buddy Temps Réel, Défis &amp; Communauté
             </p>
           </div>
           <div className="topbar-right">
-            <span className="step-pill">step-04/defis-classements</span>
+            <span className="step-pill">step-05/fitbuddy-realtime</span>
             <button
               type="button"
               className="user-pill-btn"
@@ -136,13 +135,13 @@ export default function App() {
               {health && (
                 <div>
                   <div className="status-row">
-                    <span>API Flask (<code>/api/health</code>)</span>
+                    <span>API Flask + Socket.IO</span>
                     <span className={`badge ${health.status === "ok" ? "badge-ok" : "badge-err"}`}>
                       {health.status === "ok" ? "Opérationnel" : "Dégradé"}
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>PostgreSQL &amp; Redis</span>
+                    <span>PostgreSQL &amp; Broker Redis</span>
                     <span
                       className={`badge ${
                         health.checks?.database === "ok" && health.checks?.redis === "ok"
@@ -154,9 +153,10 @@ export default function App() {
                     </span>
                   </div>
                   <div className="status-row">
-                    <span>Compétition &amp; Social</span>
+                    <span>Activité &amp; Défis</span>
                     <span className="badge badge-soon">
-                      {health.stats?.challenges ?? 0} défis • {health.stats?.stories ?? 0} posts
+                      {health.stats?.challenges ?? 0} défis • {health.stats?.stories ?? 0} posts •{" "}
+                      {health.stats?.buddies ?? 0} duos
                     </span>
                   </div>
                   <div className="status-row">
@@ -170,40 +170,40 @@ export default function App() {
             </section>
 
             <section className="card">
-              <h2>Modules Actifs (Étapes 1 à 4)</h2>
+              <h2>Modules Actifs (Étapes 1 à 5)</h2>
               <p className="muted-text" style={{ marginTop: 0 }}>
-                Participez aux défis inter-campus, soumettez vos performances et hissez votre école sur le podium :
+                Nouveau : trouvez votre Fit-Buddy compatible et envoyez des encouragements instantanés en WebSocket !
               </p>
               <div className="quick-actions">
                 <button
                   type="button"
                   className="primary-btn"
-                  onClick={() => setActiveTab("challenges")}
+                  onClick={() => setActiveTab("buddy")}
                 >
-                  Défis &amp; Classements
+                  Fit-Buddy Temps Réel
                 </button>
                 <button
                   type="button"
                   className="secondary-btn"
-                  onClick={() => setActiveTab("social")}
+                  onClick={() => setActiveTab("challenges")}
                 >
-                  Fil Social Fitness
+                  Défis &amp; Podiums
                 </button>
                 <button
                   type="button"
                   className="outline-btn"
-                  onClick={() => setActiveTab("groups")}
+                  onClick={() => setActiveTab("social")}
                 >
-                  Groupes
+                  Fil Social
                 </button>
               </div>
-              <div className="status-row" style={{ marginTop: "8px" }}>
-                <span>Fit-Buddy &amp; Encouragements Temps Réel</span>
-                <span className="badge badge-soon">Étape 5</span>
+              <div className="status-row" style={{ marginTop: "10px" }}>
+                <span>Carte Leaflet/OSM &amp; Gamification Badges</span>
+                <span className="badge badge-soon">Étape 6</span>
               </div>
               <div className="status-row">
-                <span>Carte Leaflet/OSM &amp; Gamification</span>
-                <span className="badge badge-soon">Étape 6</span>
+                <span>CI/CD GitLab/GitHub &amp; Kubernetes (+20 %)</span>
+                <span className="badge badge-soon">Étapes 7–8</span>
               </div>
             </section>
           </div>
@@ -241,6 +241,15 @@ export default function App() {
         />
       )}
 
+      {activeTab === "buddy" && (
+        <FitBuddyView
+          user={currentUser}
+          campuses={campuses}
+          onRequireAuth={() => setActiveTab("profile")}
+          onActivityChanged={refreshSessionAndStats}
+        />
+      )}
+
       {activeTab === "groups" && (
         <GroupsView
           user={currentUser}
@@ -257,16 +266,6 @@ export default function App() {
           onAuthChange={setCurrentUser}
           onDataRefresh={refreshSessionAndStats}
         />
-      )}
-
-      {!["home", "social", "challenges", "groups", "profile"].includes(activeTab) && (
-        <section className="card">
-          <h2>Module {currentTabMeta?.label}</h2>
-          <p>
-            Ce module sera développé et testé sur sa propre branche lors de{" "}
-            <strong>{currentTabMeta?.step}</strong>, conformément au plan de livraison progressif.
-          </p>
-        </section>
       )}
 
       <nav className="bottom-nav" aria-label="Navigation mobile">

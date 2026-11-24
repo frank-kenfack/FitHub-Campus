@@ -5,10 +5,11 @@ import os
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-from app import models  # noqa: F401
+from app import models, sockets  # noqa: F401
 from app.config import Config
 from app.extensions import db, jwt, migrate, socketio
 from app.routes.auth import auth_bp
+from app.routes.buddies import buddies_bp
 from app.routes.challenges import challenges_bp
 from app.routes.groups import groups_bp
 from app.routes.health import health_bp
@@ -31,6 +32,7 @@ def create_app(config_class: type[Config] = Config) -> Flask:
         app,
         cors_allowed_origins="*",
         async_mode="threading" if app.testing else None,
+        message_queue=None if app.testing else app.config.get("REDIS_URL"),
     )
 
     @jwt.unauthorized_loader
@@ -56,4 +58,5 @@ def create_app(config_class: type[Config] = Config) -> Flask:
     app.register_blueprint(groups_bp)
     app.register_blueprint(social_bp)
     app.register_blueprint(challenges_bp)
+    app.register_blueprint(buddies_bp)
     return app

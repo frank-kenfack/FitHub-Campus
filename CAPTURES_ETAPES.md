@@ -14,7 +14,7 @@ Ce document conserve, **étape par étape**, les captures d'écran réelles vali
 1. [Étape 1 — `step-01/socle-docker` (Socle Git, PostgreSQL, Stack Docker 4 conteneurs & UI Mobile-First)](#étape-1--step-01socle-docker) ✅
 2. [Étape 2 — `step-02/auth-profils-groupes` (Authentification JWT, Profils & Groupes Sportifs)](#étape-2--step-02auth-profils-groupes) ✅
 3. [Étape 3 — `step-03/social-fitness` (Stories Workouts, Photos Avant/Après & Interactions)](#étape-3--step-03social-fitness) ✅
-4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ⏳
+4. [Étape 4 — `step-04/defis-classements` (Défis Inter-Campus & Leaderboards)](#étape-4--step-04defis-classements) ✅
 5. [Étape 5 — `step-05/fitbuddy-realtime` (Matching Fit-Buddy & Temps Réel WebSockets)](#étape-5--step-05fitbuddy-realtime) ⏳
 6. [Étape 6 — `step-06/geoloc-gamification` (Carte Leaflet/OSM, Événements & Badges)](#étape-6--step-06geoloc-gamification) ⏳
 7. [Étape 7 — `step-07/cicd-qualite-docs` (Pipelines CI/CD GitLab/GitHub, Scripts & Recette)](#étape-7--step-07cicd-qualite-docs) ⏳
@@ -126,7 +126,35 @@ Synthèse visuelle de l'Étape 3 validée et trace d'exécution des 22 tests aut
 
 ## Étape 4 — `step-04/defis-classements`
 
-> ⏳ *Captures à ajouter lors de la réalisation de l'Étape 4 dans `docs/screenshots/step-04/` (création/inscription aux défis inter-campus, soumission de performances, podiums et classements).*
+- **Statut** : ✅ Validée par les tests (`ruff` OK • `pytest` **30/30** sans warning • podiums des 4 campus et filtres actifs/terminés opérationnels)
+- **Branche GitHub** : [`step-04/defis-classements`](https://github.com/frank-kenfack/FitHub-Campus/tree/step-04/defis-classements)
+- **Fonctionnalités couvertes** : Création et inscription aux défis inter-campus avec anti-doublon (`409`), soumission transactionnelle de performances (avec validation stricte et preuve photo optionnelle), classements par défi et classement général (Top 3 podium des campus + rang personnel).
+
+### 4.1 Podium du Défi Running Inter-Campus &amp; Jauges de progression
+Affichage du Top 3 inter-campus (`🥇 Lyon`, `🥈 Lille`, `🥉 Bordeaux`), du classement complet des 4 écoles, du classement individuel (`Mon Campus : #1 • Mon Rang Personnel : #1`) et des cartes défis actifs.
+
+![Étape 4 - Podium Défi Inter-Campus](./docs/screenshots/step-04/01-defis-podium-campus.png)
+
+---
+
+### 4.2 Classement Général (XP Cumulés) &amp; Tiroir de soumission de performance
+Bascule sur le **Podium Général Inter-Campus** en XP et ouverture du formulaire intégré **« + Performance »** (saisie chiffrée + preuve photo optionnelle).
+
+![Étape 4 - Classement Général et Saisie Performance](./docs/screenshots/step-04/02-classement-general-et-saisie.png)
+
+---
+
+### 4.3 Création d'un Défi Inter-Campus &amp; Filtre « Défis terminés »
+Formulaire de création d'une nouvelle compétition inter-écoles et consultation de l'historique des défis clôturés (*Sprint Rentrée B3*).
+
+![Étape 4 - Création Défi et Défis Terminés](./docs/screenshots/step-04/03-creation-defi-et-termines.png)
+
+---
+
+### 4.4 Tableau de bord d'avancement mis à jour (50 % — 30/30 Pytest)
+Synthèse visuelle du passage de mi-parcours (4 / 8 étapes validées) et trace d'exécution des 30 tests automatisés.
+
+![Étape 4 - Tableau de bord et tests](./docs/screenshots/step-04/04-suivi-dashboard-step04.png)
 
 ---
 
